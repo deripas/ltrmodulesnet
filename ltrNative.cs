@@ -102,7 +102,7 @@ namespace ltrModulesNet
             LTR_MARK_INTERNAL = 0x05  // внутренняя генерация метки
         };
 
-        public enum LTRCC
+        public enum LTRCC : ushort
         {
             CONTROL = 0,            // канал для работы c модулем в слоте 0, он же
             MODULE0 = 0,           // канал для управления крейтом и сервером
@@ -465,7 +465,36 @@ namespace ltrModulesNet
             LTR114_ERR_ADCDATA_SLOTNUM     = -10016, /* неверный номер слота в данных от АЦП */
             LTR114_ERR_ADCDATA_CNT         = -10017, /* неверный счетчик пакетов в данных от АЦП */
             LTR114_ERR_INVALID_LCH         = -10018, /*неверный режим лог. канала*/
-            LTR114_ERR_CORRECTION_MODE     = -10019 /*неверный режим коррекции данных*/
+            LTR114_ERR_CORRECTION_MODE     = -10019, /*неверный режим коррекции данных*/
+
+
+
+            LTR24_ERR_OPEN = -10100,
+            LTR24_ERR_NOT_OPEN = -10101,
+            LTR24_ERR_BUSY = -10102,
+            LTR24_ERR_MODULE_ID = -10103,
+            LTR24_ERR_SEND = -10104,
+            LTR24_ERR_RECV = -10105,
+            LTR24_ERR_TIMEOUT = -10106,
+            LTR24_ERR_NO_RESP = -10107,
+            LTR24_ERR_INVAL_RESP = -10108,
+            LTR24_ERR_STARTED = -10109,
+            LTR24_ERR_NOT_STARTED = -10110,
+            LTR24_ERR_INVAL_ARGS = -10111,
+            LTR24_ERR_INVAL_FREQ = -10112,
+            LTR24_ERR_INVAL_FORMAT = -10113,
+            LTR24_ERR_INVAL_CONFIG = -10114,
+            LTR24_ERR_INVAL_SYNC = -10115,
+            LTR24_ERR_INVAL_RANGE = -10116,
+            LTR24_ERR_WRONG_CRC = -10117,
+            LTR24_ERR_VERIFY_FAILED = -10118,
+            LTR24_ERR_DATA_FORMAT = -10119,
+            LTR24_ERR_UNALIGNED_DATA = -10120,
+            LTR24_ERR_DISCONT_DATA = -10121,
+            LTR24_ERR_CHANNELS_DISBL = -10122,
+            LTR24_ERR_UNSUP_VERS = -10123,
+            LTR24_ERR_NO_MEM = -10124,
+            LTR24_ERR_LAST_ = -10125
         }
 
         public enum MODULETYPE
@@ -497,6 +526,10 @@ namespace ltrModulesNet
         public const uint MODULE_MAX = 16;
         public const uint CRATE_MAX = 16;
         public const uint SERIAL_NUMBER_SIZE = 16;
+
+
+        public const uint SADDR_DEFAULT = 0x7F000001U;
+        public const ushort SPORT_DEFAULT = 11111;
 
 
         [DllImport("ltrapi.dll")]
