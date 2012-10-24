@@ -45,7 +45,8 @@ namespace ltrModulesNet
         public static extern _LTRNative.LTRERROR LTR24_ClearMcsSlot(ref TLTR24 module);
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_InvalidateMcsSlot(ref TLTR24 module);
-        
+        [DllImport("ltr24api.dll")]
+        public static extern _LTRNative.LTRERROR LTR24_FindFrameStart(ref TLTR24 module, uint[] data, int size, out int index);
 
         public const int LTR24_CHANNEL_NUM = 4;
         public const int LTR24_RANGE_NUM = 2;
@@ -276,7 +277,12 @@ namespace ltrModulesNet
             return LTR24_InvalidateMcsSlot(ref module);
         }
 
-        public virtual string GetErrorString(_LTRNative.LTRERROR err)
+        public virtual _LTRNative.LTRERROR FindFrameStart(uint[] data, int size, out int index)
+        {
+            return LTR24_FindFrameStart(ref module, data, size, out index);
+        }
+
+        public static string GetErrorString(_LTRNative.LTRERROR err)
         {
             IntPtr ptr = LTR24_GetErrorString((int)err);
             string str = Marshal.PtrToStringAnsi(ptr);

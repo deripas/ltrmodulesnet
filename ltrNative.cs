@@ -493,8 +493,12 @@ namespace ltrModulesNet
             LTR24_ERR_DISCONT_DATA = -10121,
             LTR24_ERR_CHANNELS_DISBL = -10122,
             LTR24_ERR_UNSUP_VERS = -10123,
-            LTR24_ERR_NO_MEM = -10124,
-            LTR24_ERR_LAST_ = -10125
+            LTR24_ERR_FRAME_NOT_FOUND   = -10124,
+            LTR24_ERR_OPEN_MCS_MOD      = -10125,
+            LTR24_ERR_NO_SAVED_MCS      = -10126,
+            LTR24_ERR_MCS_NOT_VALID     = -10127,
+            LTR24_ERR_MCS_DIFF_MID      = -10128,
+            LTR24_ERR_LAST_             = -10129
         }
 
         public enum MODULETYPE

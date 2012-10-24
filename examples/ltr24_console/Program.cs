@@ -5,8 +5,9 @@ using System.Text;
 
 using ltrModulesNet;
 
-/* Все статические функции, доступные напрямую оставлены.
- * Но можно работать и через методы/свойства, как указано в данном примере */
+/* Все статические функции и внутренняя структура оставлены для доступа напрямую.
+ * Есть также доступ через методы/свойства, как указано в данном примере, не 
+ * отклоняясь от старой концепции... */
 
 namespace ltr24_console
 {
@@ -26,7 +27,7 @@ namespace ltr24_console
             if (err != _LTRNative.LTRERROR.OK)
             {
                 Console.WriteLine("Не удалось открыть модуль. Ошибка {0}: {1}",
-                    err, hltr24.GetErrorString(err));
+                    err, _ltr24api.GetErrorString(err));
             }
             else
             {
@@ -60,7 +61,7 @@ namespace ltr24_console
                 if (err != _LTRNative.LTRERROR.OK)
                 {
                     Console.WriteLine("Не удалось сконфигурировать модуль. Ошибка {0}: {1}",
-                            err, hltr24.GetErrorString(err));
+                            err, _ltr24api.GetErrorString(err));
                 }
                 else
                 {
@@ -86,7 +87,7 @@ namespace ltr24_console
                     if (err != _LTRNative.LTRERROR.OK)
                     {
                         Console.WriteLine("Не могу запустить сбор данных. Ошибка {0}: {1}",
-                            err, hltr24.GetErrorString(err));
+                            err, _ltr24api.GetErrorString(err));
                     }
                 }
 
@@ -114,7 +115,7 @@ namespace ltr24_console
                         {
                             err = (_LTRNative.LTRERROR)rcv_cnt;
                             Console.WriteLine("Ошибка приема данных. Ошибка {0}: {1}",
-                                err, hltr24.GetErrorString(err));
+                                err, _ltr24api.GetErrorString(err));
                         }
                         else if (rcv_cnt != wrds.Length)
                         {
@@ -146,7 +147,7 @@ namespace ltr24_console
                     if (stop_err != _LTRNative.LTRERROR.OK)
                     {
                         Console.WriteLine("Не могу остановить сбор данных. Ошибка {0}: {1}",
-                            err, hltr24.GetErrorString(stop_err));
+                            err, _ltr24api.GetErrorString(stop_err));
                         if (err == _LTRNative.LTRERROR.OK)
                             err = stop_err;
                     }
