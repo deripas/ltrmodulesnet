@@ -59,6 +59,7 @@ namespace ltrModulesNet
             CRATE_TYPE_LTR021     =  21,
             CRATE_TYPE_LTR030     =  30,
             CRATE_TYPE_LTR031     =  31,
+            CRATE_TYPE_LTR032     =  32,
             CRATE_TYPE_BOOTLOADER =  99
         }
         // интерфейс крейта (для TCRATE_INFO)
@@ -99,7 +100,12 @@ namespace ltrModulesNet
             LTR_MARK_EXT_DIGIN1_FALL = 0x02, // метка по спаду DIGIN1
             LTR_MARK_EXT_DIGIN2_RISE = 0x03, // метка по фронту DIGIN2
             LTR_MARK_EXT_DIGIN2_FALL = 0x04, // метка по спаду DIGIN2
-            LTR_MARK_INTERNAL = 0x05  // внутренняя генерация метки
+            LTR_MARK_INTERNAL        = 0x05, // внутренняя генерация метки
+            // Режимы меток LTR-E-7/15
+            LTR_MARK_NAMUR1_LO2HI = 0x08, // по сигналу NAMUR1, возрастание тока
+            LTR_MARK_NAMUR1_HI2LO = 0x09, // по сигналу NAMUR1, спад тока
+            LTR_MARK_NAMUR2_LO2HI = 0x0A, // по сигналу NAMUR2, возрастание тока
+            LTR_MARK_NAMUR2_HI2LO = 0x0B, // по сигналу NAMUR2, спад тока
         };
 
         public enum LTRCC : ushort
@@ -498,7 +504,19 @@ namespace ltrModulesNet
             LTR24_ERR_NO_SAVED_MCS      = -10126,
             LTR24_ERR_MCS_NOT_VALID     = -10127,
             LTR24_ERR_MCS_DIFF_MID      = -10128,
-            LTR24_ERR_LAST_             = -10129
+            LTR24_ERR_BAD_SYN_IO        = -10129,
+            LTR24_ERR_OVERFLOW          = -10130,
+            LTR24_ERR_LAST_             = -10131,
+
+
+            
+            LTR032_ERR_NO_MEM           = -10300,
+            LTR032_ERR_INVAL_PARAM      = -10301,
+            LTR032_ERR_NOT_OPEN         = -10302,
+            LTR032_ERR_OPEN             = -10303,
+            LTR032_ERR_INVAL_CRATE_TYPE = -10304,
+            LTR032_ERR_CMD_REJECTED     = -10305,
+            LTR032_ERR_NOT_IMPLEMENTED  = -10306
         }
 
         public enum MODULETYPE
@@ -549,8 +567,12 @@ namespace ltrModulesNet
         public static extern LTRERROR LTR_IsOpened(ref TLTR ltr); //Состояние соединения с модулем
 
 		[DllImport("ltrapi.dll")]
-		public static extern int LTR_Recv(ref TLTR ltr, uint[] buf, uint [] tmark, uint size, uint timeout); //Прием данных от модуля		
+		public static extern int LTR_Recv(ref TLTR ltr, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля		
 
+        // Прием данных из крейта с поддержкой расширенных меток времени
+        [DllImport("ltrapi.dll")]
+        public static extern int LTR_RecvEx(ref TLTR ltr, uint[] data, uint[] tmark, uint size, uint timeout,
+                                  UInt64[] unixtime);
 		[DllImport("ltrapi.dll")]
 		public static extern int LTR_Send(ref TLTR ltr, uint[] buf, uint size, uint timeout); //Передача данных модулю
 
@@ -841,6 +863,11 @@ namespace ltrModulesNet
 		{
 			return LTR_Recv(ref module, Buff, null, Size, Timeout);
 		}
+
+        public int RecvEx(uint[] data, uint[] tmark, uint size, uint timeout, UInt64[] unixtime)
+        {
+            return LTR_RecvEx(ref module, data, tmark, size, timeout, unixtime);
+        }
 
 		public int Recv(uint []Buff, uint [] tmark , uint Size, uint Timeout)
 		{

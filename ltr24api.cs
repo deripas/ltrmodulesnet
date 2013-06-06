@@ -31,6 +31,9 @@ namespace ltrModulesNet
         [DllImport("ltr24api.dll")]
         public static extern int LTR24_Recv(ref TLTR24 hnd, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля		
         [DllImport("ltr24api.dll")]
+        public static extern int LTR24_RecvEx(ref TLTR24 ltr, uint[] data, uint[] tmark, uint size, uint timeout,
+                                  UInt64[] unixtime);
+        [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_ProcessData(ref TLTR24 hnd, uint[] src_data, double[] dst_data, ref int size,
                   bool calib, bool volt, bool[] ovload);
         [DllImport("ltr24api.dll")]
@@ -237,9 +240,15 @@ namespace ltrModulesNet
             return LTR24_Recv(ref module, buffer, null, size, timeout);
         }
 
+  
         public virtual int Recv(uint[] buffer, uint[] tmark, uint size, uint timeout)
         {
             return LTR24_Recv(ref module, buffer, tmark, size, timeout);
+        }
+
+        public virtual int RecvEx(uint[] buffer, uint[] tmark, uint size, uint timeout, UInt64[] unixtime)
+        {
+            return LTR24_RecvEx(ref module, buffer, tmark, size, timeout, unixtime);
         }
 
         public virtual _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest, ref int size, bool calib, bool volt, bool[] ovload)
