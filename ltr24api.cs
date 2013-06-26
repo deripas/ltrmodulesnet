@@ -53,7 +53,7 @@ namespace ltrModulesNet
 
         public const int LTR24_CHANNEL_NUM = 4;
         public const int LTR24_RANGE_NUM = 2;
-        public const int LTR24_FREQ_NUM = 8;
+        public const int LTR24_FREQ_NUM = 16;
         public const int LTR24_NAME_SIZE = 8;
         public const int LTR24_SERIAL_SIZE = 16;
 
@@ -61,22 +61,24 @@ namespace ltrModulesNet
         /* „астоты сбора данных. */
         public enum FreqCode : byte 
         {
-            Freq_117=0,
-            Freq_78=1,
-            Freq_58=2,
-            Freq_39=3,
-            Freq_29=4,
-            Freq_19=5,
-            Freq_14=6,
-            Freq_9=7
+            Freq_117K = 0, //117.1875 к√ц
+            Freq_78K = 1, // 78.125 к√ц
+            Freq_58K = 2, // 58.59375 к√ц
+            Freq_39K = 3, // 39.0625 к√ц
+            Freq_29K = 4, // 29.296875 к√ц
+            Freq_19K = 5, // 19.53125 к√ц
+            Freq_14K = 6, // 14.6484375 к√ц
+            Freq_9K7 = 7, // 9.765625 к√ц
+            Freq_7K3 = 8, // 7.32421875 к√ц
+            Freq_4K8 = 9, // 4.8828125 к√ц
+            Freq_3K6 = 10, // 3.662109375 к√ц
+            Freq_2K4 = 11, // 2.44140625 к√ц
+            Freq_1K8 = 12, // 1.8310546875 к√ц
+            Freq_1K2 = 13, // 1.220703125 к√ц
+            Freq_915 = 14, // 915.52734375 √ц
+            Freq_610 = 15  // 610.3515625 √ц
         }
         
-        public enum Sync : byte 
-        {
-            None = 0,
-            Master = 1,
-            Slave = 2
-        }
 
         public enum AdcRange : byte 
         {
@@ -91,7 +93,7 @@ namespace ltrModulesNet
             Format24=1
         }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Channel
         {
             bool _Enable;
@@ -109,14 +111,14 @@ namespace ltrModulesNet
 
         };
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct CbrCoef
         {
             float Offset;
             float Scale;
         };
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Info
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_NAME_SIZE)]
@@ -135,7 +137,7 @@ namespace ltrModulesNet
         };
 
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct TLTR24
         {
             int Size;
@@ -144,7 +146,6 @@ namespace ltrModulesNet
             public FreqCode ADCFreqCode;
             public double ADCFreq;
             public DataFormat DataFmt;
-            public Sync SyncMode;
             public bool ZeroMode;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM)]
@@ -153,7 +154,7 @@ namespace ltrModulesNet
             public Info ModuleInfo;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM*LTR24_RANGE_NUM*LTR24_FREQ_NUM)]
             public CbrCoef[] CalibCoef;
-            public IntPtr       Reserved;
+            public IntPtr    Reserved;
         };
 
 
@@ -317,12 +318,6 @@ namespace ltrModulesNet
         {
             get { return module.DataFmt; }
             set { module.DataFmt = value; }
-        }
-
-        public Sync SyncMode
-        {
-            get { return module.SyncMode; }
-            set { module.SyncMode = value; }
         }
 
         public bool ZeroMode

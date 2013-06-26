@@ -506,7 +506,6 @@ namespace ltrModulesNet
             LTR24_ERR_MCS_DIFF_MID      = -10128,
             LTR24_ERR_BAD_SYN_IO        = -10129,
             LTR24_ERR_OVERFLOW          = -10130,
-            LTR24_ERR_LAST_             = -10131,
 
 
             

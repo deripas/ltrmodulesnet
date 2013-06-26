@@ -22,7 +22,7 @@ namespace ltr24_console
             _ltr24api hltr24 = new _ltr24api();
             /* отрываем модуль. есть вариант как с только со слотам, так и с серийным крейта и слотом 
              *  + полный */
-            _LTRNative.LTRERROR err = hltr24.Open(6);
+            _LTRNative.LTRERROR err = hltr24.Open(7);
             //_LTRNative.LTRERROR err = hltr24.Open("1R815094", 6);
             if (err != _LTRNative.LTRERROR.OK)
             {
@@ -41,10 +41,9 @@ namespace ltr24_console
 
                 /* формат - 24 или 20 битный. В первом случае 2 слова на отсчет */
                 hltr24.DataFmt = _ltr24api.DataFormat.Format24;
-                hltr24.SyncMode = _ltr24api.Sync.None;
                 /* устанавливаем частоту с помощью одной из констант (Для 24-битного режима
                    макс. частота только при 2-х каналах, все 4 - только пр 58)  */
-                hltr24.AdcFreqCode = _ltr24api.FreqCode.Freq_117;
+                hltr24.AdcFreqCode = _ltr24api.FreqCode.Freq_117K;
                 hltr24.ZeroMode = false;
 
                 /* каналы можем настраивать челиком через присвоение нового объекта _ltr24api.Channel */
