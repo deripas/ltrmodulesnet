@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E619DAC5-4B4F-4497-82C9-4888E2D26A5B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -125,6 +125,7 @@
     <Compile Include="ltr11apiLabView.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ltr210api.cs" />
     <Compile Include="ltr212api.cs">
       <SubType>Code</SubType>
     </Compile>

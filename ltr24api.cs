@@ -17,8 +17,6 @@ namespace ltrModulesNet
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_GetConfig(ref TLTR24 module);
         [DllImport("ltr24api.dll")]
-        public static extern _LTRNative.LTRERROR LTR24_Phase(ref TLTR24 module);
-        [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_SetADC(ref TLTR24 module);
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_Start(ref TLTR24 module);
@@ -203,11 +201,6 @@ namespace ltrModulesNet
         public virtual _LTRNative.LTRERROR IsOpened()
         {
             return LTR24_IsOpened(ref module);
-        }
-
-        public virtual _LTRNative.LTRERROR Phase()
-        {
-            return LTR24_Phase(ref module);
         }
 
         public virtual _LTRNative.LTRERROR SetADC()

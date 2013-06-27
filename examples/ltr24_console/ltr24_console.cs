@@ -11,7 +11,7 @@ using ltrModulesNet;
 
 namespace ltr24_console
 {
-    class Program
+    class ltr24_console
     {
         const int READ_BLOCKS = 100;
         const int READ_BLOCK_SIZE = 10240;

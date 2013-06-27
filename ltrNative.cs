@@ -156,6 +156,47 @@ namespace ltrModulesNet
             WARNING_MODULE_IN_USE = -10,            /* Канал обмена с сервером уже был создан и не закрыт*/
             ERROR_NOT_CTRL_CHANNEL =-11,            /* Номер канала для этой операции должен быть CC_CONTROL */
 
+            ERROR_INVALID_MODULE_DESCR   = -40,    /* Неверный описатель модуля */
+            ERROR_INVALID_MODULE_SLOT    = -41,    /* Указан неверный слот для модуля */
+            ERROR_INVALID_MODULE_ID      = -42,    /* Неверный ID-модуля в ответе на сброс */
+            ERROR_NO_RESET_RESPONSE      = -43,    /* Нет ответа на команду сброса */
+            ERROR_SEND_INSUFFICIENT_DATA = -44,    /* Передано данных меньше, чем запрашивалось */
+            ERROR_RECV_INSUFFICIENT_DATA = -45,    /* Принято данных меньше, чем запрашивалось */
+            ERROR_NO_CMD_RESPONSE        = -46,    /* Нет ответа на команду */
+            ERROR_INVALID_CMD_RESPONSE   = -47,    /* Пришел неверный ответ на команду */
+            ERROR_INVALID_RESP_PARITY    = -48,    /* Неверный бит четности в пришедшем ответе */
+            ERROR_INVALID_CMD_PARITY     = -49,    /* Ошибка четности переданной команды */
+            ERROR_UNSUP_BY_FIRM_VER      = -50,    /* Возможность не поддерживается данной версией прошивки */
+            ERROR_MODULE_STARTED         = -51,    /* Модуль уже запущен */
+            ERROR_MODULE_STOPPED         = -52,    /* Модуль остановлен */
+            ERROR_RECV_OVERFLOW          = -53,    /* Произошло переполнение буфера */
+            ERROR_FIRM_FILE_OPEN         = -54,    /* Ошибка открытия файла прошивки */
+            ERROR_FIRM_FILE_READ         = -55,    /* Ошибка чтения файла прошивки */
+            ERROR_FIRM_FILE_FORMAT       = -56,    /* Ошибка формата файла прошивки */
+            ERROR_FPGA_LOAD_READY_TOUT   = -57,    /* Превышен таймаут ожидания готовности ПЛИС к загрузке */
+            ERROR_FPGA_LOAD_DONE_TOUT    = -58,    /* Превышен таймаут ожидания перехода ПЛИС в рабочий режим */
+            ERROR_FPGA_IS_NOT_LOADED     = -59,    /* Прошивка ПЛИС не загружена */
+            ERROR_FLASH_INVALID_ADDR     = -60,    /* Неверный адрес Flash-памяти */
+            ERROR_FLASH_WAIT_RDY_TOUT    = -61,    /* Превышен таймаут ожидания завершения записи/стирания Flash-памяти */
+
+            LTR010_ERROR_GET_ARRAY        = -100, /*Ошибка выполнения команды GET_ARRAY.*/
+            LTR010_ERROR_PUT_ARRAY        = -101, /*Ошибка выполнения команды PUT_ARRAY.*/
+            LTR010_ERROR_GET_MODULE_NAME  = -102, /*Ошибка выполнения команды GET_MODULE_NAME.*/
+            LTR010_ERROR_GET_MODULE_DESCR = -103, /*Ошибка выполнения команды GET_MODULE_DESCRIPTOR.*/
+            LTR010_ERROR_INIT_FPGA        = -104, /*Ошибка выполнения команды INIT_FPGA.*/
+            LTR010_ERROR_RESET_FPGA       = -105, /*Ошибка выполнения команды RESET_FPGA.*/
+            LTR010_ERROR_INIT_DMAC        = -106, /*Ошибка выполнения команды INIT_DMAC.*/
+            LTR_ERROR_LOAD_FPGA           = -107, /*Ошибка выполнения команды LOAD_FPGA.*/
+            LTR010_ERROR_OPEN_FILE        = -108, /*Ошибка открытия файла.*/
+            LTR010_ERROR_GET_INFO_FPGA    = -109, /*Ошибка выполнения команды GET_INFO_FPGA.*/
+
+            LTR021_ERROR_GET_ARRAY        = -200, /*Ошибка выполнения команды GET_ARRAY.*/
+            LTR021_ERROR_PUT_ARRAY        = -201, /*Ошибка выполнения команды PUT_ARRAY.*/
+            LTR021_ERROR_GET_MODULE_NAME  = -202, /*Ошибка выполнения команды GET_MODULE_NAME.*/
+            LTR021_ERROR_GET_MODULE_GESCR = -203, /*Ошибка выполнения команды GET_MODULE_DESCRIPTOR.*/
+            LTR021_ERROR_CRATE_TYPE       = -204, /*Неверный тип крейта.*/
+            LTR021_ERROR_TIMEOUT          = -205, /*Превышение таймаута */
+
             LTRAVR_ERROR_RECV_PRG_DATA_ECHO = -200,     /*Ошибка приема эхо ответа данных для программирования.*/
             LTRAVR_ERROR_SEND_PRG_DATA = -201,     /*Ошибка отправки данных команды програмирования avr.*/
             LTRAVR_ERROR_RECV_PRG_ENABLE_ACK = -202,     /*Ошибка приема подтверждения команды входа в режим программирования.*/
@@ -172,6 +213,11 @@ namespace ltrModulesNet
             LTRBOOT_ERROR_CALL_APPL = -302,      /*Ошибка выполнения команды CALL_APPLICATION.*/
             LTRBOOT_ERROR_GET_DESCRIPTION = -303,      /*Ошибка выполнения команды GET_DESCRIPTION.*/
             LTRBOOT_ERROR_PUT_DESCRIPTION = -304,     /*Ошибка выполнения команды PUT_DESCRIPTION.*/
+
+
+            LTR030_ERR_UNSUPORTED_CRATE_TYPE = -400, /* Данный тип крейта не поддерживается библиотекой */
+            LTR030_ERR_FIRM_VERIFY           = -401, /* Ошибка проверки правильности записи прошивки */
+            LTR030_ERR_FIRM_SIZE             = -402,  /* Неверный размер прошивки */
 
             // LTR11
             /* Коды ошибок, возвращаемые функциями библиотеки */
@@ -448,33 +494,33 @@ namespace ltrModulesNet
             LTR114_ERR_INVALID_SYNCMODE    = -10001, /* недопустимый режим синхронизации модуля АЦП */
             LTR114_ERR_INVALID_ADCLCHQNT   = -10002, /* недопустимое количество логических каналов */
             LTR114_ERR_INVALID_ADCRATE     = -10003, /* недопустимое значение частоты дискретизации АЦП
-                                                * модуля
-                                                */
+                                                      * модуля
+                                                      */
             LTR114_ERR_GETFRAME            = -10004, /* ошибка получения кадра данных с АЦП */
             LTR114_ERR_GETCFG              = -10005, /* ошибка чтения конфигурации */
             LTR114_ERR_CFGDATA             = -10006, /* ошибка при получении конфигурации модуля */
             LTR114_ERR_CFGSIGNATURE        = -10007, /* неверное значение первого байта конфигурационной
-                                                * записи модуля
-                                                        */
+                                                      * записи модуля
+                                                      */
             LTR114_ERR_CFGCRC              = -10008, /* неверная контрольная сумма конфигурационной
-                                                * записи
-                                                */
+                                                      * записи
+                                                      */
             LTR114_ERR_INVALID_ARRPOINTER  = -10009, /* указатель на массив равен NULL */
             LTR114_ERR_ADCDATA_CHNUM       = -10010, /* неверный номер канала в массиве данных от АЦП */
             LTR114_ERR_INVALID_CRATESN     = -10011, /* указатель на строку с серийным номером крейта
-                                                * равен NULL
-                                                */
+                                                      * равен NULL
+                                                      */
             LTR114_ERR_INVALID_SLOTNUM     = -10012, /* недопустимый номер слота в крейте */
             LTR114_ERR_NOACK               = -10013, /* нет подтверждения от модуля */
             LTR114_ERR_MODULEID            = -10014, /* попытка открытия модуля, отличного от LTR114 */
             LTR114_ERR_INVALIDACK          = -10015, /* неверное подтверждение от модуля */
             LTR114_ERR_ADCDATA_SLOTNUM     = -10016, /* неверный номер слота в данных от АЦП */
             LTR114_ERR_ADCDATA_CNT         = -10017, /* неверный счетчик пакетов в данных от АЦП */
-            LTR114_ERR_INVALID_LCH         = -10018, /*неверный режим лог. канала*/
-            LTR114_ERR_CORRECTION_MODE     = -10019, /*неверный режим коррекции данных*/
+            LTR114_ERR_INVALID_LCH         = -10018, /* неверный режим лог. канала*/
+            LTR114_ERR_CORRECTION_MODE     = -10019, /* неверный режим коррекции данных*/
 
 
-
+            //LTR24
             LTR24_ERR_OPEN = -10100,
             LTR24_ERR_NOT_OPEN = -10101,
             LTR24_ERR_BUSY = -10102,
@@ -506,31 +552,69 @@ namespace ltrModulesNet
             LTR24_ERR_MCS_DIFF_MID      = -10128,
             LTR24_ERR_BAD_SYN_IO        = -10129,
             LTR24_ERR_OVERFLOW          = -10130,
-
-
-            
+                      
+            //LTR032
             LTR032_ERR_NO_MEM           = -10300,
             LTR032_ERR_INVAL_PARAM      = -10301,
             LTR032_ERR_NOT_OPEN         = -10302,
             LTR032_ERR_OPEN             = -10303,
             LTR032_ERR_INVAL_CRATE_TYPE = -10304,
             LTR032_ERR_CMD_REJECTED     = -10305,
-            LTR032_ERR_NOT_IMPLEMENTED  = -10306
+            LTR032_ERR_NOT_IMPLEMENTED  = -10306,
+
+            //LTRT10
+            LTRT10_ERR_INVALID_SWITCH_POS = -10400, /**< Задан неверный код состояния коммутатора*/
+            LTRT10_ERR_INVALID_DDS_DIV = -10401, /**< Задан неверный код коэффициента передачи выходного делителя сигнала DDS */
+            LTRT10_ERR_INVALID_DDS_GAIN = -10402, /**< Задан неверный код усиления для DDS */
+            LTRT10_ERR_INVALID_FREQ_VAL = -10403, /**< Неверно задан код частоты сигнала DDS */
+            LTRT10_ERR_INVALID_DDS_AMP = -10404, /**< Задан неверный код амплитуды сигнала DDS */
+            LTRT10_ERR_GAIN2_EXCEED_GAIN1 = -10405, /**< Коэф. усиления второй ступени превышает коэф. первой ступени */
+
+            LTR210_ERR_INVALID_SYNC_MODE            = -10500, /**< Задан неверный код условия сбора кадра*/
+            LTR210_ERR_INVALID_GROUP_MODE           = -10501, /**< Задан неверный код режима работы модуля в составе группы */
+            LTR210_ERR_INVALID_ADC_FREQ_DIV         = -10502, /**< Задано неверное значение делителя частоты АЦП*/
+            LTR210_ERR_INVALID_CH_RANGE             = -10503, /**< Задан неверный код диапазона канала АЦП*/
+            LTR210_ERR_INVALID_CH_MODE              = -10504, /**< Задан неверный режим измерения канала*/
+            LTR210_ERR_SYNC_LEVEL_EXCEED_RANGE      = -10505, /**< Установленный уровень аналоговой синхронизации
+                                                                выходит за границы установленного диапазона*/
+            LTR210_ERR_NO_ENABLED_CHANNEL           = -10506, /**< Ни один канал АЦП не был разрешен*/
+            LTR210_ERR_PLL_NOT_LOCKED               = -10507, /**< Ошибка захвата PLL*/
+            LTR210_ERR_INVALID_RECV_DATA_CNTR       = -10508, /**< Неверное значение счетчика в принятых данных*/
+            LTR210_ERR_RECV_UNEXPECTED_CMD          = -10509, /**< Прием неподдерживаемой команды в потоке данных*/
+            LTR210_ERR_FLASH_INFO_SIGN              = -10510, /**< Неверный признак информации о модуле во Flash-памяти*/
+            LTR210_ERR_FLASH_INFO_SIZE              = -10511, /**< Неверный размер прочитанной из Flash-памяти информации о модуле*/
+            LTR210_ERR_FLASH_INFO_UNSUP_FORMAT      = -10512, /**< Неподдерживаемый формат информации о модуле из Flash-памяти*/
+            LTR210_ERR_FLASH_INFO_CRC               = -10513, /**< Ошибка проверки CRC информации о модуле из Flash-памяти*/
+            LTR210_ERR_FLASH_INFO_VERIFY            = -10514, /**< Ошибка проверки записи информации о модуле во Flash-память*/
+            LTR210_ERR_CHANGE_PAR_ON_THE_FLY        = -10515, /**< Часть измененных параметров нельзя изменять на лету */
+            LTR210_ERR_INVALID_ADC_DCM_CNT          = -10516, /**< Задан неверный коэффициент прореживания данных АЦП */
+            LTR210_ERR_MODE_UNSUP_ADC_FREQ          = -10517, /**< Установленный режим не поддерживает заданную частоту АЦП */
+            LTR210_ERR_INVALID_FRAME_SIZE           = -10518, /**< Неверно задан размер кадра */
+            LTR210_ERR_INVALID_HIST_SIZE            = -10519, /**< Неверно задан размер предыстории */
+            LTR210_ERR_INVALID_INTF_TRANSF_RATE     = -10520, /**< Неверно задано значение скорости выдачи данных в интерфейс */
+            LTR210_ERR_INVALID_DIG_BIT_MODE         = -10521, /**< Неверно задан режим работы дополнительного бита */
+            LTR210_ERR_SYNC_LEVEL_LOW_EXCEED_HIGH   = -10522, /**< Нижний порог аналоговой синхронизации превышает верхний */
+            LTR210_ERR_KEEPALIVE_TOUT_EXCEEDED      = -10523  /**< Не пришло ни одного статуса от модуля за заданный интервал */
         }
 
         public enum MODULETYPE
         {
             EMPTY = 0,
+            IDENTIFYING = 0xFFFF,
+            LTR01 = 0x0101,
             LTR11 = 0x0B0B,
             LTR22 = 0x1616,
+            LTR24 = 0x1818,
             LTR27 = 0x1B1B,
             LTR34 = 0x2222,
+            LTR35 = 0x2323,
             LTR41 = 0x2929,
             LTR42 = 0x2A2A,
             LTR43 = 0x2B2B,
             LTR51 = 0x3333,
-            LTR212 = 0xD4D4,
-            LTR114 = 0x7272
+            LTR114 = 0x7272,
+            LTR210 = 0xD2D2,
+            LTR212 = 0xD4D4            
         }
 
         public enum ServerPriority
