@@ -8,7 +8,8 @@ using ltrModulesNet;
  * выводит информацию, устанавливает настройки и собирает заданное кол-во кадров
  * в режиме покадрового сбора, выводя на экран только первые 2 значения из каждого кадра.
  * 
- * Номер слота и настройки заданы в коде при открытии и конфигурации модуля.
+ * Необходимо установить номер слота, в котором вставлен модуль (константа SLOT).
+ * Настройки сбора задаются в коде при конфигурации модуля.
  */
 
 namespace ltr210_console
@@ -21,6 +22,8 @@ namespace ltr210_console
         const int RECV_TOUT = 10000;
         /* Если за данное время не придет ни одного слова от модуля, то считаем его неисаравным */
         const int KEEPALIVE_TOUT = 10000;
+        /* Номер слота в крейте, где вставлен модуль */
+        const int SLOT = 1;
 
         static void loadProgr(IntPtr cb_data, ref ltr210api.TLTR210 hnd, uint doneSize, uint fullSize)
         {
@@ -35,7 +38,7 @@ namespace ltr210_console
             ltr210api hltr210 = new ltr210api();
             /* Отрываем модуль. Есть вариант функции как с только с номером слота, 
              * так и с серийным крейта и слотом + полный */
-            _LTRNative.LTRERROR err = hltr210.Open(5);
+            _LTRNative.LTRERROR err = hltr210.Open(SLOT);
             if (err != _LTRNative.LTRERROR.OK)
             {
                 Console.WriteLine("Не удалось открыть модуль. Ошибка {0}: {1}",
@@ -92,9 +95,9 @@ namespace ltr210_console
                     cfg.HistSize = 100;
 
                     /* Устанавливаем максимальную частоту отсчетов - 10 МГц */
-                    cfg.AdcFreqDiv = 0;
-                    cfg.AdcDcmCnt = 0;//100;
-                    cfg.FrameFreqDiv = 1000000;
+                    cfg.AdcFreq = 10000000;
+                    /* Частота следования кадров - раз в секунду */
+                    cfg.FrameFreq = 1;
                     /* Разрешаем посылку сигнала жизни и автоматическую
                         приостановку записи */
                     cfg.Flags = ltr210api.CfgFlags.KEEPALIVE_EN | ltr210api.CfgFlags.WRITE_AUTO_SUSP;
