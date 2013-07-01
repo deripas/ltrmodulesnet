@@ -19,9 +19,17 @@ namespace ltrModulesNet
         [DllImport("ltr210api.dll")]
         static extern _LTRNative.LTRERROR LTR210_LoadFPGA(ref TLTR210 hnd, string filename, IntPtr progr_cb, IntPtr cb_data);
         [DllImport("ltr210api.dll")]
+        static extern _LTRNative.LTRERROR LTR210_LoadFPGA(ref TLTR210 hnd, string filename, LOAD_PROGR_CB progr_cb, IntPtr cb_data);
+        [DllImport("ltr210api.dll")]
         static extern _LTRNative.LTRERROR LTR210_SetADC(ref TLTR210 hnd);
         [DllImport("ltr210api.dll")]
         static extern _LTRNative.LTRERROR LTR210_FillAdcFreq(ref CONFIG cfg, double freq, uint flags, out double set_freq);
+        [DllImport("ltr210api.dll")]
+        static extern _LTRNative.LTRERROR LTR210_FillAdcFreq(ref CONFIG cfg, double freq, uint flags, IntPtr set_freq);
+        [DllImport("ltr210api.dll")]
+        static extern _LTRNative.LTRERROR LTR210_FillFrameFreq(ref CONFIG cfg, double freq, out double set_freq);
+        [DllImport("ltr210api.dll")]
+        static extern _LTRNative.LTRERROR LTR210_FillFrameFreq(ref CONFIG cfg, double freq, IntPtr set_freq);
         [DllImport("ltr210api.dll")]
         static extern _LTRNative.LTRERROR LTR210_Start(ref TLTR210 hnd);
         [DllImport("ltr210api.dll")]
@@ -38,7 +46,7 @@ namespace ltrModulesNet
         static extern _LTRNative.LTRERROR LTR210_ProcessData(ref TLTR210 hnd,  uint[] src,
                                                              double[] dest, ref int size, ProcFlags flags,
                                                              out FRAME_STATUS frame_status,
-                                                             DATA_INFO[] data_info);
+                                                             uint[] data_info);
         [DllImport("ltr210api.dll")]
         static extern _LTRNative.LTRERROR LTR210_GetLastWordInterval(ref TLTR210 hnd, out uint interval);
         [DllImport("ltr210api.dll")]
@@ -233,16 +241,21 @@ namespace ltrModulesNet
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct CBR_COEF
         {
-            float   Offset; /**< 15-битный код смещения */
-            float   Scale;  /**< Коэффициент шкалы */
+            float   _offset; 
+            float   _scale; 
+
+            public float Offset { get { return _offset; } } /**< 15-битный код смещения */
+            public float Scale { get { return _scale; } }  /**< Коэффициент шкалы */
         } 
 
         /** Параметры БИХ-фильтра. */
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct AFC_IIR_COEF
         {
-            double R; /**< Сопротивление эквивалентной цепи фильтра */
-            double C; /**< Емкость эквивалентной цепи фильтра */
+            double _R;
+            double _C;
+            public double R { get { return _R; } }  /**< Сопротивление эквивалентной цепи фильтра */
+            public double C { get { return _C; } }  /**< Емкость эквивалентной цепи фильтра */
         } 
 
         /** Информация о модуле */
@@ -291,6 +304,24 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
             uint[] reserved2;
 
+
+            public CHANNEL_CONFIG (bool Enabled, AdcRanges Range, ChModes Mode, 
+                                    double SyncLvlL, double SyncLvlH, DigBitModes DigBitMode)
+            {
+                _enabled = Enabled;
+                _range = Range;
+                _mode = Mode;
+                _sync_lvl_l = SyncLvlL;
+                _sync_lvl_h = SyncLvlH;
+                _dig_bit_mode = DigBitMode;
+                reserved = new byte[4];
+                for (int i = 0; i < reserved.Length; i++)
+                    reserved[i] = 0;
+                reserved2 = new uint[10];
+                for (int i = 0; i < reserved2.Length; i++)
+                    reserved2[i] = 0;
+            }
+
             /* Признак, разрешен ли сбор по данному каналу  */
             public bool Enabled { set { _enabled = value; } get { return _enabled; } }
             /* Установленный диапазон --- константа из #e_LTR210_ADC_RANGE */
@@ -324,6 +355,7 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 39)]
             uint[] Reserved; 
 
+
             /** Настройки каналов АЦП */
             public CHANNEL_CONFIG[] Ch { get { return _ch; } set { _ch = value; } }
             /** Размер точек на канал в кадре при покадровом сборе */
@@ -356,6 +388,14 @@ namespace ltrModulesNet
             {
                 return LTR210_FillAdcFreq(ref this, freq, flags, out set_freq);
             }
+
+            public _LTRNative.LTRERROR FillFrameFreq(double freq, out double set_freq)
+            {
+                return LTR210_FillFrameFreq(ref this, freq, out set_freq);
+            }
+
+            public double AdcFreq { set { LTR210_FillAdcFreq(ref this, value, 0, IntPtr.Zero); } }
+            public double FrameFreq { set { LTR210_FillFrameFreq(ref this, value, IntPtr.Zero); } }
         }
 
         /** Параметры состояния модуля */
@@ -417,6 +457,14 @@ namespace ltrModulesNet
             AdcRanges _range;       
             byte Reserved;
 
+            public DATA_INFO(uint val)
+            {
+                _dig_bit_state = (byte)(val & 0xFF);
+                _ch = (byte)((val >> 8) & 0xFF);
+                _range = (AdcRanges)((val >> 16) & 0xFF);
+                Reserved = (byte)(val >> 24);
+            }
+
             /* Значение дополнительного бита, передаваемого вместе с потоком данных */
             public byte DigBitState { get { return (byte)(_dig_bit_state & 1); } }
             /** Номер канала, которому соответствует принятое слово
@@ -441,6 +489,9 @@ namespace ltrModulesNet
             public StatusFlags Flags { get { return _flags; } }
         }
 
+        /* Тип функции обратного вызова для индикации прогресса загрузку */
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void LOAD_PROGR_CB(IntPtr cb_data, ref TLTR210 hnd, uint doneSize, uint fullSize);
 
 
 
@@ -507,17 +558,32 @@ namespace ltrModulesNet
 
         public _LTRNative.LTRERROR LoadFPGA()
         {
-            return LTR210_LoadFPGA(ref hnd, "", IntPtr.Zero, IntPtr.Zero);
+            return LoadFPGA("");
+        }
+
+        public _LTRNative.LTRERROR LoadFPGA(string FileName, LOAD_PROGR_CB cb, IntPtr data)
+        {
+            return LTR210_LoadFPGA(ref hnd, FileName, cb, data);
+        }
+
+        public _LTRNative.LTRERROR LoadFPGA(string FileName, LOAD_PROGR_CB cb)
+        {
+            return LTR210_LoadFPGA(ref hnd, FileName, cb, IntPtr.Zero);
+        }
+
+        public _LTRNative.LTRERROR LoadFPGA(LOAD_PROGR_CB cb, IntPtr data)
+        {
+            return LoadFPGA("", cb, data);
+        }
+
+        public _LTRNative.LTRERROR LoadFPGA(LOAD_PROGR_CB cb)
+        {
+            return LoadFPGA("", cb, IntPtr.Zero);
         }
 
         public _LTRNative.LTRERROR SetADC()
         {
             return LTR210_SetADC(ref hnd);
-        }
-
-        public _LTRNative.LTRERROR FillAdcFreq(double freq, out double setFreq)
-        {
-            return hnd.Cfg.FillAdcFreq(freq, 0, out setFreq);
         }
 
         public _LTRNative.LTRERROR Start()
@@ -562,7 +628,43 @@ namespace ltrModulesNet
                                                out FRAME_STATUS frame_status,
                                                DATA_INFO[] data_info)
         {
-            return LTR210_ProcessData(ref hnd, src, dest, ref size, flags, out frame_status, data_info);
+            /* напрямую нельзя передать массив структур. нужно либо через спец. методы маршалинга, либо через 
+             * эквивалентный массив 32-битных слов, как сделано тут */
+            uint[] info = new uint[size];
+            _LTRNative.LTRERROR err = LTR210_ProcessData(ref hnd, src, dest, ref size, flags, out frame_status, info);
+            if (err == _LTRNative.LTRERROR.OK)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    if (data_info.Length > i)
+                        data_info[i] = new DATA_INFO(info[i]);
+                }
+            }
+            return err;
+        }
+
+        /* Версия функции, предназначенная в первую очередь для LabView, так как LabView медленно работает
+         * со структурами C#, то сделан вариант, где все поля доп. информации передаются отдельным массивом */
+        public _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest, ref int size, ProcFlags flags,
+                                               out FRAME_STATUS frame_status,
+                                               byte[] digBits, byte[] ch, AdcRanges[] range)
+        {
+            uint[] info = new uint[size];
+            _LTRNative.LTRERROR err = LTR210_ProcessData(ref hnd, src, dest, ref size, flags, out frame_status, info);
+            if (err == _LTRNative.LTRERROR.OK)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    DATA_INFO cur_info = new DATA_INFO(info[i]);
+                    if (digBits.Length > i)
+                        digBits[i] = (byte)(cur_info.DigBitState & 1);
+                    if (ch.Length > i)
+                        ch[i] = cur_info.Ch;
+                    if (range.Length > i)
+                        range[i] = cur_info.Range;
+                }
+            }
+            return err;
         }
 
         public _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest, ref int size, ProcFlags flags,

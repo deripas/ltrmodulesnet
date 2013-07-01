@@ -22,13 +22,19 @@ namespace ltr210_console
         /* Если за данное время не придет ни одного слова от модуля, то считаем его неисаравным */
         const int KEEPALIVE_TOUT = 10000;
 
+        static void loadProgr(IntPtr cb_data, ref ltr210api.TLTR210 hnd, uint doneSize, uint fullSize)
+        {
+            Console.Write(".");            
+        }
+
+
 
         static void Main(string[] args)
         {
             /* LTR210_Init() вызывается уже в конструкторе */
             ltr210api hltr210 = new ltr210api();
-            /* отрываем модуль. есть вариант как с только со слотам, так и с серийным крейта и слотом 
-             *  + полный */
+            /* Отрываем модуль. Есть вариант функции как с только с номером слота, 
+             * так и с серийным крейта и слотом + полный */
             _LTRNative.LTRERROR err = hltr210.Open(5);
             if (err != _LTRNative.LTRERROR.OK)
             {
@@ -47,7 +53,9 @@ namespace ltr210_console
                 if (hltr210.FPGAIsLoaded() != _LTRNative.LTRERROR.OK)
                 {
                     Console.WriteLine("Начало записи прошивки модуля");
-                    err = hltr210.LoadFPGA();
+                    /* Загружаем прошивку из dll, используем callback для отображения прогресса загрузки */
+                    err = hltr210.LoadFPGA(loadProgr);
+                    Console.WriteLine("");
                     if (err != _LTRNative.LTRERROR.OK)
                     {
                         Console.WriteLine("Не удалось загрузить прошивку ПЛИС. Ошибка {0}: {1}",
@@ -111,11 +119,10 @@ namespace ltr210_console
 
                     if (err == _LTRNative.LTRERROR.OK)
                     {
-                        _LTRNative.LTRERROR stop_err;
+                        
                         uint[] wrds = new uint[hltr210.State.RecvFrameSize];
-                        /* метки приходят на кждое слово, а не на отсчет */
-                        uint[] marks = new uint[hltr210.State.RecvFrameSize];
                         double[] data = new double[hltr210.State.RecvFrameSize];
+                        ltr210api.DATA_INFO[] info = new ltr210api.DATA_INFO[hltr210.State.RecvFrameSize];
                         int frames_cnt = 0;
 
                         while ((frames_cnt < READ_FRAMES) && (err == _LTRNative.LTRERROR.OK))
@@ -129,10 +136,10 @@ namespace ltr210_console
                                 switch (evt)
                                 {
                                     case ltr210api.RecvEvents.SOF:
-                                        /* Пришел новый кадр. Для простоты принимаем
-                                         * его за один Recv, однако при желании можно
-                                         * разбить прием на несколько блоков */
-                                        recvCnt = hltr210.Recv(wrds, marks, hltr210.State.RecvFrameSize, RECV_TOUT);
+                                        /* Пришел новый кадр. Для простоты принимаем его за один Recv, однако при желании можно
+                                         * разбить прием на несколько блоков.
+                                         * Примечание: в С# есть две версии функции Recv() - с метками и без */
+                                        recvCnt = hltr210.Recv(wrds, hltr210.State.RecvFrameSize, RECV_TOUT);
                                         if (recvCnt < 0)
                                         {
                                             err = (_LTRNative.LTRERROR)recvCnt;
@@ -152,7 +159,7 @@ namespace ltr210_console
                                             /* переводим данные в Вольты */
                                             err = hltr210.ProcessData(wrds, data, ref recvCnt,
                                                                       ltr210api.ProcFlags.VOLT,
-                                                                      out frame_st);
+                                                                      out frame_st, info);
                                             if (err != _LTRNative.LTRERROR.OK)
                                             {
                                                 Console.WriteLine("Ошибка обработки данных! Ошибка {0}: {1}",
@@ -198,17 +205,11 @@ namespace ltr210_console
                             {
                                 Console.WriteLine("Ошибка при ожидании данных от модуля! Ошибка {0}: {1}",
                                                     err, ltr210api.GetErrorString(err));
-                            }
-                            
+                            }                           
                         }
 
-
-
-
-
-
-
-                        stop_err = hltr210.Stop();
+                        /* Останов сбора по выходу из цикла */
+                        _LTRNative.LTRERROR stop_err = hltr210.Stop();
                         if (stop_err != _LTRNative.LTRERROR.OK)
                         {
                             Console.WriteLine("Сбор остановлен с ошибокй. Ошибка {0}: {1}",
@@ -217,9 +218,6 @@ namespace ltr210_console
                                 err = stop_err;
                         }
                     }
-        
-
-
 
                 }             
 
