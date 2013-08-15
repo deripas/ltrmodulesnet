@@ -112,6 +112,16 @@ namespace ltr210_console
 
                     if (err == _LTRNative.LTRERROR.OK)
                     {
+                        err = hltr210.MeasAdcZeroOffset();
+                        if (err != _LTRNative.LTRERROR.OK)
+                        {
+                            Console.WriteLine("Не удалось выполнить измерение нуля: Ошибка {0}: {1}",
+                                                err, ltr210api.GetErrorString(err));
+                        }
+                    }
+
+                    if (err == _LTRNative.LTRERROR.OK)
+                    {
                         err = hltr210.Start();
                         if (err != _LTRNative.LTRERROR.OK)
                         {
@@ -159,9 +169,11 @@ namespace ltr210_console
                                         else
                                         {
                                             ltr210api.FRAME_STATUS frame_st;
-                                            /* переводим данные в Вольты */
+                                            /* переводим данные в Вольты  с коррекцией нуля и АЧХ */
                                             err = hltr210.ProcessData(wrds, data, ref recvCnt,
-                                                                      ltr210api.ProcFlags.VOLT,
+                                                                      ltr210api.ProcFlags.VOLT | 
+                                                                      ltr210api.ProcFlags.AFC_COR |
+                                                                      ltr210api.ProcFlags.ZERO_OFFS_COR,
                                                                       out frame_st, info);
                                             if (err != _LTRNative.LTRERROR.OK)
                                             {

@@ -47,6 +47,10 @@ namespace ltrModulesNet
                                                              double[] dest, ref int size, ProcFlags flags,
                                                              out FRAME_STATUS frame_status,
                                                              uint[] data_info);
+
+        [DllImport("ltr210api.dll")]
+        static extern _LTRNative.LTRERROR LTR210_MeasAdcZeroOffset(ref TLTR210 hnd, uint flags);
+
         [DllImport("ltr210api.dll")]
         static extern _LTRNative.LTRERROR LTR210_GetLastWordInterval(ref TLTR210 hnd, out uint interval);
         [DllImport("ltr210api.dll")]
@@ -198,6 +202,10 @@ namespace ltrModulesNet
             /** Признак, что необходимо выполнить коррекцию АЧХ на основании записанных
                 во Flash-памяти модуля коэффициентов */
             AFC_COR = 0x0002,
+            /** Признак, что необходимо выполнить дополнительную коррекцию нуля с помощью
+                значений из State.AdcZeroOffset, которые могут быть измерены с помощью
+                функции LTR210_MeasAdcZeroOffset() */
+            ZERO_OFFS_COR = 0x0004,
             /** По умолчанию LTR210_ProcessData() предполагает, что ей на обработку
                 передаются все принятые данные и проверяет непрерывность счетчика не только
                 внутри переданного блока данных, но и между вызовами.
@@ -408,7 +416,9 @@ namespace ltrModulesNet
             double _adc_freq;
 
             double _frame_freq;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR210_CHANNEL_CNT)]
+            double[] _adc_zero_offset;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             uint[] Reserved; /**< Резервные поля */
 
             /** Признак, запущен ли сбор данных */
@@ -422,6 +432,8 @@ namespace ltrModulesNet
                 #LTR210_SYNC_MODE_PERIODIC (устанавливается после вызова
                 LTR210_SetADC()) */
             public double FrameFreq { get { return _frame_freq; } }
+
+            public double[] AdcZeroOffset { get { return _adc_zero_offset; } }
         }
 
         /** Описатель модуля */
@@ -676,6 +688,16 @@ namespace ltrModulesNet
         public _LTRNative.LTRERROR GetLastWordInterval(out uint interval)
         {
             return LTR210_GetLastWordInterval(ref hnd, out interval);
+        }
+
+        public _LTRNative.LTRERROR MeasAdcZeroOffset(uint flags)
+        {
+            return LTR210_MeasAdcZeroOffset(ref hnd, flags);
+        }
+
+        public _LTRNative.LTRERROR MeasAdcZeroOffset()
+        {
+            return MeasAdcZeroOffset(0);
         }
 
         public _LTRNative.LTRERROR LoadCbrCoef()
