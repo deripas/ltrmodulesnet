@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ltrModulesNet
 {
-    public class _ltr24api
+    public class ltr24api
     {
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_Init(ref TLTR24 module);
@@ -33,7 +33,7 @@ namespace ltrModulesNet
                                   UInt64[] unixtime);
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_ProcessData(ref TLTR24 hnd, uint[] src_data, double[] dst_data, ref int size,
-                  bool calib, bool volt, bool[] ovload);
+                  ProcFlags flags, bool[] ovload);
         [DllImport("ltr24api.dll")]
         public static extern IntPtr LTR24_GetErrorString(int err);
       
@@ -49,9 +49,12 @@ namespace ltrModulesNet
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_FindFrameStart(ref TLTR24 module, uint[] data, int size, out int index);
 
+        public const uint LTR24_VERSION_CODE = 0x02000000;
         public const int LTR24_CHANNEL_NUM = 4;
         public const int LTR24_RANGE_NUM = 2;
+        public const int LTR24_ICP_RANGE_NUM = 2;
         public const int LTR24_FREQ_NUM = 16;
+        public const int LTR24_I_SRC_VALUE_NUM = 2;
         public const int LTR24_NAME_SIZE = 8;
         public const int LTR24_SERIAL_SIZE = 16;
 
@@ -81,7 +84,15 @@ namespace ltrModulesNet
         public enum AdcRange : byte 
         {
             Range_2=0,
-            Range_10=1
+            Range_10=1,
+            ICP_Range_1 = Range_2,
+            ICP_Range_5 = Range_10
+        }
+
+        public enum ISrcValues : byte
+        {
+            I_2_86 = 0,
+            I_10   = 1
         }
 
         /* Разрядность данных. */
@@ -91,22 +102,60 @@ namespace ltrModulesNet
             Format24=1
         }
 
+        [Flags]
+        public enum ProcFlags : uint
+        {
+            Calibr = 0x00000001,
+            Volt = 0x00000002,
+            AfcCor = 0x00000004,
+            NoncontData = 0x00000100
+        }
+
+
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Channel
+        public struct AFC_IIR_COEF
+        {
+            double _a0;
+            double _a1;
+            double _b0;
+
+            public double a0 { get { return a0; } }
+            public double a1 { get { return a1; } }
+            public double b0 { get { return b0; } }
+        };
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct AFC_COEFS
+        {
+            double _afc_freq;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM * LTR24_RANGE_NUM)]
+            double[] _fir_coef;
+            AFC_IIR_COEF _afc_iir_coef;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct CHANNEL_MODE
         {
             bool _Enable;
             AdcRange _Range;
             bool _AC;
+            bool _ICP;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            uint[] Reserved;
 
-            public Channel(bool enable, AdcRange range, bool ac)
+            public CHANNEL_MODE(bool enable, AdcRange range, bool ac, bool icp)
             {
-                _Enable = enable; _Range = range; _AC = ac;
+                _Enable = enable; _Range = range; _AC = ac; _ICP = icp;
+                Reserved = new uint[4];
+                for (int i = 0; i < Reserved.Length; i++)
+                    Reserved[i] = 0;
             }
 
             public AdcRange Range { get { return _Range; } set { _Range = value; } }
             public bool Enable { get { return _Enable; } set { _Enable = value; } }
-            public bool AC { get { return _AC; } set { _AC = value; } }            
-
+            public bool AC { get { return _AC; } set { _AC = value; } }
+            public bool ICPMode { get { return _ICP; } set { _ICP = value; } }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -117,21 +166,32 @@ namespace ltrModulesNet
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Info
+        public struct INFO
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_NAME_SIZE)]
             char[] _name;  
             
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_NAME_SIZE)]
-            public char[] _serial; 
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_SERIAL_SIZE)]
+            char[] _serial; 
             byte _VerPLD;
+            bool _SupportICP;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+            uint[] Reserved;
+
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM*LTR24_RANGE_NUM*LTR24_FREQ_NUM)]
             CbrCoef[] CalibCoef;
+            AFC_COEFS _AfcCoef;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM * LTR24_I_SRC_VALUE_NUM)]
+            double[] _ISrcVals;
 
             public string Name { get { return new string(_name).TrimEnd('\0'); } }
             public string Serial { get { return new string(_serial).TrimEnd('\0'); } }
             public byte VerPLD { get { return _VerPLD; } }
+            public bool SupportICP { get { return _SupportICP; } }
+
+            public double getISrcValue(int ch, ISrcValues val) {return _ISrcVals[ch*LTR24_I_SRC_VALUE_NUM + (int)val];}
         };
 
 
@@ -139,34 +199,53 @@ namespace ltrModulesNet
         public struct TLTR24
         {
             int Size;
-            public _LTRNative.TLTR Channel;
-            public bool Run;
-            public FreqCode ADCFreqCode;
-            public double ADCFreq;
-            public DataFormat DataFmt;
-            public bool ZeroMode;
+            _LTRNative.TLTR _channel;
+            bool _Run;
+            FreqCode _ADCFreqCode;
+            double _ADCFreq;
+            DataFormat _DataFmt;
+            ISrcValues _ISrcValue;            
+            bool _TestMode;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            uint[] Reserved;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM)]
-            public Channel[] ChannelMode;
+            CHANNEL_MODE[] _ChannelMode;
 
-            public Info ModuleInfo;
+            INFO _ModuleInfo;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM*LTR24_RANGE_NUM*LTR24_FREQ_NUM)]
             public CbrCoef[] CalibCoef;
-            public IntPtr    Reserved;
+            public AFC_COEFS AfcCoef;
+            IntPtr Internal;
+
+            
+            public bool Run { get { return _Run; } }
+            public FreqCode ADCFreqCode { get { return _ADCFreqCode; } set { _ADCFreqCode = value; } }
+            public double ADCFreq { get { return _ADCFreq; } }
+            public DataFormat DataFmt { get { return _DataFmt; } set { _DataFmt = value; } }
+            public ISrcValues ISrcValue { get { return _ISrcValue; } set { _ISrcValue = value; } }
+            public bool TestMode { get { return _TestMode; } set { _TestMode = value; } }
+            public CHANNEL_MODE[] ChannelMode { get { return _ChannelMode; } set { _ChannelMode = value; } }
+            public INFO ModuleInfo { get { return _ModuleInfo; } }
+                        
+            public _LTRNative.TLTR Channel { get { return _channel; } }
+            
         };
 
 
         public TLTR24 module;
 
 
-        public _ltr24api()
+        public ltr24api()
         {
             LTR24_Init(ref module);
         }
 
         /* в финализаторе убеждаемся, что остановили поток и 
          * закрыли модуль */
-        ~_ltr24api()
+        ~ltr24api()
         {
             if (IsOpened() == _LTRNative.LTRERROR.OK)
             {
@@ -201,6 +280,11 @@ namespace ltrModulesNet
         public virtual _LTRNative.LTRERROR IsOpened()
         {
             return LTR24_IsOpened(ref module);
+        }
+
+        public virtual _LTRNative.LTRERROR GetConfig()
+        {
+            return LTR24_GetConfig(ref module);
         }
 
         public virtual _LTRNative.LTRERROR SetADC()
@@ -245,9 +329,9 @@ namespace ltrModulesNet
             return LTR24_RecvEx(ref module, buffer, tmark, size, timeout, unixtime);
         }
 
-        public virtual _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest, ref int size, bool calib, bool volt, bool[] ovload)
+        public virtual _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest, ref int size, ProcFlags flags, bool[] ovload)
         {
-            return LTR24_ProcessData(ref module, src, dest, ref size, calib, volt, ovload);
+            return LTR24_ProcessData(ref module, src, dest, ref size, flags, ovload);
         }
 
         public virtual _LTRNative.LTRERROR StoreMcs()
@@ -313,13 +397,19 @@ namespace ltrModulesNet
             set { module.DataFmt = value; }
         }
 
-        public bool ZeroMode
+        public ISrcValues ISrcValue
         {
-            get { return module.ZeroMode; }
+            get { return module.ISrcValue; }
+            set { module.ISrcValue = value; }
+        }
+
+        public bool TestMode
+        {
+            get { return module.TestMode; }
             set
             {
                 if (!module.Run)
-                    module.ZeroMode = value;
+                    module.TestMode = value;
                 else
                 {
                     if (SetZeroMode(value) != _LTRNative.LTRERROR.OK)
@@ -328,12 +418,12 @@ namespace ltrModulesNet
             }
         }
 
-        public Channel[] ChannelMode
+        public CHANNEL_MODE[] ChannelMode
         {
             get { return module.ChannelMode; }
         }
 
-        public Info ModuleInfo
+        public INFO ModuleInfo
         {
             get {return module.ModuleInfo;}
         }

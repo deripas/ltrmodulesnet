@@ -552,6 +552,9 @@ namespace ltrModulesNet
             LTR24_ERR_MCS_DIFF_MID      = -10128,
             LTR24_ERR_BAD_SYN_IO        = -10129,
             LTR24_ERR_OVERFLOW          = -10130,
+            LTR24_ERR_UNSUP_FLASH_FMT   = -10131,
+            LTR24_ERR_INVAL_I_SRC_VALUE = -10132,
+            LTR24_ERR_UNSUP_ICP_MODE    = -10133,
                       
             //LTR032
             LTR032_ERR_NO_MEM           = -10300,
