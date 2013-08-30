@@ -112,7 +112,7 @@ namespace ltrModulesNet
         }
 
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct AFC_IIR_COEF
         {
             double _a0;
@@ -124,7 +124,7 @@ namespace ltrModulesNet
             public double b0 { get { return b0; } }
         };
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct AFC_COEFS
         {
             double _afc_freq;
@@ -134,7 +134,7 @@ namespace ltrModulesNet
         }
 
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct CHANNEL_MODE
         {
             bool _Enable;
@@ -158,14 +158,14 @@ namespace ltrModulesNet
             public bool ICPMode { get { return _ICP; } set { _ICP = value; } }
         };
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct CbrCoef
         {
             float Offset;
             float Scale;
         };
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct INFO
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_NAME_SIZE)]
@@ -195,7 +195,7 @@ namespace ltrModulesNet
         };
 
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TLTR24
         {
             int Size;
@@ -427,5 +427,11 @@ namespace ltrModulesNet
         {
             get {return module.ModuleInfo;}
         }
-    }	
+    }
+
+    //дл€ совместимости со старым объ€влением
+    public class _ltr24api : ltr24api
+    {
+
+    }
 }
