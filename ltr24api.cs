@@ -334,6 +334,11 @@ namespace ltrModulesNet
             return LTR24_ProcessData(ref module, src, dest, ref size, flags, ovload);
         }
 
+        public virtual _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest, ref int size, ProcFlags flags)
+        {
+            return LTR24_ProcessData(ref module, src, dest, ref size, flags, null);
+        }
+
         public virtual _LTRNative.LTRERROR StoreMcs()
         {
             return LTR24_StoreMcs(ref module);
@@ -421,11 +426,26 @@ namespace ltrModulesNet
         public CHANNEL_MODE[] ChannelMode
         {
             get { return module.ChannelMode; }
+            set { module.ChannelMode = value; }
         }
 
         public INFO ModuleInfo
         {
             get {return module.ModuleInfo;}
+        }
+
+        public int EnabledChannelCnt
+        {
+            get
+            {
+                int ch_cnt = 0;
+                for (int i = 0; i < LTR24_CHANNEL_NUM; i++)
+                {
+                    if (ChannelMode[i].Enable)
+                        ch_cnt++;
+                }
+                return ch_cnt;
+            }
         }
     }
 
