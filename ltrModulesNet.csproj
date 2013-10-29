@@ -142,9 +142,8 @@
     <Compile Include="ltr27api.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ltr27apiLabView.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ltr27apiLabView_old.cs" />
+    <Compile Include="ltr27api_old.cs" />
     <Compile Include="ltr34api.cs">
       <SubType>Code</SubType>
     </Compile>

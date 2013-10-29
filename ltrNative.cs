@@ -8,6 +8,9 @@ namespace ltrModulesNet
     /// </summary>
     public class _LTRNative
     {
+        public const int COMMENT_LENGTH = 256;
+
+
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TLTR
         {
@@ -50,6 +53,98 @@ namespace ltrModulesNet
             public UInt16[] digout;          // конфигурация выходов (LTR_DIGOUT_...)
             public UInt16 digout_en;          // разрешение выходов DIGOUT1, DIGOUT2
         }
+
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct TDESCRIPTION_MODULE								//
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] CompanyName_;                                  //
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] DeviceName_;                                   // название изделия
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] SerialNumber_;                                 // серийный номер изделия
+            byte Revision_;                                       // ревизия изделия
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
+            char[] Comment_;
+
+            public string CompanyName { get { return new string(CompanyName_).TrimEnd('\0'); } }
+            public string DeviceName { get { return new string(DeviceName_).TrimEnd('\0'); } }
+            public string SerialNumber { get { return new string(SerialNumber_).TrimEnd('\0'); } }
+            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public byte Revision { get { return Revision_; } }
+        };
+        // описание процессора и програмного обеспечения
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct TDESCRIPTION_CPU									//
+        {																//
+            byte Active_;                                         // флаг достоверности остальных полей структуры
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] Name_;                                         // название            
+            double ClockRate_;                                    //
+            uint FirmwareVersion_;                                //
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
+            char[] Comment_;
+
+            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
+            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public bool Active { get { return Active_!=0; } }
+            public double ClockRate { get { return ClockRate_; } }
+            public uint FirmwareVersion { get { return FirmwareVersion_; } }
+        } ;
+        // описание плис
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct TDESCRIPTION_FPGA
+        {																//
+            byte Active_;                                         // флаг достоверности остальных полей структуры
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] Name_;                                         // название
+            double ClockRate_;                                    //
+            uint FirmwareVersion_;                                //
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
+            char[] Comment_;
+
+            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
+            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public bool Active { get { return Active_!=0; } }
+            public double ClockRate { get { return ClockRate_; } }
+            public uint FirmwareVersion { get { return FirmwareVersion_; } }
+        } ;
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct TDESCRIPTION_INTERFACE							//
+        {																//
+            byte Active_;                                         // флаг достоверности остальных полей структуры
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] Name_;                                         // название
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
+            char[] Comment_;
+
+            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
+            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public bool Active { get { return Active_!=0; } }
+        };
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct TDESCRIPTION_MEZZANINE							//
+        {																//
+            byte Active_;                                         // флаг достоверности остальных полей структуры
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] Name_;                                         // название изделия
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] SerialNumber_;                                 // серийный номер изделия            
+            byte Revision_;                                       // ревизия изделия
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            double[] Calibration_;                                       // корректировочные коэффициенты
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
+            char[] Comment_;
+
+            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
+            public string SerialNumber { get { return new string(SerialNumber_).TrimEnd('\0'); } }
+            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public bool Active { get { return Active_!=0; } }
+            public byte Revision { get { return Revision_; } }
+            public double[] Calibration { get { return Calibration_; } }
+        };                  
         
         // описание крейта (для TCRATE_INFO)
         public enum en_CrateType
@@ -178,6 +273,8 @@ namespace ltrModulesNet
             ERROR_FPGA_IS_NOT_LOADED     = -59,    /* Прошивка ПЛИС не загружена */
             ERROR_FLASH_INVALID_ADDR     = -60,    /* Неверный адрес Flash-памяти */
             ERROR_FLASH_WAIT_RDY_TOUT    = -61,    /* Превышен таймаут ожидания завершения записи/стирания Flash-памяти */
+            ERROR_FIRSTFRAME_NOTFOUND    = -62,    /* First frame in card data stream not found */
+            ERROR_CARDSCONFIG_UNSUPPORTED = -63,
 
             LTR010_ERROR_GET_ARRAY        = -100, /*Ошибка выполнения команды GET_ARRAY.*/
             LTR010_ERROR_PUT_ARRAY        = -101, /*Ошибка выполнения команды PUT_ARRAY.*/
@@ -615,6 +712,18 @@ namespace ltrModulesNet
             REALTIME_PRIORITY_CLASS = 0x100,
             BELOW_NORMAL_PRIORITY_CLASS = 0x4000,
             ABOVE_NORMAL_PRIORITY_CLASS = 0x8000
+        }
+
+        [Flags]
+        public enum OpenInFlags : uint
+        {
+            REOPEN = 1
+        }
+
+        [Flags]
+        public enum OpenOutFlags : uint
+        {
+            REOPEN = 1
         }
 
 
