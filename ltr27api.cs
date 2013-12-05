@@ -35,6 +35,9 @@ namespace ltrModulesNet
         static extern _LTRNative.LTRERROR LTR27_SetConfig (ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
+        static extern _LTRNative.LTRERROR LTR27_StoreConfig(ref TLTR27 module);
+
+        [DllImport("ltr27api.dll")]
         static extern _LTRNative.LTRERROR LTR27_ADCStart (ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
@@ -204,6 +207,11 @@ namespace ltrModulesNet
 		{			
 			return LTR27_SetConfig(ref module);
 		}
+
+        public virtual _LTRNative.LTRERROR StoreConfig()
+        {
+            return LTR27_StoreConfig(ref module);
+        }
 
 		
 		public virtual _LTRNative.LTRERROR ADCStart ()
