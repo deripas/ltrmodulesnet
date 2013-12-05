@@ -30,7 +30,6 @@ namespace ltrModulesNet
         public double Fs;     // Частота дискретизации АЦП
 
 
-
         public uint StartMarks { get { return (module.Channel.tmark >> 16) & 0xFFFF; } }
         public uint SecondMarks { get { return module.Channel.tmark & 0xFFFF; } }
 
@@ -195,6 +194,14 @@ namespace ltrModulesNet
             SetConfigToModule();
             _LTRNative.LTRERROR res = LTR212_CreateLChannel(PhysChannel, Scale);
             GetConfigFromModule(); 
+            return res;
+        }
+
+        public override _LTRNative.LTRERROR CreateLChannel2(uint PhysChannel, uint Scale, uint BridgeType)
+        {
+            SetConfigToModule();
+            _LTRNative.LTRERROR res = LTR212_CreateLChannel2(PhysChannel, Scale, BridgeType);
+            GetConfigFromModule();
             return res;
         }
 
