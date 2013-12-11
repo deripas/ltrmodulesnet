@@ -34,6 +34,12 @@ namespace ltrModulesNet
         [DllImport("ltr11api.dll")]
         public static extern _LTRNative.LTRERROR LTR11_Stop(ref TLTR11 module);
 
+        [DllImport("ltr11api.dll")]
+        public static extern int LTR11_Recv(ref TLTR11 hnd, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля
+
+        [DllImport("ltr11api.dll")]
+        public static extern byte LTR11_CreateLChannel(byte phy_ch, byte mode, byte gain); 
+
         // функции вспомагательного характера
         [DllImport("ltr11api.dll")]
         public static extern string LTR11_GetErrorString(int ErrorCode);   
@@ -54,6 +60,21 @@ namespace ltrModulesNet
         public const int LTR11_ADCMODE_TEST_U1N    = 0x05;
         public const int LTR11_ADCMODE_TEST_U2N    = 0x06;
         public const int LTR11_ADCMODE_TEST_U2P    = 0x07;
+
+
+        /* Входные дипазоны каналов */
+        public const byte LTR11_CHGANE_10000MV    = 0; /* +-10 В (10000 мВ) */
+        public const byte LTR11_CHGANE_2500MV     = 1; /* +-2.5 В (2500 мВ) */
+        public const byte LTR11_CHGANE_625MV      = 2; /* +-0.625 В (625 мВ) */
+        public const byte LTR11_CHGANE_156MV      = 3; /* +-0.156 В (156 мВ) */
+
+        /* Режимы работы каналов */
+        public const byte LTR11_CHMODE_16CH      = 0;     /* 16-канальный */
+        public const byte LTR11_CHMODE_32CH      = 1;     /* 32-канальный */
+
+        public const byte LTR11_CHMODE_DIFF      = LTR11_CHMODE_16CH; /* диф. подкл., 16 каналов */
+        public const byte LTR11_CHMODE_COMM      = LTR11_CHMODE_32CH; /* общая земля, 32 каналов */
+        public const byte LTR11_CHMODE_ZERO      = 2;     /* измерение нуля */
  
         
         
@@ -194,7 +215,7 @@ namespace ltrModulesNet
         public virtual int Recv(uint[] data,
                 uint[] tmark, uint size, uint timeout)
         {
-            return  _LTRNative.LTR_Recv(ref module.Channel, data, tmark, size, timeout);
+            return LTR11_Recv(ref module, data, tmark, size, timeout); //Прием данных от модуля
         }
 		
 		public virtual _LTRNative.LTRERROR ProcessData (uint [] src, double [] dest, 
@@ -222,6 +243,11 @@ namespace ltrModulesNet
         public virtual string GetErrorString(int err)
         {
             return _ltr11api.LTR11_GetErrorString(err);
+        }
+
+        public static byte CreateLChannel(byte phy_ch, byte mode, byte gain)
+        {
+            return LTR11_CreateLChannel(phy_ch, mode, gain);
         }
 	}
 }
