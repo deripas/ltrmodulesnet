@@ -35,7 +35,7 @@ namespace ltrModulesNet
             if (res == LTRERROR.OK)
             {
                 for (int i = 0; (i < csn.Length) && (i < module.csn.Length); i++)
-                    csn[i] = module.csn[i];
+                    csn[i] = (byte)module.csn[i];
             }
             return res;
         }

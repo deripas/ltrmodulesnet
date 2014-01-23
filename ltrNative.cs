@@ -22,6 +22,25 @@ namespace ltrModulesNet
             public uint flags;                      // флаги состояния канала				
             public uint tmark;						// время синхронизации					
             public UIntPtr Internal;                // указатель на канал
+
+
+            public string Serial
+            {
+                get 
+                {
+                    char[] arr = new char[16];
+                    for (int i = 0; i < 16; i++)
+                        arr[i] = (char)csn[i];
+                    return new string(arr).TrimEnd('\0'); 
+                }
+                set
+                {
+                    char[] arr = value.ToCharArray();
+                    for (int i = 0; i < 16; i++)
+                        csn[i] = i < arr.Length ? (byte)arr[i] : (byte)0;
+                }
+            }
+        
         };
         // Информация о типе крейта
         public struct TCRATE_INFO
@@ -144,7 +163,17 @@ namespace ltrModulesNet
             public bool Active { get { return Active_!=0; } }
             public byte Revision { get { return Revision_; } }
             public double[] Calibration { get { return Calibration_; } }
-        };                  
+        };   
+        
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct TLTR_SETTINGS							
+        {			
+            ushort _size;
+            byte   _autorun_ison;
+            public void Init() { _size = 4; }
+            //public ushort Size { get { return _size; } set { _size = value; } }
+            public bool AutorunIsOn { get { return _autorun_ison!=0; } set { _autorun_ison = (byte)(value ? 1 : 0); } }
+        };
         
         // описание крейта (для TCRATE_INFO)
         public enum en_CrateType
@@ -876,6 +905,10 @@ namespace ltrModulesNet
         public static extern LTRERROR LTR_ServerShutdown(ref TLTR ltr);
 
 
+        [DllImport("ltrapi.dll")]
+        public static extern LTRERROR LTR_PutSettings(ref TLTR ltr, ref TLTR_SETTINGS settings);
+
+
 
 
         // расшифровка ошибки
@@ -1068,6 +1101,11 @@ namespace ltrModulesNet
 		{
 			return LTR_Recv(ref module, Buff, tmark, Size, Timeout);
 		}
+
+        public LTRERROR PutSettings(ref TLTR_SETTINGS settings)
+        {
+            return LTR_PutSettings(ref module, ref settings);
+        }
 
 
 

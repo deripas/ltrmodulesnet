@@ -10,13 +10,17 @@ namespace ltr27_open_ex
     class ltr27_open_ex
     {
         /* Номер слота в крейте, где вставлен модуль */
-        const int SLOT = 5;
+        const int SLOT = 15;
         /* количество отсчетов на каждый мезонин, принимаемых за раз (блок) */
         const uint RECV_FRAMES = 4;
         /* количество принятых блоков по RECV_FRAMES отсчетов */
         const uint RECV_BLOCK_CNT = 3;
         /* таймаут в мс на прием блока */
         const uint RECV_BLOCK_TOUT = 10000;
+
+        const bool stop_module = false;
+        const bool store_config = true;
+        const bool autorun = false;
 
         static _LTRNative.LTRERROR RecvData(ltr27api hltr27, uint[] data, uint size)
         {
@@ -40,7 +44,7 @@ namespace ltr27_open_ex
 
         static void Main(string[] args)
         {
-            _LTRNative.OpenOutFlags out_flags;
+            _LTRNative.OpenOutFlags out_flags=0;
             /* LTR24_Init() вызывается уже в конструкторе */
             ltr27api hltr27 = new ltr27api();
             /* отрываем модуль. Входной флаг REOPEN указывает, что разрешено подключение 
@@ -240,19 +244,78 @@ namespace ltr27_open_ex
 
 
                 /* останов сбора данных */
-                _LTRNative.LTRERROR stoperr = hltr27.ADCStop();
-                if (stoperr != _LTRNative.LTRERROR.OK)
+                if (stop_module)
                 {
-                    Console.WriteLine("Не удалось остановить сбор данных. Ошибка {0}: {1}",
-                        stoperr, ltr27api.GetErrorString(stoperr));
-                    if (err == _LTRNative.LTRERROR.OK)
-                        err = stoperr;
-                }
-                else
-                {
-                    Console.WriteLine("Сбор данных остановлен успешно");
+                    _LTRNative.LTRERROR stoperr = hltr27.ADCStop();
+                    if (stoperr != _LTRNative.LTRERROR.OK)
+                    {
+                        Console.WriteLine("Не удалось остановить сбор данных. Ошибка {0}: {1}",
+                            stoperr, ltr27api.GetErrorString(stoperr));
+                        if (err == _LTRNative.LTRERROR.OK)
+                            err = stoperr;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Сбор данных остановлен успешно");
+                    }
                 }
             } /*if (err == LTR_OK)*/
+
+            /* сохранение настроек модуля во flash-память крейта */
+            if ((err == _LTRNative.LTRERROR.OK) && store_config)
+            {
+                err = hltr27.StoreConfig();
+                if (err == _LTRNative.LTRERROR.OK)
+                    Console.WriteLine("Конфигурация модуля успешно сохранена");
+                else
+                    Console.WriteLine("Не удалось сохранить конфигурацию модуля. Ошибка {0}: {1}",
+                            err, ltr27api.GetErrorString(err));
+            }
+
+            /* сохранение настроек крейта (автономная работа) во flash-память */
+            if ((err == _LTRNative.LTRERROR.OK) && store_config)
+            {
+                _LTRNative.TLTR hltr = new _LTRNative.TLTR();
+                err = _LTRNative.LTR_Init(ref hltr);
+                if (err == _LTRNative.LTRERROR.OK)
+                {
+                    
+
+                    hltr.cc = 0; /* управляющее соединение */
+                    /* устанавливаем соединение с тем крейтом, в котором
+                     * установлен ltr27 */
+                    hltr.saddr = hltr27.Channel.saddr;
+                    hltr.sport = hltr27.Channel.sport;
+                    hltr.Serial = hltr27.Channel.Serial;
+
+                    err = _LTRNative.LTR_Open(ref hltr);
+                }
+                if (err == _LTRNative.LTRERROR.OK)
+                {
+                    _LTRNative.TLTR_SETTINGS set = new _LTRNative.TLTR_SETTINGS();
+                    
+                    set.Init();
+                    set.AutorunIsOn = autorun;
+                    err = _LTRNative.LTR_PutSettings(ref hltr, ref set);
+                    if (err == _LTRNative.LTRERROR.OK)
+                        Console.WriteLine("Кофигурация крейта успешно сохранена");
+                    _LTRNative.LTRERROR closerr = _LTRNative.LTR_Close(ref hltr);
+                    if (closerr != _LTRNative.LTRERROR.OK)
+                    {
+                        Console.WriteLine("Не удалось закрыть соединение с крейтом. Ошибка {0}: {1}",
+                            closerr, ltr27api.GetErrorString(closerr));
+                        if (err == _LTRNative.LTRERROR.OK)
+                            err = closerr;
+                    }
+                }
+
+                if (err != _LTRNative.LTRERROR.OK)
+                {
+                    Console.WriteLine("Не удалось сохранить конфигурацию крейта. Ошибка {0}: {1}",
+                            closerr, ltr27api.GetErrorString(closerr));
+                }
+
+            }
 
 
 
