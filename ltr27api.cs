@@ -8,6 +8,7 @@ namespace ltrModulesNet
     {
         public const int LTR27_MEZZANINE_NUMBER = 8;
 
+    
 
         [DllImport("ltr27api.dll")]
         static extern _LTRNative.LTRERROR LTR27_Init (ref TLTR27 module);
@@ -35,7 +36,7 @@ namespace ltrModulesNet
         static extern _LTRNative.LTRERROR LTR27_SetConfig (ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_StoreConfig(ref TLTR27 module);
+        static extern _LTRNative.LTRERROR LTR27_StoreConfig(ref TLTR27 module, _LTRNative.StartMode start_mode);
 
         [DllImport("ltr27api.dll")]
         static extern _LTRNative.LTRERROR LTR27_ADCStart (ref TLTR27 module);
@@ -208,9 +209,9 @@ namespace ltrModulesNet
 			return LTR27_SetConfig(ref module);
 		}
 
-        public virtual _LTRNative.LTRERROR StoreConfig()
+        public virtual _LTRNative.LTRERROR StoreConfig(_LTRNative.StartMode start_mode)
         {
-            return LTR27_StoreConfig(ref module);
+            return LTR27_StoreConfig(ref module, start_mode);
         }
 
 		

@@ -20,7 +20,8 @@ namespace ltr27_open_ex
 
         const bool stop_module = false;
         const bool store_config = true;
-        const bool autorun = false;
+        const bool autorun = true;
+        const _LTRNative.StartMode start_mode = _LTRNative.StartMode.RUN;
 
         static _LTRNative.LTRERROR RecvData(ltr27api hltr27, uint[] data, uint size)
         {
@@ -264,7 +265,7 @@ namespace ltr27_open_ex
             /* сохранение настроек модуля во flash-память крейта */
             if ((err == _LTRNative.LTRERROR.OK) && store_config)
             {
-                err = hltr27.StoreConfig();
+                err = hltr27.StoreConfig(start_mode);
                 if (err == _LTRNative.LTRERROR.OK)
                     Console.WriteLine("Конфигурация модуля успешно сохранена");
                 else
@@ -312,7 +313,7 @@ namespace ltr27_open_ex
                 if (err != _LTRNative.LTRERROR.OK)
                 {
                     Console.WriteLine("Не удалось сохранить конфигурацию крейта. Ошибка {0}: {1}",
-                            closerr, ltr27api.GetErrorString(closerr));
+                            err, ltr27api.GetErrorString(err));
                 }
 
             }

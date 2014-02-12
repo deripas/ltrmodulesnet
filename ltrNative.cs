@@ -10,6 +10,11 @@ namespace ltrModulesNet
     {
         public const int COMMENT_LENGTH = 256;
 
+        public enum StartMode: int {
+            OFF = 0,
+            RUN = 1
+        } 
+
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TLTR
