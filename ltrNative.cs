@@ -218,6 +218,7 @@ namespace ltrModulesNet
             LTR_DIGOUT_DIGIN2  = 0x05, // выход подключен ко входу DIGIN2
             LTR_DIGOUT_START   = 0x06, // на выход подаются метки "СТАРТ"
             LTR_DIGOUT_SECOND  = 0x07, // на выход подаются метки "СЕКУНДА"
+            LTR_DIGOUT_IRIG = 0x08, // контроль сигналов точного времени IRIG (digout1: готовность, digout2: секунда)
             LTR_DIGOUT_DEFAULT = LTR_DIGOUT_CONST0
         }
 
@@ -235,6 +236,13 @@ namespace ltrModulesNet
             LTR_MARK_NAMUR1_HI2LO = 0x09, // по сигналу NAMUR1, спад тока
             LTR_MARK_NAMUR2_LO2HI = 0x0A, // по сигналу NAMUR2, возрастание тока
             LTR_MARK_NAMUR2_HI2LO = 0x0B, // по сигналу NAMUR2, спад тока
+
+            /* Источник метки - декодер сигналов точного времени IRIG-B006
+                IRIG может использоваться только для меток "СЕКУНДА", для "СТАРТ" игнорируется */
+            LTR_MARK_SEC_IRIGB_DIGIN1 = 16,   // со входа DIGIN1, прямой сигнал
+            LTR_MARK_SEC_IRIGB_nDIGIN1 = 17,   // со входа DIGIN1, инвертированный сигнал
+            LTR_MARK_SEC_IRIGB_DIGIN2 = 18,   // со входа DIGIN2, прямой сигнал
+            LTR_MARK_SEC_IRIGB_nDIGIN2 = 19,   // со входа DIGIN2, инвертированный сигнал
         };
 
         public enum LTRCC : ushort
@@ -309,6 +317,23 @@ namespace ltrModulesNet
             ERROR_FLASH_WAIT_RDY_TOUT    = -61,    /* Превышен таймаут ожидания завершения записи/стирания Flash-памяти */
             ERROR_FIRSTFRAME_NOTFOUND    = -62,    /* First frame in card data stream not found */
             ERROR_CARDSCONFIG_UNSUPPORTED = -63,
+            ERROR_FLASH_OP_FAILED         = -64,    /* Ошибка выполненя операции flash-памятью */
+            ERROR_FLASH_NOT_PRESENT       = -65,    /* Flash-память не обнаружена */
+            ERROR_FLASH_UNSUPPORTED_ID    = -66,    /* Обнаружен неподдерживаемый тип flash-памяти */
+            ERROR_FLASH_UNALIGNED_ADDR    = -67,    /* Невыровненный адрес flash-памяти */
+            ERROR_FLASH_VERIFY            = -68,    /* Ошибка при проверки записанных данных во flash-память */
+            ERROR_FLASH_UNSUP_PAGE_SIZE   = -69,    /* Установлен неподдерживаемый размер страницы flash-памяти */
+            ERROR_FLASH_INFO_NOT_PRESENT  = -70,    /* Отсутствует информация о модуле во Flash-памяти */
+            ERROR_FLASH_INFO_UNSUP_FORMAT = -71,    /* Неподдерживаемый формат информации о модуле во Flash-памяти */
+            ERROR_FLASH_SET_PROTECTION    = -72,    /* Не удалось установить защиту Flash-памяти */
+            ERROR_FPGA_NO_POWER           = -73,    /* Нет питания микросхемы ПЛИС */
+            ERROR_FPGA_INVALID_STATE      = -74,    /* Не действительное состояние загрузки ПЛИС */
+            ERROR_FPGA_ENABLE             = -75,    /* Не удалось перевести ПЛИС в разрешенное состояние */
+            ERROR_FPGA_AUTOLOAD_TOUT      = -76,    /* Истекло время ожидания автоматической загрузки ПЛИС */
+            ERROR_PROCDATA_UNALIGNED      = -77,    /* Обрабатываемые данные не выравнены на границу кадра */
+            ERROR_PROCDATA_CNTR           = -78,    /* Ошибка счетчика в обрабатываемых данных */
+            ERROR_PROCDATA_CHNUM          = -79,    /* Неверный номер канала в обрабатываемых данных */
+            ERROR_PROCDATA_WORD_SEQ       = -80,    /* Неверная последовательность слов в обрабатываемых данных */
 
             LTR010_ERROR_GET_ARRAY        = -100, /*Ошибка выполнения команды GET_ARRAY.*/
             LTR010_ERROR_PUT_ARRAY        = -101, /*Ошибка выполнения команды PUT_ARRAY.*/
@@ -787,7 +812,11 @@ namespace ltrModulesNet
         public static extern LTRERROR LTR_Init(ref TLTR ltr); //Инициализация полей структуры
 
         [DllImport("ltrapi.dll")]
-        public static extern LTRERROR LTR_Open(ref TLTR ltr); //Открытие соединения с модуле
+        public static extern LTRERROR LTR_Open(ref TLTR ltr); //Открытие соединения с модулем, крейтом или сервером
+
+        [DllImport("ltrapi.dll")]
+        public static extern LTRERROR LTR_OpenEx(ref TLTR ltr, uint timeout); 
+        
 
         [DllImport("ltrapi.dll")]
         public static extern LTRERROR LTR_Close(ref TLTR ltr); //Разрыв соединения с модулем
@@ -912,6 +941,9 @@ namespace ltrModulesNet
 
         [DllImport("ltrapi.dll")]
         public static extern LTRERROR LTR_PutSettings(ref TLTR ltr, ref TLTR_SETTINGS settings);
+
+        [DllImport("ltrapi.dll")]
+        public static extern LTRERROR LTR_GetLastUnixTimeMark(ref TLTR ltr, out UInt64 unixtime);
 
 
 
@@ -1070,7 +1102,7 @@ namespace ltrModulesNet
 			module.cc = ModuleSlot;
 
 			return LTR_Open(ref module);        
-        }        
+        }
 
         public virtual LTRERROR Close()
         {
@@ -1110,6 +1142,11 @@ namespace ltrModulesNet
         public LTRERROR PutSettings(ref TLTR_SETTINGS settings)
         {
             return LTR_PutSettings(ref module, ref settings);
+        }
+
+        public LTRERROR GetLastUnixTimeMark(out UInt64 unixtime)
+        {
+            return LTR_GetLastUnixTimeMark(ref module, out unixtime);
         }
 
 
