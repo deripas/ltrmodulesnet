@@ -139,6 +139,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ltr24api.cs" />
+    <Compile Include="ltr25api.cs" />
     <Compile Include="ltr27api.cs">
       <SubType>Code</SubType>
     </Compile>

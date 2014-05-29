@@ -157,8 +157,8 @@ namespace ltr24_console
 
                             if (err != _LTRNative.LTRERROR.OK)
                             {
-                                Console.WriteLine("Приняли недостаточно данных: запрашивали {0}, приняли {1}",
-                                              rbuf.Length, rcv_cnt);
+                                Console.WriteLine("Ошибка обработки данных. Ошибка {0}: {1}",
+                                                   err, ltr24api.GetErrorString(err));
                             }
                             else
                             {

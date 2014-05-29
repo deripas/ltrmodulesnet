@@ -8,8 +8,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ltr24_console", "examples\l
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ltr210_console", "examples\ltr210_console\ltr210_console.csproj", "{B1AAEAD7-253E-42B1-BCC9-07E0F493106F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E619DAC5-4B4F-4497-82C9-4888E2D26A5B} = {E619DAC5-4B4F-4497-82C9-4888E2D26A5B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ltr27_open_ex", "examples\ltr27_open_ex\ltr27_open_ex.csproj", "{A3851F28-A932-40D8-9F4D-8A2374E11BB5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E619DAC5-4B4F-4497-82C9-4888E2D26A5B} = {E619DAC5-4B4F-4497-82C9-4888E2D26A5B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ltr25_console", "examples\ltr25_console\ltr25_console.csproj", "{027A9A1B-297B-4FD0-BA30-4F570A8A524B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E619DAC5-4B4F-4497-82C9-4888E2D26A5B} = {E619DAC5-4B4F-4497-82C9-4888E2D26A5B}
 	EndProjectSection
@@ -36,6 +44,10 @@ Global
 		{A3851F28-A932-40D8-9F4D-8A2374E11BB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3851F28-A932-40D8-9F4D-8A2374E11BB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3851F28-A932-40D8-9F4D-8A2374E11BB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{027A9A1B-297B-4FD0-BA30-4F570A8A524B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{027A9A1B-297B-4FD0-BA30-4F570A8A524B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{027A9A1B-297B-4FD0-BA30-4F570A8A524B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{027A9A1B-297B-4FD0-BA30-4F570A8A524B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
