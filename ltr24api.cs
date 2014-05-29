@@ -37,15 +37,6 @@ namespace ltrModulesNet
         [DllImport("ltr24api.dll")]
         public static extern IntPtr LTR24_GetErrorString(int err);
       
-
-        [DllImport("ltr24api.dll")]
-        public static extern _LTRNative.LTRERROR LTR24_StoreMcs(ref TLTR24 module);
-        [DllImport("ltr24api.dll")]
-        public static extern _LTRNative.LTRERROR LTR24_RestoreMcs(ref TLTR24 module, uint saddr, ushort sport, string csn, int slot_num);
-        [DllImport("ltr24api.dll")]
-        public static extern _LTRNative.LTRERROR LTR24_ClearMcsSlot(ref TLTR24 module);
-        [DllImport("ltr24api.dll")]
-        public static extern _LTRNative.LTRERROR LTR24_InvalidateMcsSlot(ref TLTR24 module);
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_FindFrameStart(ref TLTR24 module, uint[] data, int size, out int index);
 
@@ -338,36 +329,7 @@ namespace ltrModulesNet
         {
             return LTR24_ProcessData(ref module, src, dest, ref size, flags, null);
         }
-
-        public virtual _LTRNative.LTRERROR StoreMcs()
-        {
-            return LTR24_StoreMcs(ref module);
-        }
-
-        public virtual _LTRNative.LTRERROR RestoreMcs(uint saddr, ushort sport, string serial, int slot_num)
-        {
-            return LTR24_RestoreMcs(ref module, saddr, sport, serial, slot_num);
-        }
-
-        public virtual _LTRNative.LTRERROR StoreMcs(string serial, int slot_num)
-        {
-            return RestoreMcs(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, serial, slot_num);
-        }
-
-        public virtual _LTRNative.LTRERROR StoreMcs(int slot_num)
-        {
-            return RestoreMcs(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, "", slot_num);
-        }
-
-        public virtual _LTRNative.LTRERROR ClearMcsSlot()
-        {
-            return LTR24_ClearMcsSlot(ref module);
-        }
-
-        public virtual _LTRNative.LTRERROR InvalidateMcsSlot()
-        {
-            return LTR24_InvalidateMcsSlot(ref module);
-        }
+               
 
         public virtual _LTRNative.LTRERROR FindFrameStart(uint[] data, int size, out int index)
         {
