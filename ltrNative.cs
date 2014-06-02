@@ -764,7 +764,8 @@ namespace ltrModulesNet
             LTR25_ERR_INVALID_I_SRC_VALUE    = -10605, /**< Неверно задано значение источника тока" */
             LTR25_ERR_CFG_UNSUP_CH_CNT       = -10606, /**< Для заданной частоты и формата не поддерживается заданное количество каналов АЦП */
             LTR25_ERR_NO_ENABLED_CH          = -10607, /**< Не был разрешен ни один канал АЦП */
-            LTR25_ERR_ADC_PLL_NOT_LOCKED     = -10507, /**< Ошибка захвата PLL АЦП */
+            LTR25_ERR_ADC_PLL_NOT_LOCKED     = -10608, /**< Ошибка захвата PLL АЦП */
+            LTR25_ERR_ADC_REG_CHECK          = -10609  /**< Ошибка проверки значения записанных регистров АЦП */
         }
 
         public enum MODULETYPE
