@@ -36,6 +36,9 @@ namespace ltrModulesNet
         static extern IntPtr LTR25_GetErrorString(int err);
 
         [DllImport("ltr25api.dll")]
+        static extern _LTRNative.LTRERROR LTR25_SetLowPowMode(ref TLTR25 hnd, bool lowPowState);
+
+        [DllImport("ltr25api.dll")]
         static extern _LTRNative.LTRERROR LTR25_FPGAIsEnabled(ref TLTR25 hnd, out bool enabled);
         [DllImport("ltr25api.dll")]
         static extern _LTRNative.LTRERROR LTR25_FPGAEnable(ref TLTR25 hnd, bool enable);
@@ -191,13 +194,15 @@ namespace ltrModulesNet
             byte _enabled_ch_cnt;
             bool _run;
             double _adc_freq;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+            bool _low_pow_mode;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 31)]
             uint[] Reserved;
 
             public _LTRNative.FpgaState FpgaState { get { return _fpga_state; } }
             public byte EnabledChCnt { get { return _enabled_ch_cnt; } }
             public bool Run { get { return _run; } }
             public double AdcFreq { get { return _adc_freq; } }
+            public bool LowPowMode { get {return _low_pow_mode; } }
         }
 
 
@@ -327,6 +332,11 @@ namespace ltrModulesNet
             Encoding srcEncodingFormat = Encoding.GetEncoding("windows-1251");
             Encoding dstEncodingFormat = Encoding.UTF8;
             return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
+        }
+
+        public _LTRNative.LTRERROR SetLowPowMode(bool lowPowState)
+        {
+            return LTR25_SetLowPowMode(ref hnd, lowPowState);
         }
 
         public _LTRNative.LTRERROR FPGAIsEnabled(out bool enabled) 
