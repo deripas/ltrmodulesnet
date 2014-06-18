@@ -11,60 +11,60 @@ namespace ltrModulesNet
     
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_Init (ref TLTR27 module);
+        public static extern _LTRNative.LTRERROR LTR27_Init(ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_Open (ref TLTR27 module, uint saddr, ushort sport, string csn, ushort cc);
+        public static extern _LTRNative.LTRERROR LTR27_Open(ref TLTR27 module, uint saddr, ushort sport, string csn, ushort cc);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_OpenEx(ref TLTR27 module, uint saddr, ushort sport, string csn, ushort cc,
+        public static extern _LTRNative.LTRERROR LTR27_OpenEx(ref TLTR27 module, uint saddr, ushort sport, string csn, ushort cc,
                    _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_Close (ref TLTR27 module);
+        public static extern _LTRNative.LTRERROR LTR27_Close(ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
         public static extern _LTRNative.LTRERROR LTR27_IsOpened (ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_Echo (ref TLTR27 module);
+        public static extern _LTRNative.LTRERROR LTR27_Echo(ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_GetConfig (ref TLTR27 module);
+        public static extern _LTRNative.LTRERROR LTR27_GetConfig(ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_SetConfig (ref TLTR27 module);
+        public static extern _LTRNative.LTRERROR LTR27_SetConfig(ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_StoreConfig(ref TLTR27 module, _LTRNative.StartMode start_mode);
+        public static extern _LTRNative.LTRERROR LTR27_StoreConfig(ref TLTR27 module, _LTRNative.StartMode start_mode);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_ADCStart (ref TLTR27 module);
+        public static extern _LTRNative.LTRERROR LTR27_ADCStart(ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_ADCStop (ref TLTR27 module);
+        public static extern _LTRNative.LTRERROR LTR27_ADCStop(ref TLTR27 module);
 
         [DllImport("ltr27api.dll")]
-        static extern int LTR27_Recv (ref TLTR27 module, uint [] Data, uint [] tstamp, uint size, uint timeout);		
+        public static extern int LTR27_Recv(ref TLTR27 module, uint[] Data, uint[] tstamp, uint size, uint timeout);		
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_ProcessData(  ref TLTR27 module, uint [] src_data, double [] dst_data,
+        public static extern _LTRNative.LTRERROR LTR27_ProcessData(ref TLTR27 module, uint[] src_data, double[] dst_data,
                                                                     ref uint size, bool calibr,
                                                                      bool valueMain);
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_SearchFirstFrame(ref TLTR27 module, uint[] src_data, uint size,
+        public static extern _LTRNative.LTRERROR LTR27_SearchFirstFrame(ref TLTR27 module, uint[] src_data, uint size,
                                                                         out uint frame_idx);
                                                                         
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_GetDescription(ref TLTR27 module, ushort flags);
+        public static extern _LTRNative.LTRERROR LTR27_GetDescription(ref TLTR27 module, ushort flags);
 
         [DllImport("ltr27api.dll")]
-        static extern _LTRNative.LTRERROR LTR27_GetDescription(ref TLTR27 module, Descriptions flags);
+        public static extern _LTRNative.LTRERROR LTR27_GetDescription(ref TLTR27 module, Descriptions flags);
 
         // функции вспомагательного характера
         [DllImport("ltr27api.dll")]
-        static extern IntPtr LTR27_GetErrorString(int ErrorCode);
+        public static extern IntPtr LTR27_GetErrorString(int ErrorCode);
         
 
         [Flags]
@@ -128,9 +128,9 @@ namespace ltrModulesNet
         }
 
 
-        
 
-        TLTR27 module;
+
+        public TLTR27 module;
 
         public ltr27api()
         {
