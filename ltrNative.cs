@@ -774,6 +774,7 @@ namespace ltrModulesNet
             LTR11 = 0x0B0B,
             LTR22 = 0x1616,
             LTR24 = 0x1818,
+            LTR25 = 0x1919,
             LTR27 = 0x1B1B,
             LTR34 = 0x2222,
             LTR35 = 0x2323,
