@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Text;
-
 using ltrModulesNet;
 
 /* Данный пример демонстрирует работу с модулем LTR210 из программы на языке C#.

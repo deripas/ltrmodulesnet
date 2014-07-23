@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using ltrModulesNet;
 
 /* Данный пример демонстрирует работу с модулем LTR24 из программы на языке C#.

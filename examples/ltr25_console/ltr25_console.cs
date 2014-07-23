@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+
 
 
 using ltrModulesNet;
@@ -22,9 +21,9 @@ namespace ltr25_console
         /* количество отсчетов на канал, принмаемых за раз (блок) */
         const int RECV_BLOCK_CH_SIZE = 1024;
         /* количество блоков, после которого завершаем сбор */
-        const int RECV_BLOCK_CNT = 100;
+        const int RECV_BLOCK_CNT = 10000000;
         /* Номер слота в крейте, где вставлен модуль */
-        const int SLOT = 6;
+        const int SLOT = 3;
 
         static int Main(string[] args)
         {          
@@ -56,12 +55,12 @@ namespace ltr25_console
                 /* формат - 32 или 20 битный. В первом случае 2 слова на отсчет */
                 cfg.DataFmt = ltr25api.DataFormat.Format32;
                 /* устанавливаем частоту с помощью одной из констант */
-                cfg.FreqCode = ltr25api.FreqCode.Freq_78K;
+                cfg.FreqCode = ltr25api.FreqCode.Freq_9K7;
 
                 
                 cfg.Ch[0].Enabled = true;
                 cfg.Ch[1].Enabled = true;
-
+  
                 hltr25.Cfg = cfg;
 
                 err = hltr25.SetADC();

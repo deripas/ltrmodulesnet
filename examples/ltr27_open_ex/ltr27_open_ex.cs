@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using ltrModulesNet;
 
 namespace ltr27_open_ex
