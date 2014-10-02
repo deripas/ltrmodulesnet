@@ -1,9 +1,10 @@
-using System;
+п»їusing System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ltrModulesNet
 {
-    public class _ltr11api
+    public class ltr11api
     {
         [DllImport("ltr11api.dll")]
         public static extern _LTRNative.LTRERROR LTR11_Init (ref TLTR11 module);
@@ -15,15 +16,18 @@ namespace ltrModulesNet
         public static extern _LTRNative.LTRERROR LTR11_GetConfig (ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_GetFrame (ref TLTR11 module, uint [] buf);
+        public static extern _LTRNative.LTRERROR LTR11_GetFrame (ref TLTR11 module, uint[] buf);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_Open (ref TLTR11 module, uint saddr, ushort sport, char[] csn, int slot_num);
+        public static extern _LTRNative.LTRERROR LTR11_Open (ref TLTR11 module, uint saddr, ushort sport, string csn, int slot_num);
 
-                [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_ProcessData (ref TLTR11 module, uint [] src, double [] dest, 
-                                                ref uint size, bool calibr,
-                                                bool valueConvert); 
+        [DllImport("ltr11api.dll")]
+        public static extern _LTRNative.LTRERROR LTR11_IsOpened(ref TLTR11 module);
+
+        [DllImport("ltr11api.dll")]
+        public static extern _LTRNative.LTRERROR LTR11_ProcessData (ref TLTR11 module, uint[] src, double[] dest, 
+                                                                    ref int size, bool calibr,
+                                                                    bool valueConvert); 
 
         [DllImport("ltr11api.dll")]
         public static extern _LTRNative.LTRERROR LTR11_SetADC(ref TLTR11 module);
@@ -35,56 +39,79 @@ namespace ltrModulesNet
         public static extern _LTRNative.LTRERROR LTR11_Stop(ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern int LTR11_Recv(ref TLTR11 hnd, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля
+        public static extern int LTR11_Recv(ref TLTR11 hnd, uint[] buf, uint[] tmark, uint size, uint timeout); //РџСЂРёРµРј РґР°РЅРЅС‹С… РѕС‚ РјРѕРґСѓР»СЏ
 
         [DllImport("ltr11api.dll")]
-        public static extern byte LTR11_CreateLChannel(byte phy_ch, byte mode, byte gain); 
+        public static extern byte LTR11_CreateLChannel(byte phy_ch, ChModes mode, ChRanges range);
 
-        // функции вспомагательного характера
         [DllImport("ltr11api.dll")]
-        public static extern string LTR11_GetErrorString(int ErrorCode);   
+        public static extern _LTRNative.LTRERROR LTR11_FindAdcFreqParams(double adcFreq, 
+            out int prescaler, out int devider, out double resultAdcFreq);
 
+        // С„СѓРЅРєС†РёРё РІСЃРїРѕРјР°РіР°С‚РµР»СЊРЅРѕРіРѕ С…Р°СЂР°РєС‚РµСЂР°
+        [DllImport("ltr11api.dll")]
+        public static extern IntPtr LTR11_GetErrorString(int ErrorCode);   
+
+        const int LTR11_CLOCK =  15000;
+        const int LTR11_MAX_CHANNEL = 32;
         const int LTR11_ADC_RANGEQNT=4;
         const int LTR11_MAX_LCHANNEL=128;
 
-        public const int LTR11_STARTADCMODE_INT     = 0;
-        public const int LTR11_STARTADCMODE_EXTRISE = 1;
-        public const int LTR11_STARTADCMODE_EXTFALL = 2;
+        const int LTR11_MAX_ADC_DIVIDER=65535;
+        const int LTR11_MIN_ADC_DIVIDER = 2;
 
-        public const int LTR11_INPMODE_EXTRISE = 0;
-        public const int LTR11_INPMODE_EXTFALL = 1;
-        public const int LTR11_INPMODE_INT     = 2;
+        public enum StartAdcModes : int
+        {
+            INT = 0,
+            EXTRISE = 1,
+            EXTFALL = 2
+        }
 
-        public const int LTR11_ADCMODE_ACQ         = 0x00;
-        public const int LTR11_ADCMODE_TEST_U1P    = 0x04;
-        public const int LTR11_ADCMODE_TEST_U1N    = 0x05;
-        public const int LTR11_ADCMODE_TEST_U2N    = 0x06;
-        public const int LTR11_ADCMODE_TEST_U2P    = 0x07;
+        public enum InpModes : int
+        {
+            EXTRISE = 0,
+            EXTFALL = 1,
+            INT = 2
+        }
+
+        public enum AdcModes : int
+        {
+            ACQ = 0x00,
+            TEST_U1P = 0x04,
+            TEST_U1N = 0x05,
+            TEST_U2N = 0x06,
+            TEST_U2P = 0x07
+        }
 
 
-        /* Входные дипазоны каналов */
-        public const byte LTR11_CHGANE_10000MV    = 0; /* +-10 В (10000 мВ) */
-        public const byte LTR11_CHGANE_2500MV     = 1; /* +-2.5 В (2500 мВ) */
-        public const byte LTR11_CHGANE_625MV      = 2; /* +-0.625 В (625 мВ) */
-        public const byte LTR11_CHGANE_156MV      = 3; /* +-0.156 В (156 мВ) */
+        /* Р’С…РѕРґРЅС‹Рµ РґРёРїР°Р·РѕРЅС‹ РєР°РЅР°Р»РѕРІ */
+        public enum ChRanges : byte
+        {
+            Range_10000MV = 0, /* +-10 Р’ (10000 РјР’) */
+            Range_2500MV = 1, /* +-2.5 Р’ (2500 РјР’) */
+            Range_625MV = 2, /* +-0.625 Р’ (625 РјР’) */
+            Range_156MV = 3 /* +-0.156 Р’ (156 РјР’) */
+        }
 
-        /* Режимы работы каналов */
-        public const byte LTR11_CHMODE_16CH      = 0;     /* 16-канальный */
-        public const byte LTR11_CHMODE_32CH      = 1;     /* 32-канальный */
 
-        public const byte LTR11_CHMODE_DIFF      = LTR11_CHMODE_16CH; /* диф. подкл., 16 каналов */
-        public const byte LTR11_CHMODE_COMM      = LTR11_CHMODE_32CH; /* общая земля, 32 каналов */
-        public const byte LTR11_CHMODE_ZERO      = 2;     /* измерение нуля */
- 
+        /* Р РµР¶РёРјС‹ СЂР°Р±РѕС‚С‹ РєР°РЅР°Р»РѕРІ */
+        public enum ChModes : byte
+        {
+            CH16 = 0,
+            CH32 = 1,
+            DIFF = CH16, /* РґРёС„. РїРѕРґРєР»., 16 РєР°РЅР°Р»РѕРІ */
+            COMM = CH32, /* РѕР±С‰Р°СЏ Р·РµРјР»СЏ, 32 РєР°РЅР°Р»РѕРІ */
+            ZERO = 2     /* РёР·РјРµСЂРµРЅРёРµ РЅСѓР»СЏ */
+        }
         
         
         /* 
-        параметры для задания частоты дискретизации АЦП
-        частота рассчитывается по формуле:
+        РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ Р·Р°РґР°РЅРёСЏ С‡Р°СЃС‚РѕС‚С‹ РґРёСЃРєСЂРµС‚РёР·Р°С†РёРё РђР¦Рџ
+        С‡Р°СЃС‚РѕС‚Р° СЂР°СЃСЃС‡РёС‚С‹РІР°РµС‚СЃСЏ РїРѕ С„РѕСЂРјСѓР»Рµ:
         F = LTR11_CLOCK/(prescaler*(divider+1)
-        ВНИМАНИЕ!!! Частота 400 кГц является особым случаем:
-        для ее установки пределитель и делитель должны иметь
-        следующие значения:
+        Р’РќРРњРђРќРР•!!! Р§Р°СЃС‚РѕС‚Р° 400 РєР“С† СЏРІР»СЏРµС‚СЃСЏ РѕСЃРѕР±С‹Рј СЃР»СѓС‡Р°РµРј:
+        РґР»СЏ РµРµ СѓСЃС‚Р°РЅРѕРІРєРё РїСЂРµРґРµР»РёС‚РµР»СЊ Рё РґРµР»РёС‚РµР»СЊ РґРѕР»Р¶РЅС‹ РёРјРµС‚СЊ
+        СЃР»РµРґСѓСЋС‰РёРµ Р·РЅР°С‡РµРЅРёСЏ:
         prescaler = 1
         divider   = 36
         */
@@ -92,109 +119,117 @@ namespace ltrModulesNet
         [StructLayout(LayoutKind.Sequential, Pack=4)]
         public struct CbrCoefStruct
         {
-            public double Offset;                      /* смещение нуля */
-            public double Gain;                        /* масштабный коэффициент */
+            double Offset_;                      /* СЃРјРµС‰РµРЅРёРµ РЅСѓР»СЏ */
+            double Gain_;                        /* РјР°СЃС€С‚Р°Р±РЅС‹Р№ РєРѕСЌС„С„РёС†РёРµРЅС‚ */
+
+            public double Offset { get { return Offset_; } }
+            public double Gain { get { return Gain_; } }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack=4)]
         public struct TINFO_LTR11
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public char[] Name;                          /* название модуля (строка) */
+            char[] Name_;                          /* РЅР°Р·РІР°РЅРёРµ РјРѕРґСѓР»СЏ (СЃС‚СЂРѕРєР°) */
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
-            public char[] Serial;                        /* серийный номер модуля (строка) */
+            char[] Serial_;                        /* СЃРµСЂРёР№РЅС‹Р№ РЅРѕРјРµСЂ РјРѕРґСѓР»СЏ (СЃС‚СЂРѕРєР°) */
 
-            public ushort Ver;                               /* версия ПО модуля (младший байт - минорная,
-                                             * старший - мажорная
+            ushort Ver_;                               /* РІРµСЂСЃРёСЏ РџРћ РјРѕРґСѓР»СЏ (РјР»Р°РґС€РёР№ Р±Р°Р№С‚ - РјРёРЅРѕСЂРЅР°СЏ,
+                                             * СЃС‚Р°СЂС€РёР№ - РјР°Р¶РѕСЂРЅР°СЏ
                                              */
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 14)]
-            public char[] Date;                          /* дата создания ПО (строка) */
+            char[] Date_;                          /* РґР°С‚Р° СЃРѕР·РґР°РЅРёСЏ РџРћ (СЃС‚СЂРѕРєР°) */
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR11_ADC_RANGEQNT)]
-            public CbrCoefStruct[] CbrCoef;	/* калибровочные коэффициенты для каждого диапазона */
+            CbrCoefStruct[] CbrCoef_;	/* РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹Рµ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РґР»СЏ РєР°Р¶РґРѕРіРѕ РґРёР°РїР°Р·РѕРЅР° */
+
+
+            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
+            public string Serial { get { return new string(Serial_).TrimEnd('\0'); } }
+            ushort Ver { get { return Ver_; } }
+            public string VerStr { get { return ((byte)(Ver_ & 0xFF00) >> 8).ToString() + '.' + ((byte)(Ver_ & 0xFF)).ToString(); } }
+            public string Date { get { return new string(Date_).TrimEnd('\0'); } }
+
         };
 
         [StructLayout(LayoutKind.Sequential, Pack=4)]
         public struct ADCRateStruct
         {
-            public int divider;                        // делитель тактовой частоты модуля, значения: 2..65535
-            public int prescaler;                      // пределитель тактовой частоты модуля: * 1, 8, 64, 256, 1024
+            int divider_;                        // РґРµР»РёС‚РµР»СЊ С‚Р°РєС‚РѕРІРѕР№ С‡Р°СЃС‚РѕС‚С‹ РјРѕРґСѓР»СЏ, Р·РЅР°С‡РµРЅРёСЏ: 2..65535
+            int prescaler_;                      // РїСЂРµРґРµР»РёС‚РµР»СЊ С‚Р°РєС‚РѕРІРѕР№ С‡Р°СЃС‚РѕС‚С‹ РјРѕРґСѓР»СЏ: * 1, 8, 64, 256, 1024
+
+            public int divider { get { return divider_; } set { divider_ = value; } }
+            public int prescaler { get { return prescaler_; } set { prescaler_ = value; } }
         } ;    
 
         [StructLayout(LayoutKind.Sequential, Pack=4)]
         public struct TLTR11
         {
-            public int size;                               /* размер структуры в байтах */
-            public _LTRNative.TLTR Channel;                           /* описатель канала связи с модулем */
+            int size;                               /* СЂР°Р·РјРµСЂ СЃС‚СЂСѓРєС‚СѓСЂС‹ РІ Р±Р°Р№С‚Р°С… */
+            _LTRNative.TLTR Channel_;               /* РѕРїРёСЃР°С‚РµР»СЊ РєР°РЅР°Р»Р° СЃРІСЏР·Рё СЃ РјРѕРґСѓР»РµРј */
 
-            public int StartADCMode;                       /* режим начала сбора данных:
-                                             * LTR11_STARTADCMODE_INT     - внутренний старт (по
-                                             *                              команде хоста);
-                                             * LTR11_STARTADCMODE_EXTRISE - по фронту внешнего
-                                             *                              сигнала;
-                                             * LTR11_STARTADCMODE_EXTFALL - по спаду внешнего
-                                             *                              сигнала.
-                                             */
-            public int InpMode;                            /* режим ввода данных с АЦП
-                                             *  LTR11_INPMODE_INT     - внутренний запуск АЦП
-                                             *                          (частота задается AdcRate)
-                                             *  LTR11_INPMODE_EXTRISE - по фронту внешнего сигнала
-                                             *  LTR11_INPMODE_EXTFALL - по спаду внешнего сигнала
-                                             */
-            public int LChQnt;                             /* число активных логических каналов (размер кадра) */
+            StartAdcModes StartADCMode_;     /* СЂРµР¶РёРј РЅР°С‡Р°Р»Р° СЃР±РѕСЂР° РґР°РЅРЅС‹С… */
+            InpModes InpMode_;                  /* СЂРµР¶РёРј РІРІРѕРґР° РґР°РЅРЅС‹С… СЃ РђР¦Рџ */                                             
+            int LChQnt_;                             /* С‡РёСЃР»Рѕ Р°РєС‚РёРІРЅС‹С… Р»РѕРіРёС‡РµСЃРєРёС… РєР°РЅР°Р»РѕРІ (СЂР°Р·РјРµСЂ РєР°РґСЂР°) */
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR11_MAX_LCHANNEL)]
-            public byte[] LChTbl;                          /* управляющая таблица с активными логическими каналами
-                                             * структура одного байта таблицы: MsbGGMMCCCCLsb
-                                             *   GG   - входной диапазон:
-                                             *          0 - +-10 В;
-                                             *          1 - +-2.5 В;
-                                             *          2 - +-0.625 В;
-                                             *          3 - +-0.156В;
-                                             *   MM   - режим:
-                                             *          0 - 16-канальный, каналы 1-16;
-                                             *          1 - измерение собственного напряжения
-                                             *              смещения нуля;
-                                             *          2 - 32-канальный, каналы 1-16;
-                                             *          3 - 32-канальный, каналы 17-32;
-                                             *   CCCC - номер физического канала:
-                                             *          0 - канал 1 (17);
-                                             *          . . .
-                                             *          15 - канал 16 (32).
-                                             */
-            public int ADCMode;                            /* режим сбора данных или тип тестового режима */
+            public byte[] LChTbl;                  /* СѓРїСЂР°РІР»СЏСЋС‰Р°СЏ С‚Р°Р±Р»РёС†Р° СЃ Р°РєС‚РёРІРЅС‹РјРё Р»РѕРіРёС‡РµСЃРєРёРјРё РєР°РЅР°Р»Р°РјРё */
+            AdcModes ADCMode_;                            /* СЂРµР¶РёРј СЃР±РѕСЂР° РґР°РЅРЅС‹С… РёР»Рё С‚РёРї С‚РµСЃС‚РѕРІРѕРіРѕ СЂРµР¶РёРјР° */
             public ADCRateStruct ADCRate;
-            public double ChRate;                          /* частота одного канала в кГц (период кадра) при
-                                             * внутреннем запуске АЦП
+            double ChRate_;                          /* С‡Р°СЃС‚РѕС‚Р° РѕРґРЅРѕРіРѕ РєР°РЅР°Р»Р° РІ РєР“С† (РїРµСЂРёРѕРґ РєР°РґСЂР°) РїСЂРё
+                                             * РІРЅСѓС‚СЂРµРЅРЅРµРј Р·Р°РїСѓСЃРєРµ РђР¦Рџ
                                              */
-            public TINFO_LTR11 ModuleInfo;                 /* информация о модуле LTR11 */
-        };
+            TINFO_LTR11 ModuleInfo_;                 /* РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РјРѕРґСѓР»Рµ LTR11 */
 
-        public TLTR11 NewTLTR11
-        {
-            get
-            {
-                TLTR11 NewModule = new TLTR11();                 
-                LTR11_Init(ref NewModule);
-                return NewModule;
-            }
-        }
-        
+
+            public StartAdcModes StartADCMode { get { return StartADCMode_; } set { StartADCMode_ = value; } }
+            public InpModes InpMode { get { return InpMode_; } set { InpMode_ = value; } }
+            public int LChQnt { get { return LChQnt_; } set { LChQnt_ = value; } }
+
+            public AdcModes ADCMode { get { return ADCMode_; } set { ADCMode_ = value; } }
+            public double ChRate { get { return ChRate_; } }
+            public TINFO_LTR11 ModuleInfo { get { return ModuleInfo_; } }
+        };             
 
         public TLTR11 module;
 
-        public _ltr11api()
+        public ltr11api() 
         {
-            module = NewTLTR11;
+            LTR11_Init(ref module);	
+        }
+
+        ~ltr11api()
+        {
+            LTR11_Close(ref module);
         }
 
 		
-		public virtual _LTRNative.LTRERROR Init ()
+		public virtual _LTRNative.LTRERROR Init()
 		{
 			return LTR11_Init(ref module);
 		}
-		
-		public virtual _LTRNative.LTRERROR Close ()
+
+        public virtual _LTRNative.LTRERROR Open (uint saddr, ushort sport, string csn, ushort cc)
+		{
+			return LTR11_Open(ref module, saddr, sport, csn, cc);
+		}
+
+        public virtual _LTRNative.LTRERROR Open(string csn, ushort cc)
+        {
+            return Open(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, csn, cc);
+        }
+
+        public virtual _LTRNative.LTRERROR Open(ushort cc)
+        {
+            return Open("", cc);
+        }
+
+        public virtual _LTRNative.LTRERROR Close ()
 		{
 			return LTR11_Close(ref module);
+		}        
+
+        public virtual _LTRNative.LTRERROR IsOpened ()
+		{
+			return LTR11_IsOpened(ref module);
 		}
 		
 		public virtual _LTRNative.LTRERROR GetConfig ()
@@ -202,30 +237,7 @@ namespace ltrModulesNet
 			return LTR11_GetConfig(ref module);
 		}
 		
-		public virtual _LTRNative.LTRERROR GetFrame (uint [] buf)
-		{
-			return LTR11_GetFrame(ref module, buf);
-		}
-		
-		public virtual _LTRNative.LTRERROR Open (uint saddr, ushort sport, char[] csn, int slot_num)
-		{
-			return LTR11_Open(ref module, saddr, sport, csn, slot_num);
-		}
-
-        public virtual int Recv(uint[] data,
-                uint[] tmark, uint size, uint timeout)
-        {
-            return LTR11_Recv(ref module, data, tmark, size, timeout); //Прием данных от модуля
-        }
-		
-		public virtual _LTRNative.LTRERROR ProcessData (uint [] src, double [] dest, 
-			ref uint size, bool calibr,
-			bool valueMain)
-		{
-			return LTR11_ProcessData(ref module, src, dest, ref size, calibr, valueMain);
-		}
-		
-		public virtual _LTRNative.LTRERROR SetADC()
+        public virtual _LTRNative.LTRERROR SetADC()
 		{
 			return LTR11_SetADC(ref module);
 		}
@@ -240,14 +252,79 @@ namespace ltrModulesNet
 			return LTR11_Stop(ref module);
 		}
 
-        public virtual string GetErrorString(int err)
+        
+
+
+		
+		public virtual int Recv (uint [] Data, uint size, uint[] tstamp ,uint timeout)
+		{			
+			return LTR11_Recv(ref module, Data, tstamp, size, timeout);
+		}
+
+        public virtual int Recv(uint[] Data, uint size, uint timeout)
         {
-            return _ltr11api.LTR11_GetErrorString(err);
+            return LTR11_Recv(ref module, Data, null, size, timeout);
+        }
+		
+		public virtual _LTRNative.LTRERROR ProcessData (uint [] src, double [] dest, 
+			ref int size, bool calibr, bool valueMain)
+		{
+			return LTR11_ProcessData(ref module, src, dest, ref size, calibr, valueMain);
+		}
+
+        public virtual _LTRNative.LTRERROR GetFrame(uint[] buf)
+        {
+            return LTR11_GetFrame(ref module, buf);
         }
 
-        public static byte CreateLChannel(byte phy_ch, byte mode, byte gain)
+        public virtual _LTRNative.LTRERROR FindAdcFreqParams(double adcFreq, out double resultAdcFreq)
         {
-            return LTR11_CreateLChannel(phy_ch, mode, gain);
+            int presc, divider;
+            _LTRNative.LTRERROR err = LTR11_FindAdcFreqParams(adcFreq, out presc,
+                out divider, out resultAdcFreq);
+            if (err == _LTRNative.LTRERROR.OK)
+            {
+                module.ADCRate.prescaler = presc;
+                module.ADCRate.divider = divider;
+            }
+            return err;
         }
+
+        public virtual _LTRNative.LTRERROR FindAdcFreqParams(double adcFreq)
+        {
+            double tmp;
+            return FindAdcFreqParams(adcFreq, out tmp);
+        }
+
+        public static string GetErrorString(_LTRNative.LTRERROR err)
+        {
+            IntPtr ptr = LTR11_GetErrorString((int)err);
+            string str = Marshal.PtrToStringAnsi(ptr);
+            Encoding srcEncodingFormat = Encoding.GetEncoding("windows-1251");
+            Encoding dstEncodingFormat = Encoding.UTF8;
+            return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
+        }
+
+        public static byte CreateLChannel(byte phy_ch, ChModes mode, ChRanges range)
+        {
+            return LTR11_CreateLChannel(phy_ch, mode, range);
+        }
+
+
+        public void SetLChannel(byte lch, byte phy_ch, ChModes mode, ChRanges range) {
+            module.LChTbl[lch] = LTR11_CreateLChannel(phy_ch, mode, range);
+        }
+
+
+        public StartAdcModes StartADCMode { get { return module.StartADCMode; } set {  module.StartADCMode = value; } }
+        public InpModes InpMode { get { return module.InpMode; } set { module.InpMode = value; } }
+        public int LChQnt { get { return module.LChQnt; } set { module.LChQnt = value; } }
+
+        public AdcModes ADCMode { get { return module.ADCMode; } set { module.ADCMode = value; } }
+        public ADCRateStruct ADCRate { get { return module.ADCRate; } set { module.ADCRate = value; } }
+        public double ChRate { get { return module.ChRate; } }
+        public TINFO_LTR11 ModuleInfo { get { return module.ModuleInfo; } }
+
+        
 	}
 }

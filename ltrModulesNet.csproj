@@ -119,7 +119,8 @@
     <Compile Include="ltr032api.cs" />
     <Compile Include="ltr114api.cs" />
     <Compile Include="ltr114apiLabView.cs" />
-    <Compile Include="ltr11api.cs">
+    <Compile Include="ltr11api.cs" />
+    <Compile Include="ltr11api_old.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ltr11apiLabView.cs">
