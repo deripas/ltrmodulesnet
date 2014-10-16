@@ -11,6 +11,11 @@ namespace ltrModulesNet
         [DllImport("ltr42api.dll")]
         public static extern _LTRNative.LTRERROR LTR42_Open(ref TLTR42 module, uint net_addr, ushort net_port,
             char[] crate_sn, int slot_num);
+
+        [DllImport("ltr42api.dll")]
+        public static extern _LTRNative.LTRERROR LTR42_Open(ref TLTR42 module, uint net_addr, ushort net_port,
+            string crate_sn, int slot_num);
+
         [DllImport("ltr42api.dll")]
         public static extern _LTRNative.LTRERROR LTR42_Close(ref TLTR42 module);
 
@@ -45,6 +50,16 @@ namespace ltrModulesNet
         // функции вспомагательного характера
         [DllImport("ltr42api.dll")]
         public static extern string LTR42_GetErrorString(int ErrorCode);
+
+        [DllImport("ltr42api.dll")]
+        public static extern _LTRNative.LTRERROR LTR42_ConfigAndStart(ref TLTR42 module);
+
+        [DllImport("ltr42api.dll")]
+        public static extern _LTRNative.LTRERROR LTR42_WritePortSaved(ref TLTR42 module, ushort OutputData);
+
+        [DllImport("ltr42api.dll")]
+        public static extern _LTRNative.LTRERROR LTR42_StoreConfig(ref TLTR42 module, _LTRNative.StartMode start_mode);
+
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TINFO_LTR42
@@ -175,6 +190,22 @@ namespace ltrModulesNet
         public virtual string GetErrorString(int ErrorCode)
         {
             return LTR42_GetErrorString(ErrorCode);
+        }
+
+
+        public virtual _LTRNative.LTRERROR ConfigAndStart(ref TLTR42 module) 
+        {
+            return LTR42_ConfigAndStart(ref module);
+        }
+
+        public virtual _LTRNative.LTRERROR WritePortSaved(ref TLTR42 module, ushort OutputData)
+        {
+            return LTR42_WritePortSaved(ref module, OutputData);
+        }
+
+        public virtual _LTRNative.LTRERROR StoreConfig(ref TLTR42 module, _LTRNative.StartMode start_mode) 
+        {
+            return LTR42_StoreConfig(ref module, start_mode);
         }
     }
 }
