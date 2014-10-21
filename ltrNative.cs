@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ltrModulesNet
 {
@@ -971,8 +972,19 @@ namespace ltrModulesNet
 
 
         // расшифровка ошибки
-        [DllImport("ltrapi.dll")]
-        public static extern string LTR_GetErrorString(int error);
+        [DllImport("ltrapi.dll", EntryPoint = "LTR_GetErrorString")]
+        static extern IntPtr tmp_LTR_GetErrorString(int error);
+
+        public static string LTR_GetErrorString(int error)
+        {
+            return GetErrorString((LTRERROR)error);
+        }
+
+        public static string LTR_GetErrorString(LTRERROR error)
+        {
+            return GetErrorString(error);
+        }
+            
 
         public _LTRNative()
         {
@@ -1012,10 +1024,10 @@ namespace ltrModulesNet
                 LTR.cc = (ushort)LTRCC.CONTROL;
 
                 ERRORCODE = LTR_Open(ref LTR);
-                if (ERRORCODE != LTRERROR.OK) throw new Exception("Ошибка открытия соединения с сервером " + LTR_GetErrorString((int)ERRORCODE));
+                if (ERRORCODE != LTRERROR.OK) throw new Exception("Ошибка открытия соединения с сервером " + GetErrorString(ERRORCODE));
 
                 ERRORCODE = LTR_GetCrates(ref LTR, CrateList);
-                if (ERRORCODE != LTRERROR.OK) throw new Exception("Ошибка получения списка крейтов "+ LTR_GetErrorString((int)ERRORCODE));
+                if (ERRORCODE != LTRERROR.OK) throw new Exception("Ошибка получения списка крейтов "+ GetErrorString(ERRORCODE));
 
                 int RealNumCrates = 0;
                 for (int i=0;i<CrateList.GetLength(0);i++)
@@ -1093,10 +1105,10 @@ namespace ltrModulesNet
                 }
 
                 ERRORCODE = LTR_Open(ref LTR);
-                if (ERRORCODE != LTRERROR.OK) throw new Exception("Не открылся LTR "+ LTR_GetErrorString((int)ERRORCODE));
+                if (ERRORCODE != LTRERROR.OK) throw new Exception("Не открылся LTR "+ GetErrorString(ERRORCODE));
 
                 ERRORCODE = LTR_GetCrateModules(ref LTR, Modules);
-                if (ERRORCODE != LTRERROR.OK) throw new Exception("Не считываются модули " + LTR_GetErrorString((int)ERRORCODE));
+                if (ERRORCODE != LTRERROR.OK) throw new Exception("Не считываются модули " + GetErrorString(ERRORCODE));
 
             }
             finally
@@ -1113,7 +1125,7 @@ namespace ltrModulesNet
 			ushort[] Modules = new ushort[_LTRNative.MODULE_MAX];
 			
 			ERRORCODE = LTR_GetCrateModules(ref module, Modules);
-            if (ERRORCODE != LTRERROR.OK) throw new Exception("Не считываются модули " + LTR_GetErrorString((int)ERRORCODE));			
+            if (ERRORCODE != LTRERROR.OK) throw new Exception("Не считываются модули " + GetErrorString(ERRORCODE));			
 
 			return Modules;
 		}
@@ -1169,6 +1181,15 @@ namespace ltrModulesNet
         public LTRERROR GetLastUnixTimeMark(out UInt64 unixtime)
         {
             return LTR_GetLastUnixTimeMark(ref module, out unixtime);
+        }
+
+        public static string GetErrorString(_LTRNative.LTRERROR err)
+        {
+            IntPtr ptr = tmp_LTR_GetErrorString((int)err);
+            string str = Marshal.PtrToStringAnsi(ptr);
+            Encoding srcEncodingFormat = Encoding.GetEncoding("windows-1251");
+            Encoding dstEncodingFormat = Encoding.UTF8;
+            return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
         }
 
 

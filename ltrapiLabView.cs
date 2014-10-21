@@ -123,12 +123,7 @@ namespace ltrModulesNet
         }
 
 
-        public virtual string GetErrorString(int error)
-        {
-            return _LTRNative.LTR_GetErrorString(error);
-        }
-
- 
+         
         public virtual _LTRNative.LTRERROR GetServerVersion(out string version)
         {
             //version = new String();
