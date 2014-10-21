@@ -145,8 +145,8 @@ namespace ltrModulesNet
 
             public string Name { get { return new string(Name_).TrimEnd('\0'); } }
             public string Serial { get { return new string(Serial_).TrimEnd('\0'); } }
-            ushort Ver { get { return Ver_; } }
-            public string VerStr { get { return ((byte)(Ver_ & 0xFF00) >> 8).ToString() + '.' + ((byte)(Ver_ & 0xFF)).ToString(); } }
+            public ushort Ver { get { return Ver_; } }
+            public string VerStr { get { return ((byte)((Ver_ & 0xFF00) >> 8)).ToString() + '.' + ((byte)(Ver_ & 0xFF)).ToString(); } }
             public string Date { get { return new string(Date_).TrimEnd('\0'); } }
 
         };

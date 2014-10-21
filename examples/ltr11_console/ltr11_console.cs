@@ -17,7 +17,7 @@ namespace ltr11_console
     class ltr11_console
     {
          /* Номер слота в крейте, где вставлен модуль */
-        const int SLOT = 8;
+        const int SLOT = 1;
         /* Rоличество отсчетов на канал, принмаемых за раз */
         const int RECV_BLOCK_CH_SIZE = 4096 * 8;
         /* Количество блоков, которые нужно принять и выйти */
