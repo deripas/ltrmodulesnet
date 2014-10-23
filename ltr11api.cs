@@ -27,7 +27,7 @@ namespace ltrModulesNet
         [DllImport("ltr11api.dll")]
         public static extern _LTRNative.LTRERROR LTR11_ProcessData (ref TLTR11 module, uint[] src, double[] dest, 
                                                                     ref int size, bool calibr,
-                                                                    bool valueConvert); 
+                                                                    bool volt); 
 
         [DllImport("ltr11api.dll")]
         public static extern _LTRNative.LTRERROR LTR11_SetADC(ref TLTR11 module);
@@ -266,10 +266,10 @@ namespace ltrModulesNet
             return LTR11_Recv(ref module, Data, null, size, timeout);
         }
 		
-		public virtual _LTRNative.LTRERROR ProcessData (uint [] src, double [] dest, 
-			ref int size, bool calibr, bool valueMain)
+		public virtual _LTRNative.LTRERROR ProcessData (uint [] src, double [] dest,
+            ref int size, bool calibr, bool volt)
 		{
-			return LTR11_ProcessData(ref module, src, dest, ref size, calibr, valueMain);
+            return LTR11_ProcessData(ref module, src, dest, ref size, calibr, volt);
 		}
 
         public virtual _LTRNative.LTRERROR GetFrame(uint[] buf)
