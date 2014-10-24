@@ -190,6 +190,8 @@ namespace ltrModulesNet
             CRATE_TYPE_LTR030     =  30,
             CRATE_TYPE_LTR031     =  31,
             CRATE_TYPE_LTR032     =  32,
+            CRATE_TYPE_LTR_CU_1   =  40,
+            CRATE_TYPE_LTR_CEU_1  =  41,
             CRATE_TYPE_BOOTLOADER =  99
         }
         // интерфейс крейта (для TCRATE_INFO)
