@@ -127,7 +127,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ltr210api.cs" />
-    <Compile Include="ltr212api.cs">
+    <Compile Include="ltr212api.cs" />
+    <Compile Include="ltr212api_old.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ltr212apiLabView.cs">

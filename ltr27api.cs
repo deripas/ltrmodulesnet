@@ -108,8 +108,8 @@ namespace ltrModulesNet
           [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
           public double[] CalibrCoeff;        // калибровочные коэффициенты
 
-          public string Name { get { return new string(Name_).TrimEnd('\0'); } }
-          public string Unit { get { return new string(Unit_).TrimEnd('\0'); } }
+          public string Name { get { return new string(Name_).Split('\0')[0]; } }
+          public string Unit { get { return new string(Unit_).Split('\0')[0]; } }
         } 		
 
         [StructLayout(LayoutKind.Sequential, Pack=4)]

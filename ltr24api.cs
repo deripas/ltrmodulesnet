@@ -177,8 +177,8 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR24_CHANNEL_NUM * LTR24_I_SRC_VALUE_NUM)]
             double[] _ISrcVals;
 
-            public string Name { get { return new string(_name).TrimEnd('\0'); } }
-            public string Serial { get { return new string(_serial).TrimEnd('\0'); } }
+            public string Name { get { return new string(_name).Split('\0')[0]; } }
+            public string Serial { get { return new string(_serial).Split('\0')[0]; } }
             public byte VerPLD { get { return _VerPLD; } }
             public bool SupportICP { get { return _SupportICP; } }
 
@@ -238,12 +238,7 @@ namespace ltrModulesNet
          * закрыли модуль */
         ~ltr24api()
         {
-            if (IsOpened() == _LTRNative.LTRERROR.OK)
-            {
-                if (Run)
-                    Stop();
-                Close();
-            }
+            Close();
         }
 
        

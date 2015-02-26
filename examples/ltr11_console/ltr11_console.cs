@@ -18,7 +18,7 @@ namespace ltr11_console
     {
          /* Номер слота в крейте, где вставлен модуль */
         const int SLOT = 1;
-        /* Rоличество отсчетов на канал, принмаемых за раз */
+        /* Количество отсчетов на канал, принмаемых за раз */
         const int RECV_BLOCK_CH_SIZE = 4096 * 8;
         /* Количество блоков, которые нужно принять и выйти */
         const int RECV_BLOCK_CNT = 50;
@@ -56,7 +56,9 @@ namespace ltr11_console
                     Console.WriteLine("  Серийный номер : {0}", hltr11.ModuleInfo.Serial);
                     Console.WriteLine("  Версия прошивки: {0}", hltr11.ModuleInfo.VerStr);
 
-                    /* задание параметров работы модуля */
+                    /* --------------- задание параметров работы модуля ------------ */
+
+
                     /* режим старта сбора данных - внутренний */
                     hltr11.StartADCMode = ltr11api.StartAdcModes.INT;
                     /* режим синхронизации АПЦ - внутренний */

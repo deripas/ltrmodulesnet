@@ -145,9 +145,9 @@ namespace ltrModulesNet
             double[] Reserved2;
 
             /* Название модуля */
-            public string Name { get { return new string(_name).TrimEnd('\0'); } }
+            public string Name { get { return new string(_name).Split('\0')[0]; } }
             /* Серийный номер модуля */
-            public string Serial { get { return new string(_serial).TrimEnd('\0'); } }
+            public string Serial { get { return new string(_serial).Split('\0')[0]; } }
             /* Версия прошивки ПЛИС модуля (действительна только после ее загрузки) */
             public ushort VerFPGA { get { return _verFPGA; } }
             /* Версия прошивки PLD */

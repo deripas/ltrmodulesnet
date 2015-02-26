@@ -1,345 +1,439 @@
-using System;
+п»їusing System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ltrModulesNet
 {
-    public class _ltr212api
-    {        
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_Init(ref TLTR212 module);
-
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_Open(ref TLTR212 module, uint net_addr, ushort net_port,
-			char[] crate_sn, int slot_num, char[] biosname);
-
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_Close(ref TLTR212 module);
-
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_CreateLChannel(int PhysChannel, int Scale);
+    public class ltr212api
+    {
 
         [DllImport("ltr212api.dll")]
-        public static extern _LTRNative.LTRERROR LTR212_CreateLChannel2(uint PhysChannel, uint Scale, uint BridgeType);
+        static extern void LTR212_GetDllVersion(out DLL_VERSION DllVersion);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_SetADC(ref TLTR212 module);
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_Init(ref TLTR212 module);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_Start(ref TLTR212 module);
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_Open(ref TLTR212 module, uint net_addr, ushort net_port,
+                                                             string crate_sn, int slot_num, string biosname);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_Stop(ref TLTR212 module);
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_IsOpened(ref TLTR212 module);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_Recv(ref TLTR212 module, uint[] data,
-			uint [] tmark, uint size, uint timeout);
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_Close(ref TLTR212 module);
 
-		[DllImport("ltr212api.dll")]
-		static extern _LTRNative.LTRERROR LTR212_Recv(ref TLTR212 module, uint[] data,
-			uint tmark, uint size, uint timeout);
+        [DllImport("ltr212api.dll")]
+        static extern int LTR212_CreateLChannel(uint PhysChannel, Scales Scale);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_ProcessData(ref TLTR212 module, uint[] src, double[] dest,
-			ref int size, bool volt);
+        [DllImport("ltr212api.dll")]
+        static extern int LTR212_CreateLChannel2(uint PhysChannel, Scales Scale, BridgeTypes BridgeType);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_Calibrate(ref TLTR212 module, byte[] LChannel_Mask, int mode, int reset);
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_SetADC(ref TLTR212 module);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_CalcFS(ref TLTR212 module, ref double fsBase, ref double fs);
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_Start(ref TLTR212 module);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_TestEEPROM(ref TLTR212 module);
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_Stop(ref TLTR212 module);
 
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_ProcessDataTest(ref TLTR212 module,
-			uint[] src, double[] dest, ref int size, bool volt, ref uint bad_num);
-
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_ReadFilter(char[] fname, ref ltr212filter filter);
-
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_WriteSerialNumber(ref TLTR212 module, char[] sn, ushort Code);
-
-		[DllImport("ltr212api.dll")]
-		public static extern _LTRNative.LTRERROR LTR212_TestInterfaceStart(ref TLTR212 module, int PackDelay);
-
-		[DllImport("ltr212api.dll")]
-		public static extern uint LTR212_CalcTimeOut(ref TLTR212 module, int n);
-
-		// функции вспомагательного характера
-		[DllImport("ltr212api.dll")]
-		public static extern string LTR212_GetErrorString(int ErrorCode);
-
-		public const int MAXTAPS = 255;
-
-        public const int LTR212_LCH_CNT_MAX      = 8;  // Макс. число логических. каналов
-        public const int LTR212_FIR_ORDER_MAX    = 255; // Максимальное значение порядка КИХ-фильтра
-        public const int LTR212_FIR_ORDER_MIN    = 3;   // Минимальное значение порядка КИХ-фильтра
+        [DllImport("ltr212api.dll")]
+        static extern int LTR212_Recv(ref TLTR212 module, uint[] data, uint[] tmark, uint size, uint timeout);
 
 
-        // модификации модуля
-        public enum LTR212_MODULE_TYPES : byte
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_ProcessData(ref TLTR212 module, uint[] src, double[] dest,
+            ref int size, bool volt);
+
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_Calibrate(ref TLTR212 module, ref byte LChannel_Mask, CalibrModes mode, int reset);
+
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_CalcFS(ref TLTR212 module, out double fsBase, out double fs);
+
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_TestEEPROM(ref TLTR212 module);
+
+        [DllImport("ltr212api.dll")]
+        static extern _LTRNative.LTRERROR LTR212_ReadFilter(string fname, out FILTER filter);
+
+
+        [DllImport("ltr212api.dll")]
+        static extern uint LTR212_CalcTimeOut(ref TLTR212 module, int n);
+
+        // С„СѓРЅРєС†РёРё РІСЃРїРѕРјР°РіР°С‚РµР»СЊРЅРѕРіРѕ С…Р°СЂР°РєС‚РµСЂР°
+        [DllImport("ltr212api.dll")]
+        static extern IntPtr LTR212_GetErrorString(int ErrorCode);
+
+
+
+        public const int LTR212_LCH_CNT_MAX = 8;  // РњР°РєСЃ. С‡РёСЃР»Рѕ Р»РѕРіРёС‡РµСЃРєРёС…. РєР°РЅР°Р»РѕРІ
+        public const int LTR212_FIR_ORDER_MAX = 255; // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРѕСЂСЏРґРєР° РљРРҐ-С„РёР»СЊС‚СЂР°
+        public const int LTR212_FIR_ORDER_MIN = 3;   // РњРёРЅРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРѕСЂСЏРґРєР° РљРРҐ-С„РёР»СЊС‚СЂР°
+
+
+        // РјРѕРґРёС„РёРєР°С†РёРё РјРѕРґСѓР»СЏ
+        public enum ModuleTypes : byte
         {
-            LTR212_OLD,     // старый модуль с поддержкой полно- и полу-мостовых подключений
-            LTR212_M_1,     // новый модуль с поддержкой полно-,  полу- и четверть-мостовых подключений
-            LTR212_M_2      // новый модуль с поддержкой полно- и полу-мостовых подключений
+            OLD,     // СЃС‚Р°СЂС‹Р№ РјРѕРґСѓР»СЊ СЃ РїРѕРґРґРµСЂР¶РєРѕР№ РїРѕР»РЅРѕ- Рё РїРѕР»Сѓ-РјРѕСЃС‚РѕРІС‹С… РїРѕРґРєР»СЋС‡РµРЅРёР№
+            M_1,     // РЅРѕРІС‹Р№ РјРѕРґСѓР»СЊ СЃ РїРѕРґРґРµСЂР¶РєРѕР№ РїРѕР»РЅРѕ-,  РїРѕР»Сѓ- Рё С‡РµС‚РІРµСЂС‚СЊ-РјРѕСЃС‚РѕРІС‹С… РїРѕРґРєР»СЋС‡РµРЅРёР№
+            M_2      // РЅРѕРІС‹Р№ РјРѕРґСѓР»СЊ СЃ РїРѕРґРґРµСЂР¶РєРѕР№ РїРѕР»РЅРѕ- Рё РїРѕР»Сѓ-РјРѕСЃС‚РѕРІС‹С… РїРѕРґРєР»СЋС‡РµРЅРёР№
         };
 
 
-        // типы возможных мостов
-        public enum LTR212_BRIDGE_TYPES : uint
+        // С‚РёРїС‹ РІРѕР·РјРѕР¶РЅС‹С… РјРѕСЃС‚РѕРІ
+        public enum BridgeTypes : uint
         {
-            LTR212_FULL_OR_HALF_BRIDGE,
-            LTR212_QUARTER_BRIDGE_WITH_200_Ohm,
-            LTR212_QUARTER_BRIDGE_WITH_350_Ohm,
-            LTR212_QUARTER_BRIDGE_WITH_CUSTOM_Ohm,
-            LTR212_UNBALANCED_QUARTER_BRIDGE_WITH_200_Ohm,
-            LTR212_UNBALANCED_QUARTER_BRIDGE_WITH_350_Ohm,
-            LTR212_UNBALANCED_QUARTER_BRIDGE_WITH_CUSTOM_Ohm
+            FullOrHalf,
+            Quarter_200_Ohm,
+            Quarter_350_Ohm,
+            Quarter_Custom_Ohm,
+            UnbalancedQuarter_200_Ohm,
+            UnbalancedQuarter_350_Ohm,
+            UnbalancedQuarter_Custom_Ohm
         };
 
-        // режимы сбора данных (AcqMode)
-        public enum LTR212_ACQ_MODE : int
+        // СЂРµР¶РёРјС‹ СЃР±РѕСЂР° РґР°РЅРЅС‹С… (AcqMode)
+        public enum AcqModes : int
         {
-            LTR212_FOUR_CHANNELS_WITH_MEDIUM_RESOLUTION = 0,
-            LTR212_FOUR_CHANNELS_WITH_HIGH_RESOLUTION = 1,
-            LTR212_EIGHT_CHANNELS_WITH_HIGH_RESOLUTION = 2
+            FourChannelsWithMediumResolution = 0,
+            FourChannelsWithHighResolution = 1,
+            EightChannelsWithHighResolution = 2
         };
 
-        // значения опорного напряжения
-        public enum LTR212_REF_VAL : int
+        // Р·РЅР°С‡РµРЅРёСЏ РѕРїРѕСЂРЅРѕРіРѕ РЅР°РїСЂСЏР¶РµРЅРёСЏ
+        public enum RefVals : int
         {
-            LTR212_REF_2_5V = 0,  //2.5 В
-            LTR212_REF_5V = 1   //5   В
+            REF_2_5V = 0,  //2.5 Р’
+            REF_5V = 1   //5   Р’
         };
 
-        // диапазоны канало
-        public enum LTR212_SCALE : int
+        // РґРёР°РїР°Р·РѕРЅС‹ РєР°РЅР°Р»Рѕ
+        public enum Scales : int
         {
-            LTR212_SCALE_B_10 = 0, /* диапазон -10мВ/+10мВ */
-            LTR212_SCALE_B_20 = 1, /* диапазон -20мВ/+20мВ */
-            LTR212_SCALE_B_40 = 2, /* диапазон -40мВ/+40мВ */
-            LTR212_SCALE_B_80 = 3, /* диапазон -80мВ/+80мВ */
-            LTR212_SCALE_U_10 = 4, /* диапазон -10мВ/+10мВ */
-            LTR212_SCALE_U_20 = 5, /* диапазон -20мВ/+20мВ */
-            LTR212_SCALE_U_40 = 6, /* диапазон -40мВ/+40мВ */
-            LTR212_SCALE_U_80 = 7 /* диапазон -80мВ/+80мВ */
+            B_10 = 0, /* РґРёР°РїР°Р·РѕРЅ -10РјР’/+10РјР’ */
+            B_20 = 1, /* РґРёР°РїР°Р·РѕРЅ -20РјР’/+20РјР’ */
+            B_40 = 2, /* РґРёР°РїР°Р·РѕРЅ -40РјР’/+40РјР’ */
+            B_80 = 3, /* РґРёР°РїР°Р·РѕРЅ -80РјР’/+80РјР’ */
+            U_10 = 4, /* РґРёР°РїР°Р·РѕРЅ -10РјР’/+10РјР’ */
+            U_20 = 5, /* РґРёР°РїР°Р·РѕРЅ -20РјР’/+20РјР’ */
+            U_40 = 6, /* РґРёР°РїР°Р·РѕРЅ -40РјР’/+40РјР’ */
+            U_80 = 7 /* РґРёР°РїР°Р·РѕРЅ -80РјР’/+80РјР’ */
         };
 
-        // режимы калибровки
-        public enum LTR212_CALIBR_MODE : int
+        // СЂРµР¶РёРјС‹ РєР°Р»РёР±СЂРѕРІРєРё
+        public enum CalibrModes : int
         {
-            LTR212_CALIBR_MODE_INT_ZERO = 0,
-            LTR212_CALIBR_MODE_INT_SCALE = 1,
-            LTR212_CALIBR_MODE_INT_FULL = 2,
-            LTR212_CALIBR_MODE_EXT_ZERO = 3,
-            LTR212_CALIBR_MODE_EXT_SCALE = 4,
-            LTR212_CALIBR_MODE_EXT_ZERO_INT_SCALE = 5,
-            LTR212_CALIBR_MODE_EXT_FULL_2ND_STAGE = 6, /* вторая стадия внешней калибровки */
-            LTR212_CALIBR_MODE_EXT_ZERO_SAVE_SCALE = 7  /* внешний ноль с сохранением до этого полученных коэф. масштаба */
+            INT_ZERO = 0,
+            INT_SCALE = 1,
+            INT_FULL = 2,
+            EXT_ZERO = 3,
+            EXT_SCALE = 4,
+            EXT_ZERO_INT_SCALE = 5,
+            EXT_FULL_2ND_STAGE = 6, /* РІС‚РѕСЂР°СЏ СЃС‚Р°РґРёСЏ РІРЅРµС€РЅРµР№ РєР°Р»РёР±СЂРѕРІРєРё */
+            EXT_ZERO_SAVE_SCALE = 7  /* РІРЅРµС€РЅРёР№ РЅРѕР»СЊ СЃ СЃРѕС…СЂР°РЅРµРЅРёРµРј РґРѕ СЌС‚РѕРіРѕ РїРѕР»СѓС‡РµРЅРЅС‹С… РєРѕСЌС„. РјР°СЃС€С‚Р°Р±Р° */
         };
 
+        [StructLayout(LayoutKind.Sequential, Pack=4)]
+        public struct DLL_VERSION {
+            byte revision_;                   
+            byte build_;
+            byte minor_;
+            byte major_;
 
+            public byte Revision { get { return revision_; } }
+            public byte Build { get { return build_; } }
+            public byte Minor { get { return minor_; } }
+            public byte Major { get { return major_; } }
+            public uint Value { get { return ((uint)major_ << 24) | ((uint)minor_ << 16) | ((uint)build_ << 8) | revision_; } }
+            public String Str
+            {
+                get
+                {
+                    return major_.ToString() + "." + minor_.ToString() + "." +
+                           build_.ToString() + "." + revision_.ToString();
+                }
+            }
+        }
+        
 
-
-
-
-		// Структура, используеамая при загрузке фильтра
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-			public struct ltr212filter
-		{
-			public double fs;
-			public byte decimation;
-			public byte taps;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = MAXTAPS)]
-			public short[] koeff;
-		};
-
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		public struct TINFO_LTR212
-		{
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 15)]
-			public char[] Name;
-            public byte Type;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
-			public char[] Serial;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-			public char[] BiosVersion;// Версия БИОСа
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-			public char[] BiosDate;  // Дата создания данной версии БИОСа
-		};
-
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-			public struct filterStruct
-		{
-			public int IIR;         // Флаг использования БИХ-фильтра
-			public int FIR;         // Флаг использования КИХ-фильтра
-			public int Decimation;  // Значение коэффициента децимации для КИХ-фильтра
-			public int TAP;		 // Порядок КИХ-фильтра 
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 512 + 1)]
-			public char[] IIR_Name; // Полный путь к файлу с коэфф-ми программного БИХ-фильтра 
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 512 + 1)]
-			public char[] FIR_Name; // Полный путь к файлу с коэфф-ми программного КИХ-фильтра
-		} ;   // Структура, хранящая данные о прогр. фильтрах и их коэфф-ты.
-
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		public struct TLTR212
-		{
-			public int size;
-			public _LTRNative.TLTR Channel;
-			public int AcqMode; // Режим сбора данных
-			public int UseClb;  // Флаг использования калибровочных коэфф-тов
-			public int UseFabricClb;// Флаг использования заводских калибровочных коэфф-тов
-			public int LChQnt;	 // Кол-во используемых виртуальных каналов
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-			public int[] LChTbl;  //Таблица виртуальных каналов
-			public int REF;		 // Флаг высокого опорного напряжения
-			public int AC;		 // Флаг знакопеременного опорного напряжения
-			public double Fs;     // Частота дискретизации АЦП
-
-			public filterStruct filter;   // Структура, хранящая данные о прогр. фильтрах и их коэфф-ты.
-
-			public TINFO_LTR212 ModuleInfo;
-
-			public ushort CRC_PM; // для служебного пользования
-			public ushort CRC_Flash_Eval; // для служебного пользования
-			public ushort CRC_Flash_Read;   // для служебного пользования
-
-		} // структура описания модуля 
-
-
-		public TLTR212 NewTLTR212
-		{
-			get
-			{
-				TLTR212 NewModule = new TLTR212();
-				LTR212_Init(ref NewModule);
-				return NewModule;
-			}
-		}
-
-
-		public TLTR212 module;
-
-		public _ltr212api()
-		{
-			module = NewTLTR212;
-		}
-
-		
-		public virtual _LTRNative.LTRERROR Init()
-		{
-			return LTR212_Init(ref module);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR Open(uint net_addr, ushort net_port,
-			char[] crate_sn, int slot_num, string biosname)
-		{
-			return LTR212_Open(ref module, net_addr, net_port, crate_sn, slot_num, biosname.ToCharArray());
-		}
-
-		
-		public virtual _LTRNative.LTRERROR Close()
-		{
-			return LTR212_Close(ref module);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR CreateLChannel(int PhysChannel, int Scale)
-		{
-			return LTR212_CreateLChannel(PhysChannel, Scale);
-		}
-
-        public virtual _LTRNative.LTRERROR CreateLChannel2(uint PhysChannel, uint Scale, uint BridgeType)
+        // РЎС‚СЂСѓРєС‚СѓСЂР°, РёСЃРїРѕР»СЊР·СѓРµР°РјР°СЏ РїСЂРё Р·Р°РіСЂСѓР·РєРµ С„РёР»СЊС‚СЂР°
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct FILTER
         {
-            return LTR212_CreateLChannel2(PhysChannel, Scale, BridgeType);
+            double fs_;
+            byte decimation_;
+            byte taps_;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR212_FIR_ORDER_MAX)]
+            short[] koeff_;
+
+            public double fs { get { return fs_; } }
+            public byte decimation { get { return decimation_; } }
+            public byte taps { get { return taps_; } }
+            public short[] koeff { get { return koeff_; } }
+        };
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct INFO
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 15)]
+            char[] Name_;
+            ModuleTypes Type_;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
+            char[] Serial_;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+            char[] BiosVersion_;// Р’РµСЂСЃРёСЏ Р‘РРћРЎР°
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            char[] BiosDate_;  // Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ РґР°РЅРЅРѕР№ РІРµСЂСЃРёРё Р‘РРћРЎР°
+
+            public string Name   { get { return new string(Name_).Split('\0')[0]; } }
+            public ModuleTypes Type { get { return Type_; } }
+            public string TypeStr
+            {
+                get
+                {
+                    return Type_ == ModuleTypes.M_1 ? "LTR212-M1" :
+                        Type_ == ModuleTypes.M_2 ? "LTR212-M2" : "LTR212";
+                }
+            }
+            public string Serial { get { return new string(Serial_).Split('\0')[0]; } }
+            public string BiosVersion { get { return new string(BiosVersion_).Split('\0')[0]; } }
+            public string BiosDate { get { return new string(BiosDate_).Split('\0')[0]; } }
+        };
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        struct FILTER_CFG
+        {
+            bool IIR_;         // Р¤Р»Р°Рі РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ Р‘РРҐ-С„РёР»СЊС‚СЂР°
+            bool FIR_;         // Р¤Р»Р°Рі РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РљРРҐ-С„РёР»СЊС‚СЂР°
+            int Decimation_;  // Р—РЅР°С‡РµРЅРёРµ РєРѕСЌС„С„РёС†РёРµРЅС‚Р° РґРµС†РёРјР°С†РёРё РґР»СЏ РљРРҐ-С„РёР»СЊС‚СЂР°
+            int TAP_;		 // РџРѕСЂСЏРґРѕРє РљРРҐ-С„РёР»СЊС‚СЂР° 
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 512 + 1)]
+            char[] IIR_Name_; // РџРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ СЃ РєРѕСЌС„С„-РјРё РїСЂРѕРіСЂР°РјРјРЅРѕРіРѕ Р‘РРҐ-С„РёР»СЊС‚СЂР° 
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 512 + 1)]
+            char[] FIR_Name_; // РџРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ СЃ РєРѕСЌС„С„-РјРё РїСЂРѕРіСЂР°РјРјРЅРѕРіРѕ РљРРҐ-С„РёР»СЊС‚СЂР°
+
+            public bool IIR { get { return IIR_; } set { IIR_ = value; } }
+            public bool FIR { get { return FIR_; } set { FIR_ = value; } }
+            public int Decimation { get { return Decimation_; } }
+            public int TAP { get { return TAP_; } }
+
+            public string IIR_Name
+            {
+                get { return new string(IIR_Name_).Split('\0')[0]; }
+                set
+                {
+                    char[] arr = value.ToCharArray();
+                    int i;
+                    int len = Math.Min(arr.Length, 512);
+                    for (i = 0; i < len; i++)
+                        IIR_Name_[i] = arr[i];
+                    IIR_Name_[len] = '\0';
+                }
+            }
+
+            public string FIR_Name
+            {
+                get { return new string(FIR_Name_).Split('\0')[0]; }
+                set
+                {
+                    char[] arr = value.ToCharArray();
+                    int i;
+                    int len = Math.Min(arr.Length, 512);
+                    for (i = 0; i < len; i++)
+                        FIR_Name_[i] = arr[i];
+                    FIR_Name_[len] = '\0';
+                }
+            }
+
+        } ;   // РЎС‚СЂСѓРєС‚СѓСЂР°, С…СЂР°РЅСЏС‰Р°СЏ РґР°РЅРЅС‹Рµ Рѕ РїСЂРѕРіСЂ. С„РёР»СЊС‚СЂР°С… Рё РёС… РєРѕСЌС„С„-С‚С‹.
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        struct TLTR212
+        {
+            int size_;
+            _LTRNative.TLTR Channel_;
+            AcqModes AcqMode_; // Р РµР¶РёРј СЃР±РѕСЂР° РґР°РЅРЅС‹С…
+            bool UseClb_;  // Р¤Р»Р°Рі РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹С… РєРѕСЌС„С„-С‚РѕРІ
+            bool UseFabricClb_;// Р¤Р»Р°Рі РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ Р·Р°РІРѕРґСЃРєРёС… РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹С… РєРѕСЌС„С„-С‚РѕРІ
+            int LChQnt_;	 // РљРѕР»-РІРѕ РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РІРёСЂС‚СѓР°Р»СЊРЅС‹С… РєР°РЅР°Р»РѕРІ
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR212_LCH_CNT_MAX)]
+            public int[] LChTbl;  //РўР°Р±Р»РёС†Р° РІРёСЂС‚СѓР°Р»СЊРЅС‹С… РєР°РЅР°Р»РѕРІ
+            RefVals REF_;		 // Р¤Р»Р°Рі РІС‹СЃРѕРєРѕРіРѕ РѕРїРѕСЂРЅРѕРіРѕ РЅР°РїСЂСЏР¶РµРЅРёСЏ
+            bool AC_;		 // Р¤Р»Р°Рі Р·РЅР°РєРѕРїРµСЂРµРјРµРЅРЅРѕРіРѕ РѕРїРѕСЂРЅРѕРіРѕ РЅР°РїСЂСЏР¶РµРЅРёСЏ
+            double Fs_;     // Р§Р°СЃС‚РѕС‚Р° РґРёСЃРєСЂРµС‚РёР·Р°С†РёРё РђР¦Рџ
+
+            public FILTER_CFG filter;   // РЎС‚СЂСѓРєС‚СѓСЂР°, С…СЂР°РЅСЏС‰Р°СЏ РґР°РЅРЅС‹Рµ Рѕ РїСЂРѕРіСЂ. С„РёР»СЊС‚СЂР°С… Рё РёС… РєРѕСЌС„С„-С‚С‹.
+
+            INFO ModuleInfo_;
+
+            ushort CRC_PM; // РґР»СЏ СЃР»СѓР¶РµР±РЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°РЅРёСЏ
+            ushort CRC_Flash_Eval; // РґР»СЏ СЃР»СѓР¶РµР±РЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°РЅРёСЏ
+            ushort CRC_Flash_Read;   // РґР»СЏ СЃР»СѓР¶РµР±РЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°РЅРёСЏ
+
+
+            public AcqModes AcqMode { get { return AcqMode_; } set { AcqMode_ = value; } }
+            public bool UseClb { get { return UseClb_; } set { UseClb_ = value; } }
+            public bool UseFabricClb { get { return UseFabricClb_; } set { UseFabricClb_ = value; } }
+            public int LChQnt { get { return LChQnt_; } set { LChQnt_ = value; } }
+
+            public RefVals REF { get { return REF_; } set { REF_ = value; } }
+            public bool AC { get { return AC_; } set { AC_ = value; } }
+            public double Fs { get { return Fs_; } }
+            
+            public INFO ModuleInfo { get { return ModuleInfo_; } }
+        } // СЃС‚СЂСѓРєС‚СѓСЂР° РѕРїРёСЃР°РЅРёСЏ РјРѕРґСѓР»СЏ 
+
+
+        TLTR212 module;
+
+        public ltr212api() 
+        {
+            LTR212_Init(ref module);	
         }
 
-		
-		public virtual _LTRNative.LTRERROR SetADC()
-		{
-			return LTR212_SetADC(ref module);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR Start()
-		{
-			return LTR212_Start(ref module);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR Stop()
-		{
-			return LTR212_Stop(ref module);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR Recv(uint[] data,
-			uint [] tmark, uint size, uint timeout)
-		{
-			return LTR212_Recv(ref module, data, tmark, size, timeout);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest,
-			ref int size, bool volt/*,INT *bad_num*/)
-		{
-			return LTR212_ProcessData(ref module, src, dest, ref size, volt);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR Calibrate(byte[] LChannel_Mask, int mode, int reset)
-		{
-			return LTR212_Calibrate(ref module, LChannel_Mask, mode, reset);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR CalcFS(ref double fsBase, ref double fs)
-		{
-			return LTR212_CalcFS(ref module, ref fsBase, ref fs);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR TestEEPROM()
-		{
-			return LTR212_TestEEPROM(ref module);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR ProcessDataTest(uint[] src, double[] dest,ref int size, bool volt, ref uint bad_num)
-		{
-			return LTR212_ProcessDataTest(ref module, src, dest, ref size, volt, ref bad_num);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR ReadFilter(char[] fname, ref ltr212filter filter)
-		{
-			return LTR212_ReadFilter(fname, ref filter);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR WriteSerialNumber(char[] sn, ushort Code)
-		{
-			return LTR212_WriteSerialNumber(ref module, sn, Code);
-		}
-
-		
-		public virtual _LTRNative.LTRERROR TestInterfaceStart(int PackDelay)
-		{
-			return LTR212_TestInterfaceStart(ref module, PackDelay);
-		}
-
-		
-		public virtual uint CalcTimeOut(int n)
-		{
-			return LTR212_CalcTimeOut(ref module, n);
-		}
-
-        public virtual string GetErrorString(int err)
+        ~ltr212api()
         {
-            return _ltr212api.LTR212_GetErrorString(err);
+            LTR212_Close(ref module);
+        }
+
+
+        public virtual _LTRNative.LTRERROR Open(uint saddr, ushort sport, string csn, ushort cc, string bios_file)
+        {
+            return LTR212_Open(ref module, saddr, sport, csn, cc, bios_file);
+        }
+
+        public virtual _LTRNative.LTRERROR Open(string csn, ushort cc, string bios_file)
+        {
+            return Open(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, csn, cc, bios_file);
+        }
+
+        public virtual _LTRNative.LTRERROR Open(ushort cc, string bios_file)
+        {
+            return Open("", cc, bios_file);
+        }
+
+        public virtual _LTRNative.LTRERROR Close()
+        {
+            return LTR212_Close(ref module);
+        }
+
+        public virtual _LTRNative.LTRERROR IsOpened()
+        {
+            return LTR212_IsOpened(ref module);
+        }
+
+
+        public void SetLChannel(uint lch, uint phy_ch, Scales scale)
+        {
+            module.LChTbl[lch] = LTR212_CreateLChannel(phy_ch, scale);
+        }
+
+        public void SetLChannel(uint lch, uint phy_ch, Scales scale, BridgeTypes BridgeType)
+        {
+            module.LChTbl[lch] = LTR212_CreateLChannel2(phy_ch, scale, BridgeType);
+        }
+
+        public virtual _LTRNative.LTRERROR SetADC()
+        {
+            return LTR212_SetADC(ref module);
+        }
+
+        public virtual _LTRNative.LTRERROR Start()
+        {
+            return LTR212_Start(ref module);
+        }
+
+        public virtual _LTRNative.LTRERROR Stop()
+        {
+            return LTR212_Stop(ref module);
+        }
+
+        public virtual int Recv(uint[] Data, uint size, uint[] tstamp, uint timeout)
+        {
+            return LTR212_Recv(ref module, Data, tstamp, size, timeout);
+        }
+
+        public virtual int Recv(uint[] Data, uint size, uint timeout)
+        {
+            return LTR212_Recv(ref module, Data, null, size, timeout);
+        }
+
+        public virtual _LTRNative.LTRERROR ProcessData(uint[] src, double[] dest,
+            ref int size, bool volt)
+        {
+            return LTR212_ProcessData(ref module, src, dest, ref size, volt);
+        }
+
+        public static string GetErrorString(_LTRNative.LTRERROR err)
+        {
+            IntPtr ptr = LTR212_GetErrorString((int)err);
+            string str = Marshal.PtrToStringAnsi(ptr);
+            Encoding srcEncodingFormat = Encoding.GetEncoding("windows-1251");
+            Encoding dstEncodingFormat = Encoding.UTF8;
+            return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
+        }
+
+        public virtual _LTRNative.LTRERROR Calibrate(ref byte LChannel_Mask, CalibrModes mode, bool reset)
+        {
+            return LTR212_Calibrate(ref module, ref LChannel_Mask, mode, reset ? 1 : 0);
+        }
+
+
+        public virtual _LTRNative.LTRERROR CalcFS(out double fsBase, out double fs)
+        {
+            return LTR212_CalcFS(ref module, out fsBase, out fs);
+        }
+
+
+        public virtual _LTRNative.LTRERROR TestEEPROM()
+        {
+            return LTR212_TestEEPROM(ref module);
+        }
+
+        public static _LTRNative.LTRERROR ReadFilter(string fname, out FILTER filter)
+        {
+            return LTR212_ReadFilter(fname, out filter);
+        }
+
+
+        public virtual uint CalcTimeOut(int n)
+        {
+            return LTR212_CalcTimeOut(ref module, n);
+        }
+
+
+
+
+
+
+        public AcqModes AcqMode { get { return module.AcqMode; } set { module.AcqMode = value; } }
+        public bool UseClb { get { return module.UseClb; } set { module.UseClb = value; } }
+        public bool UseFabricClb { get { return module.UseFabricClb; } set { module.UseFabricClb = value; } }
+        public int LChQnt { get { return module.LChQnt; } set { module.LChQnt = value; } }
+
+        public RefVals REF { get { return module.REF; } set { module.REF = value; } }
+        public bool AC { get { return module.AC; } set { module.AC = value; } }
+        public double Fs { get { return module.Fs; } }
+        public INFO ModuleInfo { get { return module.ModuleInfo; } }
+
+
+        public bool FilterIIR { get { return module.filter.IIR; } set { module.filter.IIR = value; } }
+        public bool FilterFIR { get { return module.filter.FIR; } set { module.filter.FIR = value; } }
+        public int FilterDecimation { get { return module.filter.Decimation; } }
+        public int FilterTAP { get { return module.filter.TAP; } }
+        public string FilterIIR_Name { get { return module.filter.IIR_Name; } set { module.filter.IIR_Name = value; } }
+        public string FilterFIR_Name { get { return module.filter.FIR_Name; } set { module.filter.FIR_Name = value; } }
+
+        public static DLL_VERSION DllVersion
+        {
+            get
+            {
+                DLL_VERSION ver;
+                LTR212_GetDllVersion(out ver);
+                return ver;
+            }
         }
     }
 }

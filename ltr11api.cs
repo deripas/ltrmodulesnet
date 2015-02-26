@@ -143,11 +143,11 @@ namespace ltrModulesNet
             CbrCoefStruct[] CbrCoef_;	/* калибровочные коэффициенты для каждого диапазона */
 
 
-            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
-            public string Serial { get { return new string(Serial_).TrimEnd('\0'); } }
+            public string Name { get { return new string(Name_).Split('\0')[0]; } }
+            public string Serial { get { return new string(Serial_).Split('\0')[0]; } }
             public ushort Ver { get { return Ver_; } }
             public string VerStr { get { return ((byte)((Ver_ & 0xFF00) >> 8)).ToString() + '.' + ((byte)(Ver_ & 0xFF)).ToString(); } }
-            public string Date { get { return new string(Date_).TrimEnd('\0'); } }
+            public string Date { get { return new string(Date_).Split('\0')[0]; } }
 
         };
 
