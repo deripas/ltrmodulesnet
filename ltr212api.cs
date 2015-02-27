@@ -314,6 +314,24 @@ namespace ltrModulesNet
             return Open("", cc, bios_file);
         }
 
+        /* варианты открытия с использованием встроенного в библиотеку .bio файла  */
+        public virtual _LTRNative.LTRERROR Open(uint saddr, ushort sport, string csn, ushort cc)
+        {
+            return LTR212_Open(ref module, saddr, sport, csn, cc, "");
+        }
+
+        public virtual _LTRNative.LTRERROR Open(string csn, ushort cc)
+        {
+            return Open(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, csn, cc, "");
+        }
+
+        public virtual _LTRNative.LTRERROR Open(ushort cc)
+        {
+            return Open("", cc, "");
+        }
+
+
+
         public virtual _LTRNative.LTRERROR Close()
         {
             return LTR212_Close(ref module);
