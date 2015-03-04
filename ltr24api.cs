@@ -13,6 +13,9 @@ namespace ltrModulesNet
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_Open(ref TLTR24 module, uint saddr, ushort sport, string csn, int slot_num);
         [DllImport("ltr24api.dll")]
+        public static extern _LTRNative.LTRERROR LTR24_OpenEx(ref TLTR24 module, uint saddr, ushort sport, string csn, ushort cc,
+                   _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags);
+        [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_IsOpened(ref TLTR24 module);
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_GetConfig(ref TLTR24 module);
@@ -39,6 +42,9 @@ namespace ltrModulesNet
       
         [DllImport("ltr24api.dll")]
         public static extern _LTRNative.LTRERROR LTR24_FindFrameStart(ref TLTR24 module, uint[] data, int size, out int index);
+
+        [DllImport("ltr24api.dll")]
+        public static extern _LTRNative.LTRERROR LTR24_StoreConfig(ref TLTR24 module, _LTRNative.StartMode start_mode);
 
         public const uint LTR24_VERSION_CODE = 0x02000000;
         public const int LTR24_CHANNEL_NUM = 4;
@@ -263,6 +269,23 @@ namespace ltrModulesNet
             return Open("", slot_num);
         }
 
+        public virtual _LTRNative.LTRERROR OpenEx(uint saddr, ushort sport, string csn, ushort cc,
+                                                 _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags)
+        {
+            return LTR24_OpenEx(ref module, saddr, sport, csn, cc, in_flags, out out_flags);
+        }
+
+        public virtual _LTRNative.LTRERROR OpenEx(string csn, ushort cc,
+                                          _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags)
+        {
+            return OpenEx(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, csn, cc, in_flags, out out_flags);
+        }
+
+        public virtual _LTRNative.LTRERROR OpenEx(ushort cc, _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags)
+        {
+            return OpenEx(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, "", cc, in_flags, out out_flags);
+        }
+
         public virtual _LTRNative.LTRERROR IsOpened()
         {
             return LTR24_IsOpened(ref module);
@@ -340,6 +363,12 @@ namespace ltrModulesNet
             return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
         }
 
+        public virtual _LTRNative.LTRERROR StoreConfig(_LTRNative.StartMode start_mode)
+        {
+            return LTR24_StoreConfig(ref module, start_mode);
+        }
+
+
         public bool Run {get {return module.Run;}}
 
         public FreqCode AdcFreqCode
@@ -411,4 +440,6 @@ namespace ltrModulesNet
     {
 
     }
+
+
 }

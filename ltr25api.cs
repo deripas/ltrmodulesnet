@@ -13,6 +13,9 @@ namespace ltrModulesNet
         [DllImport("ltr25api.dll")]
         public static extern _LTRNative.LTRERROR LTR25_Open(ref TLTR25 hnd, uint saddr, ushort sport, string csn, int slot_num);
         [DllImport("ltr25api.dll")]
+        public static extern _LTRNative.LTRERROR LTR25_OpenEx(ref TLTR25 module, uint saddr, ushort sport, string csn, ushort cc,
+                   _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags);
+        [DllImport("ltr25api.dll")]
         public static extern _LTRNative.LTRERROR LTR25_IsOpened(ref TLTR25 hnd);
         [DllImport("ltr25api.dll")]
         public static extern _LTRNative.LTRERROR LTR25_GetConfig(ref TLTR25 hnd);
@@ -49,6 +52,9 @@ namespace ltrModulesNet
         public static extern _LTRNative.LTRERROR LTR25_FlashWrite(ref TLTR25 hnd, uint addr, byte[] data, uint size);
         [DllImport("ltr25api.dll")]
         public static extern _LTRNative.LTRERROR LTR25_FlashErase(ref TLTR25 hnd, uint addr, uint size);
+
+        [DllImport("ltr25api.dll")]
+        public static extern _LTRNative.LTRERROR LTR25_StoreConfig(ref TLTR25 module, _LTRNative.StartMode start_mode);
 
 
 
@@ -268,6 +274,23 @@ namespace ltrModulesNet
             return Open("", slot_num);
         }
 
+        public virtual _LTRNative.LTRERROR OpenEx(uint saddr, ushort sport, string csn, ushort cc,
+                                                 _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags)
+        {
+            return LTR25_OpenEx(ref module, saddr, sport, csn, cc, in_flags, out out_flags);
+        }
+
+        public virtual _LTRNative.LTRERROR OpenEx(string csn, ushort cc,
+                                          _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags)
+        {
+            return OpenEx(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, csn, cc, in_flags, out out_flags);
+        }
+
+        public virtual _LTRNative.LTRERROR OpenEx(ushort cc, _LTRNative.OpenInFlags in_flags, out _LTRNative.OpenOutFlags out_flags)
+        {
+            return OpenEx(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, "", cc, in_flags, out out_flags);
+        }
+
         public _LTRNative.LTRERROR Close()
         {
             return LTR25_Close(ref module);
@@ -362,6 +385,11 @@ namespace ltrModulesNet
         public _LTRNative.LTRERROR FlashErase(uint addr, uint size)
         {
             return LTR25_FlashErase(ref module, addr, size);
+        }
+
+        public virtual _LTRNative.LTRERROR StoreConfig(_LTRNative.StartMode start_mode)
+        {
+            return LTR25_StoreConfig(ref module, start_mode);
         }
     }
 }
