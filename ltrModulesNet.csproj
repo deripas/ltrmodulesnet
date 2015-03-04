@@ -178,7 +178,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ltrapiLabView.cs" />
-    <Compile Include="ltrloop.cs" />
     <Compile Include="ltrNative.cs">
       <SubType>Code</SubType>
     </Compile>
