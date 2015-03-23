@@ -97,15 +97,6 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Name>System.XML</Name>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs">
@@ -147,12 +138,11 @@
     </Compile>
     <Compile Include="ltr27apiLabView_old.cs" />
     <Compile Include="ltr27api_old.cs" />
-    <Compile Include="ltr34api.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ltr34api.cs" />
     <Compile Include="ltr34apiLabView.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ltr34api_old.cs" />
     <Compile Include="ltr41api.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,66 +1,59 @@
-using System;
+п»їusing System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ltrModulesNet
 {
-    public class _ltr34api
+    public class ltr34api
     {
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_Init(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_Init(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_Open(ref TLTR34 module, uint net_addr, ushort net_port,
-            char[] crate_sn, int slot_num);
+        static extern _LTRNative.LTRERROR LTR34_Open(ref TLTR34 module, uint net_addr, ushort net_port,
+                                                     string crate_sn, int slot_num);
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_Close(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_Close(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_IsOpened(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_IsOpened(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_Recv(ref TLTR34 module, uint[] data, uint[] tmark, uint size, uint timeout);
+        static extern int LTR34_Recv(ref TLTR34 module, uint[] data, uint[] tmark, uint size, uint timeout);
 
         [DllImport("ltr34api.dll")]
-        public static extern uint LTR34_CreateLChannel(byte PhysChannel, bool ScaleFlag);
+        static extern uint LTR34_CreateLChannel(byte PhysChannel, bool ScaleFlag);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_Send(ref TLTR34 module, uint[] data, uint size, uint timeout);
+        static extern int LTR34_Send(ref TLTR34 module, uint[] data, uint size, uint timeout);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_ProcessData(ref TLTR34 module, double[] source, uint[] dest, uint size, bool volt);
+        static extern _LTRNative.LTRERROR LTR34_ProcessData(ref TLTR34 module, double[] source, uint[] dest, uint size, bool volt);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_Config(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_Config(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_DACStart(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_DACStart(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_DACStop(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_DACStop(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_Reset(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_Reset(ref TLTR34 module);
+
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_SetDescription(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_GetCalibrCoeffs(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_GetDescription(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_TestEEPROM(ref TLTR34 module);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_GetCalibrCoeffs(ref TLTR34 module);
+        static extern _LTRNative.LTRERROR LTR34_ReadFlash(ref TLTR34 module, byte[] data, ushort size, ushort Address);
 
         [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_WriteCalibrCoeffs(ref TLTR34 module);
-
-        [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_TestEEPROM(ref TLTR34 module);
-
-        [DllImport("ltr34api.dll")]
-        public static extern _LTRNative.LTRERROR LTR34_ReadFlash(ref TLTR34 module, byte[] data, ushort size, ushort Address);
-
-        [DllImport("ltr34api.dll")]
-        public static extern string LTR34_GetErrorString(int ErrorCode);
+        static extern IntPtr LTR34_GetErrorString(int ErrorCode);
 
 
         public const int LTR34_MAX_BUFFER_SIZE = 2097151;
@@ -68,191 +61,209 @@ namespace ltrModulesNet
         public const int LTR34_USER_EEPROM_SIZE = 1024;
         public const int LTR34_DAC_NUMBER_MAX = 8;
 
+        public enum AckType : byte
+        {
+            ECHO = 0,
+            STATUS = 1
+        } ;
+
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct DAC_CHANNEL_CALIBRATION
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = (2 * LTR34_DAC_NUMBER_MAX))]
-            public float[] FactoryCalibrOffset;
+            float[] FactoryCalibrOffset_;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = (2 * LTR34_DAC_NUMBER_MAX))]
-            public float[] FactoryCalibrScale;
+            float[] FactoryCalibrScale_;
+
+            public float[] FactoryCalibrOffset { get { return FactoryCalibrOffset_; } }
+            public float[] FactoryCalibrScale { get { return FactoryCalibrScale_; } }
         };
 
+
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct TINFO_LTR34
+        public struct INFO
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public char[] Name;
+            char[] Name_;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
-            public char[] Serial;
+            char[] Serial_;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-            public char[] FPGA_Version;
+            char[] FPGA_Version_;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-            public char[] CalibrVersion;
-            public byte MaxChannelQnt;
+            char[] CalibrVersion_;
+            byte MaxChannelQnt_;
+
+            public string Name { get { return new string(Name_).Split('\0')[0]; } }
+            public string Serial { get { return new string(Serial_).Split('\0')[0]; } }
+            public string FPGA_Version { get { return new string(FPGA_Version_).Split('\0')[0]; } }
+            public string CalibrVersion { get { return new string(CalibrVersion_).Split('\0')[0]; } }
+            public byte MaxChannelQnt { get { return MaxChannelQnt_; } }
         };
 
 
-        //**** конфигурация модуля
+        //**** РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ РјРѕРґСѓР»СЏ
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct TLTR34
+        struct TLTR34
         {
-            public int Size;// Размер структуры 
-            public _LTRNative.TLTR Channel;   // структура описывающая модуль в крейте – описание в ltrapi.pdf 		    
+            int Size;// Р Р°Р·РјРµСЂ СЃС‚СЂСѓРєС‚СѓСЂС‹ 
+            _LTRNative.TLTR Channel;   // СЃС‚СЂСѓРєС‚СѓСЂР° РѕРїРёСЃС‹РІР°СЋС‰Р°СЏ РјРѕРґСѓР»СЊ РІ РєСЂРµР№С‚Рµ вЂ“ РѕРїРёСЃР°РЅРёРµ РІ ltrapi.pdf 		    
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-            public uint[] LChTbl;                  // Таблица логических каналов
-            //**** настройки модуля           
-            public byte FrequencyDivisor;            // делитель частоты дискретизации 0..60 (31.25..500 кГц)
-            public byte ChannelQnt;             // число каналов 0, 1, 2, 3 соотвествнно (1, 2, 4, 8)
+            public uint[] LChTbl;                  // РўР°Р±Р»РёС†Р° Р»РѕРіРёС‡РµСЃРєРёС… РєР°РЅР°Р»РѕРІ
+            //**** РЅР°СЃС‚СЂРѕР№РєРё РјРѕРґСѓР»СЏ           
+            byte FrequencyDivisor_;            // РґРµР»РёС‚РµР»СЊ С‡Р°СЃС‚РѕС‚С‹ РґРёСЃРєСЂРµС‚РёР·Р°С†РёРё 0..60 (31.25..500 РєР“С†)
+            byte ChannelQnt_;             // С‡РёСЃР»Рѕ РєР°РЅР°Р»РѕРІ (1, 2, 4, 8)
             [MarshalAs(UnmanagedType.U1)]
-            public bool UseClb;
+            bool UseClb_;
             [MarshalAs(UnmanagedType.U1)]
-            public bool AcknowledgeType;             // тип подтверждения true - высылать подтверждение каждого слова, false- высылать состояние буффера каждые 100 мс
+            AckType AcknowledgeType_;             // С‚РёРї РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ true - РІС‹СЃС‹Р»Р°С‚СЊ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РєР°Р¶РґРѕРіРѕ СЃР»РѕРІР°, false- РІС‹СЃС‹Р»Р°С‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ Р±СѓС„С„РµСЂР° РєР°Р¶РґС‹Рµ 100 РјСЃ
             [MarshalAs(UnmanagedType.U1)]
-            public bool ExternalStart;               // внешний старт true - внешний старт, false - внутренний
+            bool ExternalStart_;               // РІРЅРµС€РЅРёР№ СЃС‚Р°СЂС‚ true - РІРЅРµС€РЅРёР№ СЃС‚Р°СЂС‚, false - РІРЅСѓС‚СЂРµРЅРЅРёР№
             [MarshalAs(UnmanagedType.U1)]
-            public bool RingMode;                    // режим кольца  true - режим кольца, false - потоковый режим
+            bool RingMode_;                    // СЂРµР¶РёРј РєРѕР»СЊС†Р°  true - СЂРµР¶РёРј РєРѕР»СЊС†Р°, false - РїРѕС‚РѕРєРѕРІС‹Р№ СЂРµР¶РёРј
             [MarshalAs(UnmanagedType.U1)]
-            public bool BufferFull;					// статус - буффер переполнен - ошибка
+            bool BufferFull_;					// СЃС‚Р°С‚СѓСЃ - Р±СѓС„С„РµСЂ РїРµСЂРµРїРѕР»РЅРµРЅ - РѕС€РёР±РєР°
             [MarshalAs(UnmanagedType.U1)]
-            public bool BufferEmpty;					// статус - буффер пуст - ошибка
+            bool BufferEmpty_;					// СЃС‚Р°С‚СѓСЃ - Р±СѓС„С„РµСЂ РїСѓСЃС‚ - РѕС€РёР±РєР°
             [MarshalAs(UnmanagedType.U1)]
-            public bool DACRunning;					// статус - запущена ли генерация
+            bool DACRunning_;					// СЃС‚Р°С‚СѓСЃ - Р·Р°РїСѓС‰РµРЅР° Р»Рё РіРµРЅРµСЂР°С†РёСЏ
 
-            public float FrequencyDAC;				// статус - частота - на которую настроен ЦАП в текущей конфигурации
-            public DAC_CHANNEL_CALIBRATION DacCalibration;
-            public TINFO_LTR34 ModuleInfo;
+            float FrequencyDAC_;				// СЃС‚Р°С‚СѓСЃ - С‡Р°СЃС‚РѕС‚Р° - РЅР° РєРѕС‚РѕСЂСѓСЋ РЅР°СЃС‚СЂРѕРµРЅ Р¦РђРџ РІ С‚РµРєСѓС‰РµР№ РєРѕРЅС„РёРіСѓСЂР°С†РёРё
+            DAC_CHANNEL_CALIBRATION DacCalibration_;
+            INFO ModuleInfo_;
+
+            public byte FrequencyDivisor { get { return FrequencyDivisor_; } set { FrequencyDivisor_ = value; } }
+            public byte ChannelQnt { get { return ChannelQnt_; } set { ChannelQnt_ = value; } }
+            public bool UseClb { get { return UseClb_; } set { UseClb_ = value; } }
+            public AckType AcknowledgeType { get { return AcknowledgeType_; } set { AcknowledgeType_ = value; } }
+            public bool ExternalStart { get { return ExternalStart_; } set { ExternalStart_ = value; } }
+            public bool RingMode { get { return RingMode_; } set { RingMode_ = value; } }
+            public bool BufferFull { get { return BufferFull_; } }
+            public bool BufferEmpty { get { return BufferEmpty_; } }
+            public bool DACRunning { get { return DACRunning_; } }
+            public float FrequencyDAC { get { return FrequencyDAC_; } }
+            public DAC_CHANNEL_CALIBRATION DacCalibration { get { return DacCalibration_; } }
+            public INFO ModuleInfo { get { return ModuleInfo_; } }
         }
 
-        public TLTR34 NewTLTR34
+        TLTR34 module;
+
+        public ltr34api() 
         {
-            get
-            {
-                TLTR34 NewModule = new TLTR34();
-                LTR34_Init(ref NewModule);
-                return NewModule;
-            }
+            LTR34_Init(ref module);	
         }
 
-        public TLTR34 module;
-
-        public _ltr34api()
+        ~ltr34api()
         {
-            module = NewTLTR34;
+            LTR34_Close(ref module);
         }
 
+		
+		public virtual _LTRNative.LTRERROR Init()
+		{
+			return LTR34_Init(ref module);
+		}
 
-        public virtual _LTRNative.LTRERROR Init()
+        public virtual _LTRNative.LTRERROR Open (uint saddr, ushort sport, string csn, ushort cc)
+		{
+			return LTR34_Open(ref module, saddr, sport, csn, cc);
+		}
+
+        public virtual _LTRNative.LTRERROR Open(string csn, ushort cc)
         {
-            return LTR34_Init(ref module);
+            return Open(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, csn, cc);
         }
 
-
-        public virtual _LTRNative.LTRERROR Open( uint net_addr, ushort net_port,
-            char[] crate_sn, int slot_num)
+        public virtual _LTRNative.LTRERROR Open(ushort cc)
         {
-			if (net_addr ==0) net_addr = NewTLTR34.Channel.saddr;
-			if (net_port ==0) net_port = NewTLTR34.Channel.sport;
-
-            return LTR34_Open(ref module, net_addr, net_port, crate_sn, slot_num);
+            return Open("", cc);
         }
 
-        public virtual _LTRNative.LTRERROR Close()
+        public virtual _LTRNative.LTRERROR Close ()
+		{
+			return LTR34_Close(ref module);
+		}        
+
+        public virtual _LTRNative.LTRERROR IsOpened ()
+		{
+			return LTR34_IsOpened(ref module);
+		}
+
+        public virtual int Recv(uint[] Data, uint size, uint[] tstamp, uint timeout)
         {
-            return LTR34_Close(ref module);
+            return LTR34_Recv(ref module, Data, tstamp, size, timeout);
         }
 
-
-        public virtual _LTRNative.LTRERROR IsOpened()
+        public virtual int Recv(uint[] Data, uint size, uint timeout)
         {
-            return LTR34_IsOpened(ref module);
+            return LTR34_Recv(ref module, Data, null, size, timeout);
         }
 
-
-        public virtual _LTRNative.LTRERROR Recv([In, Out]uint[] data, [In, Out] uint[] tmark, uint size, uint timeout)
+        public virtual void SetLChannel(byte lch, byte PhysChannel, bool ScaleFlag)
         {
-            return LTR34_Recv(ref module, data, tmark, size,timeout);
+            module.LChTbl[lch] = LTR34_CreateLChannel(PhysChannel, ScaleFlag);
         }
 
 
-        public virtual uint CreateLChannel(byte PhysChannel, bool ScaleFlag)
-        {
-            return LTR34_CreateLChannel(PhysChannel, ScaleFlag);
-        }
-
-
-        public virtual _LTRNative.LTRERROR Send([In]uint[] data, uint size, uint timeout)
+        public virtual int Send(uint[] data, uint size, uint timeout)
         {
             return LTR34_Send(ref module, data, size, timeout);
         }
 
-
-        public virtual _LTRNative.LTRERROR ProcessData([In]double[] source, [In, Out]uint[] dest, uint size, bool volt)
+        public virtual _LTRNative.LTRERROR ProcessData(double[] source, uint[] dest, uint size, bool volt)
         {
             return LTR34_ProcessData(ref module, source, dest, size, volt);
         }
-
 
         public virtual _LTRNative.LTRERROR Config()
         {
             return LTR34_Config(ref module);
         }
 
-
         public virtual _LTRNative.LTRERROR DACStart()
         {
             return LTR34_DACStart(ref module);
         }
-
 
         public virtual _LTRNative.LTRERROR DACStop()
         {
             return LTR34_DACStop(ref module);
         }
 
-
-        public virtual _LTRNative.LTRERROR Reset()
+        public virtual  _LTRNative.LTRERROR Reset()
         {
             return LTR34_Reset(ref module);
         }
-
-
-        public virtual _LTRNative.LTRERROR SetDescription()
-        {
-            return LTR34_SetDescription(ref module);
-        }
-
-
-        public virtual _LTRNative.LTRERROR GetDescription()
-        {
-            return LTR34_GetDescription(ref module);
-        }
-
-
-        public virtual _LTRNative.LTRERROR GetCalibrCoeffs()
-        {
-            return LTR34_GetCalibrCoeffs(ref module);
-        }
-
-
-        public virtual _LTRNative.LTRERROR WriteCalibrCoeffs()
-        {
-            return LTR34_WriteCalibrCoeffs(ref module);
-        }
-
 
         public virtual _LTRNative.LTRERROR TestEEPROM()
         {
             return LTR34_TestEEPROM(ref module);
         }
 
-        public virtual _LTRNative.LTRERROR ReadFlash([In, Out] byte[] data, ushort size, ushort Address)
+        public virtual _LTRNative.LTRERROR ReadFlash(byte[] data, ushort size, ushort Address)
         {
             return LTR34_ReadFlash(ref module, data, size, Address);
         }
 
-        public virtual string GetErrorString(int ErrorCode)
+        public static string GetErrorString(_LTRNative.LTRERROR err)
         {
-            return LTR34_GetErrorString(ErrorCode);
+            IntPtr ptr = LTR34_GetErrorString((int)err);
+            string str = Marshal.PtrToStringAnsi(ptr);
+            Encoding srcEncodingFormat = Encoding.GetEncoding("windows-1251");
+            Encoding dstEncodingFormat = Encoding.UTF8;
+            return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
         }
+
+        public byte FrequencyDivisor { get { return module.FrequencyDivisor; } set { module.FrequencyDivisor = value; } }
+        public byte ChannelQnt { get { return module.ChannelQnt; } set { module.ChannelQnt = value; } }
+        public bool UseClb { get { return module.UseClb; } set { module.UseClb = value; } }
+        public AckType AcknowledgeType { get { return module.AcknowledgeType; } set { module.AcknowledgeType = value; } }
+        public bool ExternalStart { get { return module.ExternalStart; } set { module.ExternalStart = value; } }
+        public bool RingMode { get { return module.RingMode; } set { module.RingMode = value; } }
+        public bool BufferFull { get { return module.BufferFull; } }
+        public bool BufferEmpty { get { return module.BufferEmpty; } }
+        public bool DACRunning { get { return module.DACRunning; } }
+        public float FrequencyDAC { get { return module.FrequencyDAC; } }
+        public DAC_CHANNEL_CALIBRATION DacCalibration { get { return module.DacCalibration; } }
+        public INFO ModuleInfo { get { return module.ModuleInfo; } }
     }
 }
