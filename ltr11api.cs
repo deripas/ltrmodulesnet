@@ -7,58 +7,58 @@ namespace ltrModulesNet
     public class ltr11api
     {
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_Init (ref TLTR11 module);
+        static extern _LTRNative.LTRERROR LTR11_Init (ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_Close (ref TLTR11 module);
+        static extern _LTRNative.LTRERROR LTR11_Close (ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_GetConfig (ref TLTR11 module);
+        static extern _LTRNative.LTRERROR LTR11_GetConfig (ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_GetFrame (ref TLTR11 module, uint[] buf);
+        static extern _LTRNative.LTRERROR LTR11_GetFrame (ref TLTR11 module, uint[] buf);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_Open (ref TLTR11 module, uint saddr, ushort sport, string csn, int slot_num);
+        static extern _LTRNative.LTRERROR LTR11_Open (ref TLTR11 module, uint saddr, ushort sport, string csn, int slot_num);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_IsOpened(ref TLTR11 module);
+        static extern _LTRNative.LTRERROR LTR11_IsOpened(ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_ProcessData (ref TLTR11 module, uint[] src, double[] dest, 
+        static extern _LTRNative.LTRERROR LTR11_ProcessData (ref TLTR11 module, uint[] src, double[] dest, 
                                                                     ref int size, bool calibr,
                                                                     bool volt); 
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_SetADC(ref TLTR11 module);
+        static extern _LTRNative.LTRERROR LTR11_SetADC(ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_Start(ref TLTR11 module);
+        static extern _LTRNative.LTRERROR LTR11_Start(ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_Stop(ref TLTR11 module);
+        static extern _LTRNative.LTRERROR LTR11_Stop(ref TLTR11 module);
 
         [DllImport("ltr11api.dll")]
-        public static extern int LTR11_Recv(ref TLTR11 hnd, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля
+        static extern int LTR11_Recv(ref TLTR11 hnd, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля
 
         [DllImport("ltr11api.dll")]
-        public static extern byte LTR11_CreateLChannel(byte phy_ch, ChModes mode, ChRanges range);
+        static extern byte LTR11_CreateLChannel(byte phy_ch, ChModes mode, ChRanges range);
 
         [DllImport("ltr11api.dll")]
-        public static extern _LTRNative.LTRERROR LTR11_FindAdcFreqParams(double adcFreq, 
+        static extern _LTRNative.LTRERROR LTR11_FindAdcFreqParams(double adcFreq, 
             out int prescaler, out int devider, out double resultAdcFreq);
 
         // функции вспомагательного характера
         [DllImport("ltr11api.dll")]
-        public static extern IntPtr LTR11_GetErrorString(int ErrorCode);   
+        static extern IntPtr LTR11_GetErrorString(int ErrorCode);   
 
-        const int LTR11_CLOCK =  15000;
-        const int LTR11_MAX_CHANNEL = 32;
-        const int LTR11_ADC_RANGEQNT=4;
-        const int LTR11_MAX_LCHANNEL=128;
+        public const int LTR11_CLOCK =  15000;
+        public const int LTR11_MAX_CHANNEL = 32;
+        public const int LTR11_ADC_RANGEQNT=4;
+        public const int LTR11_MAX_LCHANNEL=128;
 
-        const int LTR11_MAX_ADC_DIVIDER=65535;
-        const int LTR11_MIN_ADC_DIVIDER = 2;
+        public const int LTR11_MAX_ADC_DIVIDER=65535;
+        public const int LTR11_MIN_ADC_DIVIDER = 2;
 
         public enum StartAdcModes : int
         {
@@ -162,7 +162,7 @@ namespace ltrModulesNet
         } ;    
 
         [StructLayout(LayoutKind.Sequential, Pack=4)]
-        public struct TLTR11
+        struct TLTR11
         {
             int size;                               /* размер структуры в байтах */
             _LTRNative.TLTR Channel_;               /* описатель канала связи с модулем */
@@ -189,7 +189,7 @@ namespace ltrModulesNet
             public TINFO_LTR11 ModuleInfo { get { return ModuleInfo_; } }
         };             
 
-        public TLTR11 module;
+        TLTR11 module;
 
         public ltr11api() 
         {
