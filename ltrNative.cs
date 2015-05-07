@@ -20,13 +20,13 @@ namespace ltrModulesNet
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TLTR
         {
-            public uint saddr;                      // сетевой адрес сервера				
-            public ushort sport;                    // сетевой порт сервера						
+            public uint saddr;                      // сетевой адрес сервера
+            public ushort sport;                    // сетевой порт сервера
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public byte[] csn;						// серийный номер крейта				
-            public ushort cc;                       // номер канала крейта					
-            public uint flags;                      // флаги состояния канала				
-            public uint tmark;						// время синхронизации					
+            public byte[] csn;                        // серийный номер крейта
+            public ushort cc;                       // номер канала крейта
+            public uint flags;                      // флаги состояния канала
+            public uint tmark;                        // время синхронизации
             public UIntPtr Internal;                // указатель на канал
 
 
@@ -81,7 +81,7 @@ namespace ltrModulesNet
 
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct TDESCRIPTION_MODULE								//
+        public struct TDESCRIPTION_MODULE                                //
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             char[] CompanyName_;                                  //
@@ -101,8 +101,8 @@ namespace ltrModulesNet
         };
         // описание процессора и програмного обеспечения
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct TDESCRIPTION_CPU									//
-        {																//
+        public struct TDESCRIPTION_CPU                                    //
+        {                                                                //
             byte Active_;                                         // флаг достоверности остальных полей структуры
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             char[] Name_;                                         // название            
@@ -120,7 +120,7 @@ namespace ltrModulesNet
         // описание плис
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TDESCRIPTION_FPGA
-        {																//
+        {                                                                //
             byte Active_;                                         // флаг достоверности остальных полей структуры
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             char[] Name_;                                         // название
@@ -136,8 +136,8 @@ namespace ltrModulesNet
             public uint FirmwareVersion { get { return FirmwareVersion_; } }
         } ;
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct TDESCRIPTION_INTERFACE							//
-        {																//
+        public struct TDESCRIPTION_INTERFACE                            //
+        {                                                                //
             byte Active_;                                         // флаг достоверности остальных полей структуры
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             char[] Name_;                                         // название
@@ -150,8 +150,8 @@ namespace ltrModulesNet
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct TDESCRIPTION_MEZZANINE							//
-        {																//
+        public struct TDESCRIPTION_MEZZANINE                            //
+        {                                                                //
             byte Active_;                                         // флаг достоверности остальных полей структуры
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             char[] Name_;                                         // название изделия
@@ -172,8 +172,8 @@ namespace ltrModulesNet
         };   
         
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        public struct TLTR_SETTINGS							
-        {			
+        public struct TLTR_SETTINGS
+        {
             ushort _size;
             byte   _autorun_ison;
             public void Init() { _size = 4; }
@@ -367,7 +367,7 @@ namespace ltrModulesNet
             LTRAVR_ERROR_WRITE_FUSE_BITS = -208,     /*Ошибка программирования fuse витов avr.*/
             LTRAVR_ERROR_READ_SIGN = -209,     /*Ошибка считывания сигнатуры avr.*/
 
-            LTRBOOT_ERROR_GET_ARRAY = -300,			/*Ошибка выполнения команды GET_ARRAY.*/
+            LTRBOOT_ERROR_GET_ARRAY = -300,            /*Ошибка выполнения команды GET_ARRAY.*/
             LTRBOOT_ERROR_PUT_ARRAY = -301,      /*Ошибка выполнения команды PUT_ARRAY.*/
             LTRBOOT_ERROR_CALL_APPL = -302,      /*Ошибка выполнения команды CALL_APPLICATION.*/
             LTRBOOT_ERROR_GET_DESCRIPTION = -303,      /*Ошибка выполнения команды GET_DESCRIPTION.*/
@@ -849,15 +849,15 @@ namespace ltrModulesNet
         [DllImport("ltrapi.dll")]
         public static extern LTRERROR LTR_IsOpened(ref TLTR ltr); //Состояние соединения с модулем
 
-		[DllImport("ltrapi.dll")]
-		public static extern int LTR_Recv(ref TLTR ltr, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля		
+        [DllImport("ltrapi.dll")]
+        public static extern int LTR_Recv(ref TLTR ltr, uint[] buf, uint[] tmark, uint size, uint timeout); //Прием данных от модуля
 
         // Прием данных из крейта с поддержкой расширенных меток времени
         [DllImport("ltrapi.dll")]
         public static extern int LTR_RecvEx(ref TLTR ltr, uint[] data, uint[] tmark, uint size, uint timeout,
                                   UInt64[] unixtime);
-		[DllImport("ltrapi.dll")]
-		public static extern int LTR_Send(ref TLTR ltr, uint[] buf, uint size, uint timeout); //Передача данных модулю
+        [DllImport("ltrapi.dll")]
+        public static extern int LTR_Send(ref TLTR ltr, uint[] buf, uint size, uint timeout); //Передача данных модулю
 
         [DllImport("ltrapi.dll")]
         public static extern _LTRNative.LTRERROR LTR_SetServerProcessPriority(ref TLTR ltr, [MarshalAs(UnmanagedType.U4)] ServerPriority Priority);
@@ -869,7 +869,7 @@ namespace ltrModulesNet
         public static extern LTRERROR LTR_GetCrates(ref TLTR ltr, byte[,] csn); //Список крейтов подключенных к серверу
         //BYTE[CRATE_MAX][ SERIAL_NUMBER_SIZE]
         [DllImport("ltrapi.dll")]
-        public static extern LTRERROR LTR_GetCrateModules(ref TLTR ltr, UInt16[] mid); //Список модулей крейта	
+        public static extern LTRERROR LTR_GetCrateModules(ref TLTR ltr, UInt16[] mid); //Список модулей крейта
         //WORD[MODULE_MAX],
         ///
         /// Ethernet Crate 
@@ -990,7 +990,7 @@ namespace ltrModulesNet
 
         public _LTRNative()
         {
-           	module = NewLTR;	
+               module = NewLTR;
         }
 
         public _LTRNative(ref TLTR module)
@@ -998,7 +998,7 @@ namespace ltrModulesNet
             this.module = module;
         }   
         
-		public TLTR module;
+        public TLTR module;
 
         public static TLTR NewLTR
         {
@@ -1121,28 +1121,53 @@ namespace ltrModulesNet
             return Modules;
         }
 
-		public ushort[] SearchModules()
-		{
-			LTRERROR ERRORCODE = LTRERROR.OK;			
-			ushort[] Modules = new ushort[_LTRNative.MODULE_MAX];
-			
-			ERRORCODE = LTR_GetCrateModules(ref module, Modules);
-            if (ERRORCODE != LTRERROR.OK) throw new Exception("Не считываются модули " + GetErrorString(ERRORCODE));			
+        public ushort[] SearchModules()
+        {
+            LTRERROR ERRORCODE = LTRERROR.OK;
+            ushort[] Modules = new ushort[_LTRNative.MODULE_MAX];
 
-			return Modules;
-		}
+            ERRORCODE = LTR_GetCrateModules(ref module, Modules);
+            if (ERRORCODE != LTRERROR.OK) throw new Exception("Не считываются модули " + GetErrorString(ERRORCODE));
+
+            return Modules;
+        }
 
         public LTRERROR Open(byte [] CrateSerial, ushort ModuleSlot)
         {
-			if (CrateSerial!=null) CrateSerial.CopyTo(module.csn,0);
-			module.cc = ModuleSlot;
+            if (CrateSerial!=null)
+                CrateSerial.CopyTo(module.csn,0);
 
-			return LTR_Open(ref module);        
+            module.cc = ModuleSlot;
+            return LTR_Open(ref module);        
+        }
+
+        
+        public LTRERROR Open(uint saddr, ushort sport, string CrateSerial, ushort ModuleSlot)
+        {
+            char[] arr = CrateSerial.ToCharArray();
+            int i;
+            for (i = 0; (i < arr.Length) && (i < 15); i++)
+                module.csn[i] = (byte)arr[i];
+            module.csn[i] = 0;
+            module.cc = ModuleSlot;
+            module.saddr = saddr;
+            module.sport = sport;
+            return LTR_Open(ref module);    
+        }
+
+        public LTRERROR Open(string CrateSerial, ushort ModuleSlot)
+        {
+            return Open(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, CrateSerial, ModuleSlot);    
+        }
+
+        public LTRERROR Open(string CrateSerial)
+        {
+            return Open(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, CrateSerial, 0);
         }
 
         public virtual LTRERROR Close()
         {
-			return LTR_Close(ref module);            
+            return LTR_Close(ref module);
         }
 
         // Подготовка данных к передаче в модуль
@@ -1160,20 +1185,20 @@ namespace ltrModulesNet
             return LTR_Send(ref module, Buff, Size, Timeout);
         }
 
-		public int Recv(uint []Buff, uint Size, uint Timeout)
-		{
-			return LTR_Recv(ref module, Buff, null, Size, Timeout);
-		}
+        public int Recv(uint []Buff, uint Size, uint Timeout)
+        {
+            return LTR_Recv(ref module, Buff, null, Size, Timeout);
+        }
 
         public int RecvEx(uint[] data, uint[] tmark, uint size, uint timeout, UInt64[] unixtime)
         {
             return LTR_RecvEx(ref module, data, tmark, size, timeout, unixtime);
         }
 
-		public int Recv(uint []Buff, uint [] tmark , uint Size, uint Timeout)
-		{
-			return LTR_Recv(ref module, Buff, tmark, Size, Timeout);
-		}
+        public int Recv(uint []Buff, uint [] tmark , uint Size, uint Timeout)
+        {
+            return LTR_Recv(ref module, Buff, tmark, Size, Timeout);
+        }
 
         public LTRERROR PutSettings(ref TLTR_SETTINGS settings)
         {
@@ -1219,37 +1244,37 @@ namespace ltrModulesNet
 
         public bool ResetModule(uint Timeout)
         {
-			uint [] buf = new uint[3]{0x8000, 0x8080, 0x8000};
-			if (LTR_Send(ref module, buf, (uint)buf.Length, Timeout)!=buf.Length) return false;
-			if (LTR_Recv(ref module, buf, null, 1, Timeout)!=1) return false;
-			if (((buf[0]>>24)&0xFF)!=((buf[0]>>16)&0xFF)) return false;
-			return true;
+            uint [] buf = new uint[3]{0x8000, 0x8080, 0x8000};
+            if (LTR_Send(ref module, buf, (uint)buf.Length, Timeout)!=buf.Length) return false;
+            if (LTR_Recv(ref module, buf, null, 1, Timeout)!=1) return false;
+            if (((buf[0]>>24)&0xFF)!=((buf[0]>>16)&0xFF)) return false;
+            return true;
         }        
 
         public bool StopModule()
         {
-			uint [] buf = new uint[3]{0x8000, 0x8000, 0x8000};
-			if (LTR_Send(ref module, buf, (uint)buf.Length, 2000)!=buf.Length) return false;
-			return true;
+            uint [] buf = new uint[3]{0x8000, 0x8000, 0x8000};
+            if (LTR_Send(ref module, buf, (uint)buf.Length, 2000)!=buf.Length) return false;
+            return true;
         }   
         
-		public bool FlushBuffers(uint MaxTimeout_ms, uint MaxDuration_ms)
-		{
-			uint [] buf = new uint[65535];
-			int res=1;
+        public bool FlushBuffers(uint MaxTimeout_ms, uint MaxDuration_ms)
+        {
+            uint [] buf = new uint[65535];
+            int res=1;
             DateTime Begin = DateTime.Now;
             while (res > 0)
-			{
+            {
                 res = LTR_Recv(ref module, buf, null, (uint)buf.Length, MaxTimeout_ms);
 
                 if (((TimeSpan)(DateTime.Now - Begin)).TotalMilliseconds > MaxDuration_ms)
                 {
                     return false;
                 }
-			}
-			if (res!=0) return false;
-			return true;
-		}
+            }
+            if (res!=0) return false;
+            return true;
+        }
     }
 
 }
