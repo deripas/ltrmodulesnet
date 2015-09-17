@@ -769,7 +769,7 @@ namespace ltrModulesNet
             LTR25_ERR_LOW_POW_MODE              = -10611, /**< Модуль находится в низкопотребляющем режиме */
         }
 
-        public enum MODULETYPE
+        public enum MODULETYPE : ushort
         {
             EMPTY = 0,
             IDENTIFYING = 0xFFFF,
@@ -870,6 +870,8 @@ namespace ltrModulesNet
         //BYTE[CRATE_MAX][ SERIAL_NUMBER_SIZE]
         [DllImport("ltrapi.dll")]
         public static extern LTRERROR LTR_GetCrateModules(ref TLTR ltr, UInt16[] mid); //Список модулей крейта
+        [DllImport("ltrapi.dll")]
+        public static extern LTRERROR LTR_GetCrateModules(ref TLTR ltr, MODULETYPE[] mid); //Список модулей крейта
         //WORD[MODULE_MAX],
         ///
         /// Ethernet Crate 
