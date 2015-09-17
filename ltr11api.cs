@@ -43,10 +43,14 @@ namespace ltrModulesNet
 
         [DllImport("ltr11api.dll")]
         static extern byte LTR11_CreateLChannel(byte phy_ch, ChModes mode, ChRanges range);
-
+        
         [DllImport("ltr11api.dll")]
         static extern _LTRNative.LTRERROR LTR11_FindAdcFreqParams(double adcFreq, 
             out int prescaler, out int devider, out double resultAdcFreq);
+
+        [DllImport("ltr11api.dll")]
+        static extern _LTRNative.LTRERROR LTR11_SearchFirstFrame(ref TLTR11 hnd, uint[] data, uint size,
+                                                                 out uint index);
 
         // функции вспомагательного характера
         [DllImport("ltr11api.dll")]
@@ -251,15 +255,18 @@ namespace ltrModulesNet
 		{
 			return LTR11_Stop(ref module);
 		}
-
-        
-
-
+                
 		
-		public virtual int Recv (uint [] Data, uint size, uint[] tstamp ,uint timeout)
+		public virtual int Recv (uint [] Data, uint[] tstamp, uint size, uint timeout)
 		{			
 			return LTR11_Recv(ref module, Data, tstamp, size, timeout);
 		}
+
+        /* такой вариант оставлен только для совместимости .... */
+        public virtual int Recv(uint[] Data, uint size, uint[] tstamp, uint timeout)
+        {
+            return LTR11_Recv(ref module, Data, tstamp, size, timeout);
+        }
 
         public virtual int Recv(uint[] Data, uint size, uint timeout)
         {
@@ -313,6 +320,11 @@ namespace ltrModulesNet
 
         public void SetLChannel(byte lch, byte phy_ch, ChModes mode, ChRanges range) {
             module.LChTbl[lch] = LTR11_CreateLChannel(phy_ch, mode, range);
+        }
+
+        public _LTRNative.LTRERROR SearchFirstFrame(uint[] data, uint size, out uint index)
+        {
+            return LTR11_SearchFirstFrame(ref module, data, size, out index);
         }
 
 
