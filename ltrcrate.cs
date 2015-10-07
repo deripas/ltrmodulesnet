@@ -57,9 +57,13 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             public UserIoCfg[] userio;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-            public DigOutCfg[] digout;
-            [MarshalAs(UnmanagedType.U2)]
-            public bool digout_en; 
+            public DigOutCfg[] digout;            
+            short _digout_en;
+
+            void checkDoutArr() {if (digout == null) digout = new DigOutCfg[2];}
+            public bool digout_en { get { return _digout_en != 0; } set { _digout_en = (short)(value ? 1 : 0); } }
+            public DigOutCfg digout1 { get { checkDoutArr(); return digout[0]; } set { checkDoutArr(); digout[0] = value; } }
+            public DigOutCfg digout2 { get { checkDoutArr(); return digout[1]; } set { checkDoutArr(); digout[1] = value; } }
         }
 
 
