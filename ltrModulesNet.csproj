@@ -157,7 +157,8 @@
     <Compile Include="ltr42apiLabView.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ltr43api.cs">
+    <Compile Include="ltr43api.cs" />
+    <Compile Include="ltr43api_old.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ltr43apiLabView.cs">
