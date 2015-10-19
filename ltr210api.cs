@@ -527,8 +527,6 @@ namespace ltrModulesNet
         {
             if (IsOpened() == _LTRNative.LTRERROR.OK)
             {
-                if (hnd.State.Run)
-                    Stop();
                 Close();
             }
         }
