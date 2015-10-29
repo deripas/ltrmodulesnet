@@ -277,12 +277,12 @@ namespace ltrModulesNet
             ushort _verFPGA;
             byte _verPLD;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR210_CHANNEL_CNT*8)]
-            CBR_COEF[] CbrCoef;
-            double AfcCoefFreq;
+            CBR_COEF[] _CbrCoef;
+            double _AfcCoefFreq;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR210_CHANNEL_CNT * 8)]
-            double[] AfcCoef;
+            double[] _AfcCoef;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR210_CHANNEL_CNT * 8)]
-            AFC_IIR_COEF[] AfcIirParam;
+            AFC_IIR_COEF[] _AfcIirParam;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
             uint[] Reserved;
 
@@ -293,7 +293,40 @@ namespace ltrModulesNet
             /* Версия прошивки ПЛИС модуля (действительна только после ее загрузки) */
             public ushort VerFPGA { get { return _verFPGA; } }
             /* Версия прошивки PLD */
-            public byte VerPLD { get { return _verPLD; } }            
+            public byte VerPLD { get { return _verPLD; } }
+
+            public double AfcCoefFreq { get { return _AfcCoefFreq; } set { _AfcCoefFreq = value; } }            
+               
+
+            public double AfcCoef(int ch, int range)
+            {
+                return _AfcCoef[8 * ch + range];
+            }
+
+            public void SetAfcCoef(int ch, int range, double value)
+            {
+                _AfcCoef[8 * ch + range] = value;
+            }
+
+            public AFC_IIR_COEF AfcIirParam(int ch, int range)
+            {
+                return _AfcIirParam[8 * ch + range];
+            }
+
+            public void SetAfcIirParam(int ch, int range, AFC_IIR_COEF coef)
+            {
+                _AfcIirParam[8 * ch + range] = coef;
+            }
+
+            public CBR_COEF CbrCoef(int ch, int range)
+            {
+                return _CbrCoef[8 * ch + range];
+            }
+
+            public void SetCbrCoef(int ch, int range, CBR_COEF coef)
+            {
+                _CbrCoef[8 * ch + range] = coef;
+            }
         }
 
         /**  Настройки канала АЦП */
@@ -445,7 +478,7 @@ namespace ltrModulesNet
             IntPtr _internal;
             CONFIG _cfg;
             STATE _stat;
-            INFO _info;
+            public INFO ModuleInfo;
 
             /* Структура, содержащая состояние соединения с сервером. */
             public _LTRNative.TLTR Channel { get { return _channel; } }
@@ -454,9 +487,7 @@ namespace ltrModulesNet
             /** Состояние модуля и рассчитанные параметры. Поля изменяются функциями
                 библиотеки. Пользовательской программой могут использоваться
                 только для чтения. */
-            public STATE State { get { return _stat; } }
-            /** Информация о модуле */
-            public INFO ModuleInfo { get { return _info; } }
+            public STATE State { get { return _stat; } }            
         }
 
         /* Дополнительная информация о принятом отсчете. */
@@ -513,6 +544,39 @@ namespace ltrModulesNet
         public CONFIG Cfg { get { return hnd.Cfg; } set { hnd.Cfg = value; } }
         public STATE State { get { return hnd.State; } }
         public INFO ModuleInfo { get { return hnd.ModuleInfo; } }
+
+
+        public double AfcCoefFreq { get { return ModuleInfo.AfcCoefFreq; } set { hnd.ModuleInfo.AfcCoefFreq = value; } }            
+
+        public double AfcCoef(int ch, int range)
+        {
+            return ModuleInfo.AfcCoef(ch, range);
+        }
+
+        public void SetAfcCoef(int ch, int range, double value)
+        {
+            hnd.ModuleInfo.SetAfcCoef(ch, range, value);
+        }
+
+        public AFC_IIR_COEF AfcIirParam(int ch, int range)
+        {
+            return ModuleInfo.AfcIirParam(ch, range);
+        }
+
+        public void SetAfcIirParam(int ch, int range, AFC_IIR_COEF coef)
+        {
+            hnd.ModuleInfo.SetAfcIirParam(ch, range, coef);
+        }
+
+        public CBR_COEF CbrCoef(int ch, int range)
+        {
+            return ModuleInfo.CbrCoef(ch, range);
+        }
+
+        public void SetCbrCoef(int ch, int range, CBR_COEF coef)
+        {
+            hnd.ModuleInfo.SetCbrCoef(ch, range, coef);
+        }
 
 
 
