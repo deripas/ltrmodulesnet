@@ -172,6 +172,13 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
             uint[] Reserved;
 
+            public CHANNEL_CONFIG(bool enabled) { 
+                _enabled = enabled; 
+                Reserved = new uint[11];
+                for (int i = 0; i < Reserved.Length; i++)
+                    Reserved[i] = 0;
+            }
+
             public bool Enabled { get { return _enabled; } set { _enabled = value; } }
         }
 
