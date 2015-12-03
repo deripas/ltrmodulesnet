@@ -4,7 +4,9 @@ using ltrModulesNet;
 /* Данный пример демонстрирует работу с модулем LTR25 из программы на языке C#.
  * Пример представляет собой консольную программу, которая устанавливает связь с модулем,
  * выводит информацию о модуле, устанавливает настройки и собирает заданное кол-во 
- * блоков заданного размера, выводя на экран только по первому значению каждого для канала.
+ * блоков заданного размера, выводя на экран для примера значение пик-пик (max - min)
+ * для каждого канала (т.к. LTR25 измеряет только переменную составляющую, то среднее 
+ * всегда будет около нуля).
  * 
  * Необходимо установить номер слота, в котором вставлен модуль (константа SLOT).
  * Настройки сбора задаются в коде при конфигурации модуля.
@@ -15,11 +17,11 @@ namespace ltr25_console
     class ltr25_console
     {
         /* количество отсчетов на канал, принмаемых за раз (блок) */
-        const int RECV_BLOCK_CH_SIZE = 1024;
+        const int RECV_BLOCK_CH_SIZE = 16*1024;
         /* количество блоков, после которого завершаем сбор */
-        const int RECV_BLOCK_CNT = 10000000;
+        const int RECV_BLOCK_CNT = 20;
         /* Номер слота в крейте, где вставлен модуль */
-        const int SLOT = 3;
+        const int SLOT = 2;
 
         static int Main(string[] args)
         {          
@@ -56,6 +58,7 @@ namespace ltr25_console
                 
                 cfg.Ch[0].Enabled = true;
                 cfg.Ch[1].Enabled = true;
+                cfg.Ch[2].Enabled = true;
   
                 hltr25.Cfg = cfg;
 
@@ -99,13 +102,13 @@ namespace ltr25_console
                     ltr25api.ChStatus[] ch_status = new ltr25api.ChStatus[hltr25.State.EnabledChCnt];
 
                     /* принмаем RECV_BLOCK_CNT блоков данных, после чего выходим */
-                    for (int i = 0; (i < RECV_BLOCK_CNT) && 
-                        (err == _LTRNative.LTRERROR.OK); i++)
+                    for (int block_idx = 0; (block_idx < RECV_BLOCK_CNT) &&
+                        (err == _LTRNative.LTRERROR.OK); block_idx++)
                     {
                         int rcv_cnt;
                         /* прием необработанных слов. в таймауте учитываем время выполнения самого преобразования */
                         rcv_cnt = hltr25.Recv(rbuf, marks, (uint)rbuf.Length, 
-                                4000 + (uint)(1000*RECV_BLOCK_CH_SIZE/hltr25.State.AdcFreq + 1));
+                                               4000 + (uint)(1000*RECV_BLOCK_CH_SIZE/hltr25.State.AdcFreq + 1));
 
                         /* значение меньше 0 => код ошибки */
                         if (rcv_cnt < 0)
@@ -135,22 +138,37 @@ namespace ltr25_console
                             {
                                 /* при успешной обработке для примера выводим по одному значению
                                    для каждого канала и показания сек. метки и старт. метки первого отсчета */
-                                Console.Write("Блок {0}.", i+1);
+                                Console.Write("Блок {0}. ", block_idx + 1);
                                 for (int ch=0; ch < hltr25.State.EnabledChCnt; ch++)
                                 {
                                     /* проверяем статус канала - не обнаружен ли обрыв или кз */
                                     if (ch_status[ch] == ltr25api.ChStatus.OPEN)
                                     {
-                                        Console.Write("обрыв     ");
+                                        Console.Write("обрыв       ");
                                     }
                                     else if (ch_status[ch] == ltr25api.ChStatus.SHORT)
                                     {
-                                        Console.Write("кз        ");
+                                        Console.Write("кз          ");
                                     }
                                     else if (ch_status[ch] == ltr25api.ChStatus.OK)
                                     {
-                                        /* если все ок - выводим значение (для примера только первое) */
-                                        Console.Write(" {1}  ", ch + 1, data[ch].ToString("F7"));
+                                        double min_val, max_val, pp;
+                                        /* рассчитываем разницу минимума и максимума для
+                                         * примера для отображения (постоянная составляющая
+                                         * не имеет смысла для LTR25) */
+                                        min_val = max_val = data[ch];
+                                        for (uint i = 1; i < rcv_cnt / hltr25.State.EnabledChCnt; i++)
+                                        {
+                                            double val = data[i * hltr25.State.EnabledChCnt + ch];
+                                            if (min_val > val)
+                                                min_val = val;
+                                            if (max_val < val)
+                                                max_val = val;
+                                        }
+                                        pp = (max_val - min_val);                                        
+
+                                        /* если все ок - выводим значение*/
+                                        Console.Write("{0}   ", pp.ToString("F7"));
                                     }
                                     else
                                     {                                        
