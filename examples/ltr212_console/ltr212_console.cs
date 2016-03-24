@@ -15,7 +15,7 @@ namespace ltr212_console
     class ltr212_console
     {
         /* Номер слота в крейте, где вставлен модуль */
-        const int SLOT = 6;
+        const int SLOT = 1;
         /* Количество отсчетов на канал, принмаемых за раз */
         const int RECV_BLOCK_CH_SIZE = 32;
         /* Количество блоков, которые нужно принять и выйти */
@@ -100,11 +100,13 @@ namespace ltr212_console
                 }
 
                 if (err == _LTRNative.LTRERROR.OK)
-                {
-                    int recv_data_cnt = RECV_BLOCK_CH_SIZE * hltr212.LChQnt;
+                {   
+                    int recv_samples_cnt = RECV_BLOCK_CH_SIZE * hltr212.LChQnt;
+                    /* в LTR212 на каждый отсчет передается 2 слова */
+                    int recv_wrd_cnt = 2 * recv_samples_cnt;
 
-                    uint[] rbuf = new uint[recv_data_cnt];
-                    double[] data = new double[recv_data_cnt];
+                    uint[] rbuf = new uint[recv_wrd_cnt];
+                    double[] data = new double[recv_wrd_cnt];
 
                     uint tout = hltr212.CalcTimeOut(RECV_BLOCK_CH_SIZE);
 
