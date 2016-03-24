@@ -99,6 +99,21 @@ namespace ltrModulesNet
 			return res;
 		}
 
+        [DllImport("ltr22api.dll")]
+        static extern _LTRNative.LTRERROR LTR22_Open(ref TLTR22 module, uint saddr, ushort sport, string csn, ushort slot_num);
+
+        public virtual _LTRNative.LTRERROR Open2(uint saddr, ushort sport, string csn, ushort cc)
+        {
+            if (saddr == 0) saddr = NewTLTR22.Channel.saddr;
+            if (sport == 0) sport = NewTLTR22.Channel.sport;
+
+            SetConfigToModule();
+            _LTRNative.LTRERROR res = LTR22_Open(ref module, saddr, sport, csn, cc);
+            GetConfigFromModule();
+            return res;
+        }
+
+
 		
 		public override _LTRNative.LTRERROR Open(uint saddr, ushort sport, [In,Out] byte[] csn, ushort cc)
 		{
