@@ -246,6 +246,20 @@ namespace ltrModulesNet
             return _LTRNative.LTR_SetIPCrateFlags(ref hnd, ip_addr, (uint)new_flags, permanent);
         }
 
+        public virtual _LTRNative.LTRERROR ResetModule(ltrcrate.Interfaces iface, string serial, int slot, uint flags)
+        {
+            return _LTRNative.LTR_ResetModule(ref hnd, (int)iface, serial, slot, flags);
+        }
+
+        public virtual _LTRNative.LTRERROR ResetModule(string serial, int slot)
+        {
+            return ResetModule(ltrcrate.Interfaces.UNKNOWN, serial, slot, 0);
+        }
+
+
+
+
+
         public static string GetErrorString(_LTRNative.LTRERROR err)
         {
             IntPtr ptr = LTR_GetErrorString((int)err);
@@ -254,6 +268,8 @@ namespace ltrModulesNet
             Encoding dstEncodingFormat = Encoding.UTF8;
             return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
         }
+
+
 
 
       

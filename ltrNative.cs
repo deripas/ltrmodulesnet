@@ -965,6 +965,10 @@ namespace ltrModulesNet
         [DllImport("ltrapi.dll")]
         public static extern LTRERROR LTR_ServerShutdown(ref TLTR ltr);
 
+        [DllImport("ltrapi.dll")]
+        public static extern LTRERROR LTR_ResetModule(ref TLTR ltr, int iface, string serial, int slot, uint flags);
+
+
 
         [DllImport("ltrapi.dll")]
         public static extern LTRERROR LTR_PutSettings(ref TLTR ltr, ref TLTR_SETTINGS settings);
