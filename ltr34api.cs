@@ -63,9 +63,9 @@ namespace ltrModulesNet
 
         public enum AckType : byte
         {
-            ECHO = 0,
-            STATUS = 1
-        } ;
+            STATUS = 0,
+            ECHO = 1,            
+        };
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct DAC_CHANNEL_CALIBRATION
