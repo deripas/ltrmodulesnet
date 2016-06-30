@@ -226,7 +226,7 @@ namespace ltr210_console
                         if (stop_err != _LTRNative.LTRERROR.OK)
                         {
                             Console.WriteLine("Сбор остановлен с ошибокй. Ошибка {0}: {1}",
-                                err, ltr210api.GetErrorString(stop_err));
+                                stop_err, ltr210api.GetErrorString(stop_err));
                             if (err == _LTRNative.LTRERROR.OK)
                                 err = stop_err;
                         }

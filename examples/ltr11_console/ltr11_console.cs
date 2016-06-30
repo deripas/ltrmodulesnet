@@ -159,7 +159,7 @@ namespace ltr11_console
                         if (stop_err != _LTRNative.LTRERROR.OK)
                         {
                             Console.WriteLine("Не удалось остановить сбор данных. Ошибка {0}: {1}",
-                                 err, ltr11api.GetErrorString(stop_err));
+                                 stop_err, ltr11api.GetErrorString(stop_err));
                             if (err == _LTRNative.LTRERROR.OK)
                                 err = stop_err;
                         }                        

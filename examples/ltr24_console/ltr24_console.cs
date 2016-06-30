@@ -179,7 +179,7 @@ namespace ltr24_console
                     if (stop_err != _LTRNative.LTRERROR.OK)
                     {
                         Console.WriteLine("Не удалось остановить сбор данных. Ошибка {0}: {1}",
-                            err, ltr24api.GetErrorString(stop_err));
+                            stop_err, ltr24api.GetErrorString(stop_err));
                         if (err == _LTRNative.LTRERROR.OK)
                             err = stop_err;
                     }
