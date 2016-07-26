@@ -294,7 +294,18 @@ namespace ltrModulesNet
             ERROR_RECV = -8,                        /*Ошибка приема данных.*/
             ERROR_EXECUTE = -9,                     /*Ошибка обмена с крейт-контроллером.*/
             WARNING_MODULE_IN_USE = -10,            /* Канал обмена с сервером уже был создан и не закрыт*/
-            ERROR_NOT_CTRL_CHANNEL =-11,            /* Номер канала для этой операции должен быть CC_CONTROL */
+            ERROR_NOT_CTRL_CHANNEL = -11,           /* Номер канала для этой операции должен быть CC_CONTROL */
+            ERROR_SRV_INVALID_CMD = -12,            /* Команда не поддерживается сервером */
+            ERROR_SRV_INVALID_CMD_PARAMS = -13,     /* Сервер не поддерживает указанные параметры команды */
+            ERROR_INVALID_CRATE = -14,              /* Указанный крейт не найден */
+            ERROR_EMPTY_SLOT = -15,                 /* В указанном слоте отсутствует модуль */
+            ERROR_UNSUP_CMD_FOR_SRV_CTL = -16,      /* Команда не поддерживается управляющим каналом сервера */
+            ERROR_INVALID_IP_ENTRY = -17,           /* Неверная запись сетевого адреса крейта */
+            ERROR_NOT_IMPLEMENTED = -18,            /* Данная возможность не реализована */
+            ERROR_CONNECTION_CLOSED = -19,          /* Соединение было закрыто сервером */
+            ERROR_LTRD_UNKNOWN_RETCODE = -20,       /* Неизвестный код ошибки службы ltrd */
+            ERROR_LTRD_CMD_FAILED = -21,            /* Ошибка выполнения управляющей команды ltrd */
+            ERROR_INVALID_CON_SLOT_NUM = -22,       /* Указан неверный номер слота при открытии соединения */
 
             ERROR_INVALID_MODULE_DESCR   = -40,    /* Неверный описатель модуля */
             ERROR_INVALID_MODULE_SLOT    = -41,    /* Указан неверный слот для модуля */
@@ -337,6 +348,7 @@ namespace ltrModulesNet
             ERROR_PROCDATA_CNTR           = -78,    /* Ошибка счетчика в обрабатываемых данных */
             ERROR_PROCDATA_CHNUM          = -79,    /* Неверный номер канала в обрабатываемых данных */
             ERROR_PROCDATA_WORD_SEQ       = -80,    /* Неверная последовательность слов в обрабатываемых данных */
+            ERROR_FLASH_INFO_CRC          = -81,    /* Неверная контрольная сумма в записанной информации о модуле */
 
             LTR010_ERROR_GET_ARRAY        = -100, /*Ошибка выполнения команды GET_ARRAY.*/
             LTR010_ERROR_PUT_ARRAY        = -101, /*Ошибка выполнения команды PUT_ARRAY.*/
