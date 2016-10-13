@@ -226,7 +226,7 @@ namespace ltrModulesNet
         }
 
         // Значения для управления метками "СТАРТ" и "СЕКУНДА"
-        public enum en_LTR_MarkMode
+        public enum en_LTR_MarkMode : int
         {
             LTR_MARK_OFF = 0x00, // метка отключена
             LTR_MARK_EXT_DIGIN1_RISE = 0x01, // метка по фронту DIGIN1
