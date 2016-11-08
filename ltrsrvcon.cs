@@ -133,7 +133,8 @@ namespace ltrModulesNet
             [Flags]
             public enum IpFlags : uint
             {
-                Autoconnect = 0x00000001
+                Autoconnect = 0x00000001,
+                Reconnect = 0x00000002
             }
 
 
@@ -151,6 +152,7 @@ namespace ltrModulesNet
             public IpStatus Status { get { return _status; } }
             public IpFlags Flags { get { return _flags; } }
             public bool Autoconnect { get { return (_flags & IpFlags.Autoconnect) != 0; } }
+            public bool Reconnect { get { return (_flags & IpFlags.Reconnect) != 0; } }
         }
 
 

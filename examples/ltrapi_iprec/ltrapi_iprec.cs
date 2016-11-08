@@ -39,8 +39,8 @@ namespace ltrapi_iprec
                     Console.WriteLine("Найдено IP-записей: {0}", ipEntries.Length);
                     for (int i = 0; i < ipEntries.Length; i++)
                     {
-                        Console.WriteLine("Запись {0}: {1}, {2}, S/N: {3}, Auto: {4}", i + 1, ipEntries[i].IpAddr, 
-                            ipEntries[i].Status, ipEntries[i].CrateSerial, ipEntries[i].Autoconnect);                        
+                        Console.WriteLine("Запись {0}: {1}, {2}, S/N: {3}, Auto: {4}, Reconnect: {5}", i + 1, ipEntries[i].IpAddr, 
+                            ipEntries[i].Status, ipEntries[i].CrateSerial, ipEntries[i].Autoconnect, ipEntries[i].Reconnect);                        
                     }
                     
 
