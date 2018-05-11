@@ -176,7 +176,7 @@ namespace ltrModulesNet
 
                     for (int i = 0; i < fnd; i++)
                     {
-                        IntPtr infoptr = new IntPtr(ptr.ToInt32() + size * i);
+                        IntPtr infoptr = new IntPtr(ptr.ToInt64() + size * i);
                         info_array[i] = new IpCrateEntry();
                         info_array[i] = (IpCrateEntry)Marshal.PtrToStructure(infoptr, typeof(IpCrateEntry));
                     }
