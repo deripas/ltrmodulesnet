@@ -56,6 +56,18 @@ namespace ltrModulesNet
         [DllImport("ltr25api.dll")]
         public static extern _LTRNative.LTRERROR LTR25_StoreConfig(ref TLTR25 module, _LTRNative.StartMode start_mode);
 
+        [DllImport("ltr25api.dll")]
+        public static extern _LTRNative.LTRERROR LTR25_CheckSupportTEDS(ref TLTR25 module);
+        [DllImport("ltr25api.dll")]
+        public static extern _LTRNative.LTRERROR LTR25_SetSensorsPowerMode(ref TLTR25 module, SensorsPowerModes mode);
+        [DllImport("ltr25api.dll")]
+        public static extern _LTRNative.LTRERROR LTR25_TEDSNodeDetect(ref TLTR25 module, int ch, out TEDS_NODE_INFO devinfo);
+        [DllImport("ltr25api.dll")]
+        public static extern _LTRNative.LTRERROR LTR25_TEDSReadData(ref TLTR25 module, int ch, byte[] data, uint size, out uint read_size);
+
+
+
+
 
 
 
@@ -74,6 +86,11 @@ namespace ltrModulesNet
         public const int LTR25_FLASH_USERDATA_ADDR = 0x0;
         /** Размер пользовательской области Flash-памяти */
         public const int LTR25_FLASH_USERDATA_SIZE = 0x100000;
+
+        /** Значение входного сопротивления ICP-входа модуля в Омах */
+        public const float LTR25_ICP_R_IN         = 31600;
+        /** Размер серийного номера узла  TEDS в байтах  */
+        public const int LTR25_TEDS_NODE_SERIAL_SIZE = 6;
 
         /* Частоты сбора данных. */
         public enum FreqCode : byte
@@ -104,7 +121,9 @@ namespace ltrModulesNet
         [Flags]
         public enum ProcFlags : uint
         {
-            Volt = 0x00000001,
+            Volt        = 0x00000001,
+            PhaseCor    = 0x00000010,
+            SignCor     = 0x00000080,
             NoncontData = 0x00000100
         }
 
@@ -116,9 +135,22 @@ namespace ltrModulesNet
             OPEN = 2, /**< Был обнаружен разрыв цепи */
         }
 
+        /* Режим питания датчиков */
+        public enum SensorsPowerModes : uint
+        {
+            ICP = 0,
+            OFF = 1,
+            TEDS = 2
+        }
 
-
-
+        public enum TEDSNodeFamilies : byte
+        {
+            EEPROM_256_OTP = 0x14,
+            EEPROM_4K      = 0x23, /**< 4 КБит EEPROM (DS2433) */
+            EEPROM_1K      = 0x2D, /**< 1 КБит EEPROM (DS2431) */
+            EEPROM_20K     = 0x43, /**< 20 КБит EEPROM (DS28EC20) */
+        };
+        
 
         /** Калибровочные коэффициенты */
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -131,6 +163,7 @@ namespace ltrModulesNet
             public float Scale { get { return _scale; } }  /**< Коэффициент шкалы */
         }
 
+     
         /** Информация о модуле */
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct INFO
@@ -169,17 +202,20 @@ namespace ltrModulesNet
         public struct CHANNEL_CONFIG
         {
             bool _enabled;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
+            float _sensor_rout;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
             uint[] Reserved;
 
             public CHANNEL_CONFIG(bool enabled) { 
-                _enabled = enabled; 
-                Reserved = new uint[11];
+                _enabled = enabled;
+                _sensor_rout = 0;
+                Reserved = new uint[10];
                 for (int i = 0; i < Reserved.Length; i++)
                     Reserved[i] = 0;
             }
 
             public bool Enabled { get { return _enabled; } set { _enabled = value; } }
+            public float SensorROut { get { return _sensor_rout; } set { _sensor_rout = value; } }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -208,7 +244,8 @@ namespace ltrModulesNet
             bool _run;
             double _adc_freq;
             bool _low_pow_mode;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 31)]
+            SensorsPowerModes _sensor_pow_mode;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
             uint[] Reserved;
 
             public _LTRNative.FpgaState FpgaState { get { return _fpga_state; } }
@@ -216,6 +253,7 @@ namespace ltrModulesNet
             public bool Run { get { return _run; } }
             public double AdcFreq { get { return _adc_freq; } }
             public bool LowPowMode { get {return _low_pow_mode; } }
+            public SensorsPowerModes SensorsPowerMode { get {return _sensor_pow_mode;} }
         }
 
 
@@ -242,6 +280,28 @@ namespace ltrModulesNet
         }
 
 
+        /* Информация о устройстве узла TEDS */
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        public struct TEDS_NODE_INFO {
+            bool _valid;
+            TEDSNodeFamilies _dev_family_code;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR25_TEDS_NODE_SERIAL_SIZE)]
+            byte [] _dev_serial;
+            uint _teds_data_size;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)]
+            uint [] _reserved;
+
+            public bool Valid { get {return _valid;} }
+            public TEDSNodeFamilies DevFamilyCode { get {return _dev_family_code;}}
+            UInt64 DevSerial { get { return (UInt64)_dev_serial[0] | 
+                (UInt64)_dev_serial[1] << 8 |
+                (UInt64)_dev_serial[2] << 8 |
+                (UInt64)_dev_serial[3] << 8 |
+                (UInt64)_dev_serial[4] << 8 |
+                (UInt64)_dev_serial[5] << 8;}
+            }
+            uint TEDSDataSize {get {return _teds_data_size;} }
+        };
 
         public TLTR25 module;
 
@@ -397,6 +457,25 @@ namespace ltrModulesNet
         public virtual _LTRNative.LTRERROR StoreConfig(_LTRNative.StartMode start_mode)
         {
             return LTR25_StoreConfig(ref module, start_mode);
+        }
+
+        public virtual _LTRNative.LTRERROR CheckSupportTEDS()
+        {
+            return LTR25_CheckSupportTEDS(ref module);
+        }
+
+        public virtual _LTRNative.LTRERROR SetSensorsPowerMode(SensorsPowerModes mode)
+        {
+            return LTR25_SetSensorsPowerMode(ref module, mode);
+        }
+        public virtual _LTRNative.LTRERROR TEDSNodeDetect(int ch, out TEDS_NODE_INFO devinfo)
+        {
+            return LTR25_TEDSNodeDetect(ref module, ch, out devinfo);
+        }
+
+        public virtual _LTRNative.LTRERROR TEDSReadData(int ch, byte[] data, uint size, out uint read_size)
+        {
+            return LTR25_TEDSReadData(ref module, ch, data, size, out read_size);
         }
     }
 }

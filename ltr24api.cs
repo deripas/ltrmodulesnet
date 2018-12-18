@@ -105,6 +105,8 @@ namespace ltrModulesNet
             Calibr = 0x00000001,
             Volt = 0x00000002,
             AfcCor = 0x00000004,
+            AfcCorEx = 0x00000008,
+            ICP_PhaseCor = 0x00000010,
             NoncontData = 0x00000100
         }
 
@@ -138,13 +140,15 @@ namespace ltrModulesNet
             AdcRange _Range;
             bool _AC;
             bool _ICP;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            float _sensor_rout;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
             uint[] Reserved;
 
             public CHANNEL_MODE(bool enable, AdcRange range, bool ac, bool icp)
             {
                 _Enable = enable; _Range = range; _AC = ac; _ICP = icp;
-                Reserved = new uint[4];
+                _sensor_rout = 0;
+                Reserved = new uint[3];
                 for (int i = 0; i < Reserved.Length; i++)
                     Reserved[i] = 0;
             }
@@ -153,6 +157,7 @@ namespace ltrModulesNet
             public bool Enable { get { return _Enable; } set { _Enable = value; } }
             public bool AC { get { return _AC; } set { _AC = value; } }
             public bool ICPMode { get { return _ICP; } set { _ICP = value; } }
+            public float SensorROut { get { return _sensor_rout; } set { _sensor_rout = value; } }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
