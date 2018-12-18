@@ -7,6 +7,19 @@ namespace ltrModulesNet
 {
     public class ltrsrvcon
     {
+        public enum LogLevel : int
+        {
+            ErrorFatal   = 0, /** Фатальные ошибки */
+            Error        = 1, /** Ошибки */
+            Warning      = 2, /** Предупреждения */
+            Info         = 3, /** Информационные сообщения */
+            Datail       = 4, /** Детали */
+            DebugHigh    = 5, /** Отладочные сообщения повышенного уровня важности */
+            DebugMedium  = 6, /** Отладочные сообщения среднего уровня важности */
+            DebugLow     = 7  /** Отладочные сообщения низкого уровня важности */
+        }
+
+
         public virtual _LTRNative.LTRERROR Open(uint saddr, ushort sport)
         {
             string str = "#SERVER_CONTROL";
@@ -184,11 +197,15 @@ namespace ltrModulesNet
                     Marshal.FreeHGlobal(ptr);
                 }
                 else
+                {
                     info_array = new IpCrateEntry[0];
+                }
 
             }
             else
+            {
                 info_array = new IpCrateEntry[0];
+            }
 
             return res;
         }
@@ -258,6 +275,26 @@ namespace ltrModulesNet
             return ResetModule(ltrcrate.Interfaces.UNKNOWN, serial, slot, 0);
         }
 
+        public virtual _LTRNative.LTRERROR ServerRestart()
+        {
+            return _LTRNative.LTR_ServerRestart(ref hnd);
+        }
+
+        public virtual _LTRNative.LTRERROR ServerShutdown()
+        {
+            return _LTRNative.LTR_ServerRestart(ref hnd);
+        }
+
+        public virtual _LTRNative.LTRERROR GetLogLevel(out LogLevel lvl)
+        {
+            return LTR_GetLogLevel(ref hnd, out lvl);
+        }
+
+        public virtual _LTRNative.LTRERROR SetLogLevel(LogLevel lvl, bool permanent)
+        {
+            return LTR_SetLogLevel(ref hnd, lvl, permanent);
+        }
+
 
 
 
@@ -278,6 +315,12 @@ namespace ltrModulesNet
         _LTRNative.TLTR hnd;
 
         [DllImport("ltrapi.dll")]
-        public static extern IntPtr LTR_GetErrorString(int err);
+        static extern IntPtr LTR_GetErrorString(int err);
+
+        [DllImport("ltrapi.dll")]
+        static extern _LTRNative.LTRERROR LTR_GetLogLevel(ref _LTRNative.TLTR ltr, out LogLevel level);
+        // Установка уровня журнализации
+        [DllImport("ltrapi.dll")]
+        static extern _LTRNative.LTRERROR LTR_SetLogLevel(ref _LTRNative.TLTR ltr, LogLevel level, bool permanent);
     }
 }

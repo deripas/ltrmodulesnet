@@ -852,9 +852,14 @@ namespace ltrModulesNet
         public static extern LTRERROR LTR_Open(ref TLTR ltr); //ќткрытие соединени€ с модулем, крейтом или сервером
 
         [DllImport("ltrapi.dll")]
-        public static extern LTRERROR LTR_OpenEx(ref TLTR ltr, uint timeout); 
-        
+        public static extern LTRERROR LTR_OpenEx(ref TLTR ltr, uint timeout);
 
+        [DllImport("ltrapi.dll")]
+        public static extern LTRERROR LTR_OpenSvcControl(ref TLTR ltr, uint saddr, ushort sport);
+
+        [DllImport("ltrapi.dll")]
+        public static extern LTRERROR LTR_OpenCrate(ref TLTR ltr, uint saddr, ushort sport, int iface, string csn); 
+        
         [DllImport("ltrapi.dll")]
         public static extern LTRERROR LTR_Close(ref TLTR ltr); //–азрыв соединени€ с модулем
 
