@@ -349,6 +349,9 @@ namespace ltrModulesNet
             ERROR_PROCDATA_CHNUM          = -79,    /* Неверный номер канала в обрабатываемых данных */
             ERROR_PROCDATA_WORD_SEQ       = -80,    /* Неверная последовательность слов в обрабатываемых данных */
             ERROR_FLASH_INFO_CRC          = -81,    /* Неверная контрольная сумма в записанной информации о модуле */
+            ERROR_PROCDATA_UNEXP_CMD      = -82,  /** Обнаружена неожиданная команда в потоке данных */
+            ERROR_UNSUP_BY_BOARD_REV      = -83,  /** Возможность не поддерживается данной ревизией платы */
+            ERROR_MODULE_NOT_CONFIGURED   = -84,  /** Не выполнена конфигурация модуля */
 
             LTR010_ERROR_GET_ARRAY        = -100, /*Ошибка выполнения команды GET_ARRAY.*/
             LTR010_ERROR_PUT_ARRAY        = -101, /*Ошибка выполнения команды PUT_ARRAY.*/
@@ -588,6 +591,10 @@ namespace ltrModulesNet
             LTR22_ERROR_WRITE_AVR_MEMORY = -6011,
             LTR22_ERROR_READ_AVR_MEMORY = -6012,
             LTR22_ERROR_PARAMETERS = -6013,
+            LTR22_ERROR_CLEAR_BUFFER_TOUT = -6014,
+            LTR22_ERROR_SYNC_FHAZE_NOT_STARTED = -6015,
+            LTR22_ERROR_INVALID_CH_NUMBER = -6016,
+            LTR22_ERROR_AVR_MEMORY_COMPARE = -6017,
 
             LTR34_ERROR_SEND_DATA = -3001,
             LTR34_ERROR_RECV_DATA = -3002,
@@ -728,7 +735,9 @@ namespace ltrModulesNet
             LTR032_ERR_OPEN             = -10303,
             LTR032_ERR_INVAL_CRATE_TYPE = -10304,
             LTR032_ERR_CMD_REJECTED     = -10305,
-            LTR032_ERR_NOT_IMPLEMENTED  = -10306,
+            LTR032_ERR_INVALID_M1S_OUT_MODE     = -10306,
+            LTR032_ERR_INVALID_NAMUR_LEVELS     = -10307,
+            LTR032_ERR_INVALID_THERM_SENS_IND   = -10308,
 
             //LTRT10
             LTRT10_ERR_INVALID_SWITCH_POS = -10400, /**< Задан неверный код состояния коммутатора*/
@@ -779,6 +788,56 @@ namespace ltrModulesNet
             LTR25_ERR_ADC_REG_CHECK             = -10609, /**< Ошибка проверки значения записанных регистров АЦП */
             LTR25_ERR_LOW_POW_MODE_NOT_CHANGED  = -10610, /**< Не удалось перевести АЦП из/в низкопотребляющее состояние */
             LTR25_ERR_LOW_POW_MODE              = -10611, /**< Модуль находится в низкопотребляющем режиме */
+            LTR25_ERR_INVALID_SENSOR_POWER_MODE = -10612, /**< Неверное значение режима питания датчиков */
+            LTR25_ERR_CHANGE_SENSOR_POWER_MODE = -10613, /**< Не удалось изменить режим питания датчиков */
+            LTR25_ERR_INVALID_CHANNEL_NUMBER = -10614, /**< Указан неверный номер канала модуля */
+            LTR25_ERR_ICP_MODE_REQUIRED = -10615, /**< Модуль не переведен в ICP-режим питания датчиков, необходимый для данной операции  */
+            LTR25_ERR_TEDS_MODE_REQUIRED = -10616, /**< Модуль не переведен в TEDS режим питания датчиков, необходимый для данной операции */
+            LTR25_ERR_TEDS_UNSUP_NODE_FAMILY = -10617, /**< Данное семейство устройств TEDS узла не поддерживается библиотекой */
+            LTR25_ERR_TEDS_UNSUP_NODE_OP = -10618, /**< Данная операция не поддерживается библиотекой для обнаруженого типа узла TEDS */
+            LTR25_ERR_TEDS_NODE_URN_CRC = -10624, /**< Неверное значение контрольной суммы в URN узла TEDS */
+            LTR25_ERR_TEDS_DATA_CRC = -10619, /**< Неверное значение контрольной суммы в прочитанных данных TEDS */
+            LTR25_ERR_TEDS_1W_NO_PRESENSE_PULSE = -10620, /**< Не обнаружено сигнала присутствия TEDS узла на однопроводной шине */
+            LTR25_ERR_TEDS_1W_NOT_IDLE = -10621, /**< Однопроводная шина не была в незанятом состоянии на момент начала обмена */
+            LTR25_ERR_TEDS_1W_UNKNOWN_ERR = -10622, /**< Неизвестная ошибка при обмене по однопроводной шине с узлом TEDS */
+            LTR25_ERR_TEDS_MEM_STATUS = -10623, /**< Неверное состояние памяти TEDS узла */
+
+            LTR216_ERR_ADC_ID_CHECK             = -10700, /**< Не удалось обнаружить микросхему АЦП */
+            LTR216_ERR_ADC_RECV_SYNC_OVERRATE   = -10701, /**< Частота синхронизации АЦП превысила частоту преобразования */
+            LTR216_ERR_ADC_RECV_INT_CYCLE_ERROR = -10702, /**< Ошибка внутреннего цикла чтения данных с АЦП */
+            LTR216_ERR_ADC_REGS_INTEGRITY       = -10703, /**< Нарушена целостность регистров АЦП */
+            LTR216_ERR_INVALID_ADC_SWMODE       = -10704, /**< Задано неверное значение режима опроса каналов АЦП */
+            LTR216_ERR_INVALID_FILTER_TYPE      = -10705, /**< Задано неверное значение типа фильтра АЦП */
+            LTR216_ERR_INVALID_ADC_ODR_CODE     = -10706, /**< Задано неверное значение кода, определяющего скорость преобразования АЦП */
+            LTR216_ERR_INVALID_SYNC_FDIV        = -10707, /**< Задано неверное значение делителя частоты синхронизации АЦП */
+            LTR216_ERR_INVALID_LCH_CNT          = -10708, /**< Задано неверное количество логических каналов */
+            LTR216_ERR_INVALID_ISRC_CODE        = -10709, /**< Задан неверный код, определяющий силу тока питания датчиков */
+            LTR216_ERR_CH_NOT_FOUND_IN_LTABLE   = -10710, /**< Указанный канал не был найден в логической таблице */
+            LTR216_ERR_NO_CH_ENABLED            = -10711, /**< Ни один канал не был разрешен */
+            LTR216_ERR_TARE_CHANNELS            = -10712, /**< Не удалось найти действительное значение при тарировке некоторых каналов */
+            LTR216_ERR_TOO_MANY_LTABLE_CH       = -10713, /**< Превышено максимальное число каналов в основном цикле опроса АЦП */
+            LTR216_ERR_TOO_MANY_LTABLE_BG_CH    = -10714, /**< Превышено максимальное число каналов в фоновом цикле опроса АЦП */
+            LTR216_ERR_UNSUF_SW_TIME            = -10715, /**< Полученное время на коммутацию меньше заданного предела */
+            LTR216_ERR_BAD_INIT_MEAS_STATUS     = -10716, /**< Измеренное значение начального параметра недействительно */
+            LTR216_ERR_INVALID_CH_RANGE         = -10717, /**< Задан неверный код диапазона канала АЦП*/
+            LTR216_ERR_INVALID_CH_NUM           = -10718, /**< Задан неверный номер физического канала АЦП */
+            LTR216_ERR_UREF_MEAS_REQ            = -10719,  /**< Для выполнения операции требуется измерить действительное значение напряжения \f$U_{ref}\f$ */
+
+            LPW25_ERROR_FD_NOT_SET = -10800, /** Не задана частота дискретизации сигнала */
+            LPW25_ERROR_SENS_NOT_SET = -10801, /** Не задан коэффициент передачи преобразователя */
+            LPW25_ERROR_PROC_NOT_STARTED = -10802, /** Не запущена обработка данных */
+            LPW25_ERROR_TEDS_MANUFACTURER_ID = -10803, /** Неизвестный идентификатор производителя */
+            LPW25_ERROR_TEDS_MODEL_ID = -10804, /** Неизвестная модель преобразователя */
+
+
+
+
+            LTEDS_ERROR_INSUF_SIZE = -12000, /**< Недостаточно места в данных TEDS для выполнения операции */
+            LTEDS_ERROR_CHECKSUM = -12001, /**< Неверное значение контрольной суммы в данных TEDS */
+            LTEDS_ERROR_INVALID_BITSIZE = -12002, /**< Неверно задан битовый размер данных TEDS */
+            LTEDS_ERROR_UNSUPPORTED_FORMAT = -12003, /**< Не поддерживается указанный формат данных TEDS */
+            LTEDS_ERROR_ENCODE_VALUE = -12004, /**< Неверно указано значение для кодирования в TEDS */
+            LTEDS_ERROR_UNKNOWN_SEL_CASE = -12005 /**< Неизвестный вариант выбора ветвления данных TEDS */
         }
 
         public enum MODULETYPE : ushort
