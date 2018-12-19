@@ -148,7 +148,8 @@ namespace ltr24_console
                             err = hltr24.ProcessData(rbuf, data, ref rcv_cnt, 
                                                     ltr24api.ProcFlags.Volt |
                                                     ltr24api.ProcFlags.Calibr |
-                                                    ltr24api.ProcFlags.AfcCor, 
+                                                    ltr24api.ProcFlags.AfcCorEx |
+                                                    ltr24api.ProcFlags.ICP_PhaseCor, 
                                                     ovrlds);
 
                             if (err != _LTRNative.LTRERROR.OK)

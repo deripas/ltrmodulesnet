@@ -126,7 +126,9 @@ namespace ltr25_console
                         else
                         {
                             err = hltr25.ProcessData(rbuf, data, ref rcv_cnt, 
-                                                    ltr25api.ProcFlags.Volt,
+                                                    ltr25api.ProcFlags.Volt |
+                                                    ltr25api.ProcFlags.PhaseCor |
+                                                    ltr25api.ProcFlags.SignCor,
                                                     ch_status);
 
                             if (err != _LTRNative.LTRERROR.OK)
