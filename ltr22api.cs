@@ -1,84 +1,90 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ltrModulesNet
 {
-    public class _ltr22api
+    public class ltr22api
     {
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_Init(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_Init(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_Close(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_Close(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_Open(ref TLTR22 module, uint saddr, ushort sport, [In, Out] byte[] csn, ushort cc);
+        static extern _LTRNative.LTRERROR LTR22_Open(ref TLTR22 hnd, uint saddr, ushort sport, string csn, ushort slot_num);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_IsOpened(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_IsOpened(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_GetConfig(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_GetConfig(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SetConfig(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_SetConfig(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_ClearBuffer(ref TLTR22 module, bool wait_response);
+        static extern _LTRNative.LTRERROR LTR22_ClearBuffer(ref TLTR22 module, bool wait_response);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_StartADC(ref TLTR22 module, bool WaitSync);
+        static extern _LTRNative.LTRERROR LTR22_StartADC(ref TLTR22 module, bool WaitSync);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_StopADC(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_StopADC(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SetSyncPriority(ref TLTR22 module, bool SyncMaster);
+        static extern _LTRNative.LTRERROR LTR22_SetSyncPriority(ref TLTR22 module, bool SyncMaster);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SyncPhaze(ref TLTR22 module, uint timeout);
+        static extern _LTRNative.LTRERROR LTR22_SyncPhaze(ref TLTR22 module, uint timeout);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SwitchMeasureADCZero(ref TLTR22 module, bool SetMeasure);
+        static extern _LTRNative.LTRERROR LTR22_SwitchMeasureADCZero(ref TLTR22 module, bool SetMeasure);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SetFreq(ref TLTR22 module, bool adc384, byte Freq_dv);
+        static extern _LTRNative.LTRERROR LTR22_SetFreq(ref TLTR22 module, bool adc384, byte Freq_dv);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SwitchACDCState(ref TLTR22 module, bool ACDCState);
+        static extern _LTRNative.LTRERROR LTR22_SwitchACDCState(ref TLTR22 module, bool ACDCState);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SetADCRange(ref TLTR22 module, byte ADCChannel, byte ADCChannelRange);
+        static extern _LTRNative.LTRERROR LTR22_SetADCRange(ref TLTR22 module, byte ADCChannel, byte ADCChannelRange);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_SetADCChannel(ref TLTR22 module, byte ADCChannel, bool EnableADC);
+        static extern _LTRNative.LTRERROR LTR22_SetADCChannel(ref TLTR22 module, byte ADCChannel, bool EnableADC);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_GetCalibrovka(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_GetCalibrCoeffs(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_Recv(ref TLTR22 module, uint[] data, uint[] tstamp, uint size, uint timeout);
+        static extern int LTR22_Recv(ref TLTR22 module, uint[] data, uint[] tstamp, uint size, uint timeout);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_GetModuleDescription(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_GetModuleDescription(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_ProcessData(ref TLTR22 module, uint[] src_data, double[] dst_data,
+        static extern _LTRNative.LTRERROR LTR22_ProcessData(ref TLTR22 module, uint[] src_data, double[] dst_data,
             uint size, bool calibrMainPset, bool calibrExtraVolts, byte[] OverflowFlags);
         [DllImport("ltr22api.dll"),]
-        public static extern _LTRNative.LTRERROR LTR22_ReadAVREEPROM(ref TLTR22 module, byte[] Data, uint BeginAddress, uint size);
+        static extern _LTRNative.LTRERROR LTR22_ReadAVREEPROM(ref TLTR22 module, byte[] Data, uint BeginAddress, uint size);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_WriteAVREEPROM(ref TLTR22 module, byte[] Data, uint BeginAddress, uint size);
+        static extern _LTRNative.LTRERROR LTR22_WriteAVREEPROM(ref TLTR22 module, byte[] Data, uint BeginAddress, uint size);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_TestHardwareInterface(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_TestHardwareInterface(ref TLTR22 module);
         [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_GetADCData(ref TLTR22 module, double[] Data, uint Size, uint time,
-            bool calibrMainPset, bool calibrExtraVolts);
-        [DllImport("ltr22api.dll")]
-        public static extern _LTRNative.LTRERROR LTR22_ReopenModule(ref TLTR22 module);
+        static extern _LTRNative.LTRERROR LTR22_ReopenModule(ref TLTR22 module);
 
         [DllImport("ltr22api.dll")]
-        public static extern string LTR22_GetErrorString(int ErrorCode);
+        static extern _LTRNative.LTRERROR LTR22_FindAdcFreqParams(double AdcFreq, out byte divider, out byte adc384, out int adcFreqIndex, out double resultAdcFreq);
 
-        public const int LTR22_ADC_NUMBERS = 4;
-        public const int LTR22_ADC_CHANNELS = LTR22_ADC_NUMBERS;
-        public const int LTR22_RANGE_NUMBER = 6;
-        public const int LTR22_RANGE_OVERFLOW = 7;
-        public const int LTR22_MAX_DISC_FREQ_NUMBER = 25;
-        public int[] LTR22_DISK_FREQ_ARRAY = new int[LTR22_MAX_DISC_FREQ_NUMBER]
-		{
-			3472,  3720,   4006,  4340,  4734,  5208,  5580,  5787,
-			6009,  6510,   7102,  7440,  7812,  8680,  9765,  10416, 
-			11160, 13020, 15625,  17361, 19531, 26041, 39062, 52083, 
-			78125
-		};
+        [DllImport("ltr22api.dll")]
+        static extern double LTR22_CalcAdcFreq(byte divider, bool adc384);
+
+        [DllImport("ltr22api.dll")]
+        static extern IntPtr LTR22_GetErrorString(int ErrorCode);
+
+        public const int LTR22_CHANNEL_CNT = 4;
+        public const int LTR22_RANGE_CNT = 6;
+        public const int LTR22_ADC_FREQ_CNT = 25;
+        
+
+        public enum AdcRange : byte 
+        {
+            Range_1     = 0,
+            Range_0_3   = 1,
+            Range_0_1   = 2,
+            Range_0_03  = 3,
+            Range_10    = 4,
+            Range_3     = 5
+        }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TINFO_LTR22
         {
-            public _ltr010api.TDESCRIPTION_MODULE Description;	// описание модуля
-            public _ltr010api.TDESCRIPTION_CPU CPU;				// описание AVR
+            public _LTRNative.TDESCRIPTION_MODULE Description;	// описание модуля
+            public _LTRNative.TDESCRIPTION_CPU CPU;				// описание AVR
 
         };
 
@@ -99,59 +105,60 @@ namespace ltrModulesNet
         public struct TLTR22
         {
             int Size;
-            public _LTRNative.TLTR Channel;
+            _LTRNative.TLTR Channel;
 
             // настройки модуля            
-            public byte Fdiv_rg;						// дивайзер частоты клоков 1..15
+            byte _Fdiv_rg;						// дивайзер частоты клоков 1..15
             [MarshalAs(UnmanagedType.U1)]
-            public bool Adc384;						// дополнительный дивайзер частоты сэмплов true =3 false =2
+            bool _Adc384;						// дополнительный дивайзер частоты сэмплов true =3 false =2
             [MarshalAs(UnmanagedType.U1)]
-            public bool AC_DC_State;					// состояние true =AC+DC false=AC 
+            bool _AC_DC_State;					// состояние true =AC+DC false=AC 
             [MarshalAs(UnmanagedType.U1)]
-            public bool MeasureADCZero;				// измерение Zero true - включено false - выключено
+            bool _MeasureADCZero;				// измерение Zero true - включено false - выключено
             [MarshalAs(UnmanagedType.U1)]
-            public bool DataReadingProcessed;		// состояние считывания АЦП true-АЦП считывается false - нет
+            bool _DataReadingProcessed;		// состояние считывания АЦП true-АЦП считывается false - нет
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            public byte[] ADCChannelRange;// предел имзерений АЦП по каналам 0 - 1В 1 - 0.3В 2 - 0.1В 3 - 0.03В 4 - 10В 5 - 3В    
+            AdcRange[] _ADCChannelRange;// предел имзерений АЦП по каналам 0 - 1В 1 - 0.3В 2 - 0.1В 3 - 0.03В 4 - 10В 5 - 3В    
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            public byte[] ChannelEnabled;		// Состояние каналов, включен - true выключен - false
-            public int FreqDiscretizationIndex;
+            byte[] _ChannelEnabled;		// Состояние каналов, включен - true выключен - false
+            int _FreqDiscretizationIndex;
 
-            public byte SyncType;		// Тип синхронизации 0 - внутренний старт по сигналу Go 
+            byte _SyncType;		// Тип синхронизации 0 - внутренний старт по сигналу Go 
             //1 - фазировка модуля
             //2 - внешний старт
             //3 - резервировано  
             [MarshalAs(UnmanagedType.U1)]
-            public bool SyncMaster;		// true - модуль генерит сигнал, false - модуль принимает синхросигнал
+            bool _SyncMaster;		// true - модуль генерит сигнал, false - модуль принимает синхросигнал
 
-            public TINFO_LTR22 ModuleInfo;
+            TINFO_LTR22 _ModuleInfo;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4 * 25)]
-            public ADC_CHANNEL_CALIBRATION[] ADCCalibration;
+            ADC_CHANNEL_CALIBRATION[] _ADCCalibration;
+
+
+            public byte Fdiv { get { return _Fdiv_rg; } set { _Fdiv_rg = value; } }
+            public bool Adc384 { get { return _Adc384; } set { _Adc384 = value; } }
+            public bool ACDCState { get { return _AC_DC_State; } set { _AC_DC_State = value; } }
+            public bool MeasureADCZero { get { return _MeasureADCZero; } set { _MeasureADCZero = value; } }
+            public bool DataReadingProcessed { get { return _DataReadingProcessed; } }
+            public AdcRange channelRange(int ch) { return _ADCChannelRange[ch]; }
+            public void fillChannelRange(int ch, AdcRange range) { _ADCChannelRange[ch] = range; }
+            public bool channelEnabled(int ch) { return _ChannelEnabled[ch] != 0; }
+            public void fillChannelEnabled(int ch, bool en) { _ChannelEnabled[ch] = (byte)(en ? 1 : 0); }
+            public int FreqDiscretizationIndex { get { return _FreqDiscretizationIndex; } set { _FreqDiscretizationIndex = value; } }
+            public bool SyncMaster { get { return SyncMaster; } set { _SyncMaster = value; } }
+            public TINFO_LTR22 ModuleInfo { get { return _ModuleInfo; } }
+
+
         }
 
-        public TLTR22 NewTLTR22
+
+        TLTR22 module;
+
+        public ltr22api()
         {
-            get
-            {
-                TLTR22 NewModule = new TLTR22();
-                LTR22_Init(ref NewModule);
-                return NewModule;
-            }
-        }
-
-        public TLTR22 module;
-
-
-        public _ltr22api()
-        {
-            module = NewTLTR22;
-        }
-
-        public virtual _LTRNative.LTRERROR Init()
-        {
-            return LTR22_Init(ref module);
+            LTR22_Init(ref module);
         }
 
 
@@ -160,10 +167,19 @@ namespace ltrModulesNet
             return LTR22_Close(ref module);
         }
 
-
-        public virtual _LTRNative.LTRERROR Open(uint saddr, ushort sport, [In, Out] byte[] csn, ushort cc)
+        public virtual _LTRNative.LTRERROR Open(uint saddr, ushort sport, string csn, ushort slot_num)
         {
-            return LTR22_Open(ref module, saddr, sport, csn, cc);
+            return LTR22_Open(ref module, saddr, sport, csn, slot_num);
+        }
+
+        public virtual _LTRNative.LTRERROR Open(string csn, ushort slot_num)
+        {
+            return Open(_LTRNative.SADDR_DEFAULT, _LTRNative.SPORT_DEFAULT, csn, slot_num);
+        }
+
+        public virtual _LTRNative.LTRERROR Open(ushort slot_num)
+        {
+            return Open("", slot_num);
         }
 
         public virtual _LTRNative.LTRERROR IsOpened()
@@ -231,14 +247,19 @@ namespace ltrModulesNet
             return LTR22_SetADCChannel(ref module, ADCChannel, EnableADC);
         }
 
-        public virtual _LTRNative.LTRERROR GetCalibrovka()
+        public virtual _LTRNative.LTRERROR GetCalibrCoeffs()
         {
-            return LTR22_GetCalibrovka(ref module);
+            return LTR22_GetCalibrCoeffs(ref module);
         }
 
-        public virtual _LTRNative.LTRERROR Recv([In, Out] uint[] data, uint size, uint[] tstamp, uint timeout)
+        public int Recv(uint[] data, uint[] tmark, uint size, uint timeout)
         {
-            return LTR22_Recv(ref module, data, tstamp, size, timeout);
+            return LTR22_Recv(ref module, data, tmark, size, timeout);
+        }
+
+        public int Recv(uint[] data, uint size, uint timeout)
+        {
+            return LTR22_Recv(ref module, data, null, size, timeout);
         }
 
         public virtual _LTRNative.LTRERROR GetModuleDescription()
@@ -246,12 +267,20 @@ namespace ltrModulesNet
             return LTR22_GetModuleDescription(ref module);
         }
 
-        public virtual _LTRNative.LTRERROR ProcessData([In, Out]uint[] src_data, [In, Out] double[] dst_data,
-             uint size, bool calibrMainPset, bool calibrExtraVolts, [In, Out] byte[] OverflowFlags)
+        public virtual _LTRNative.LTRERROR ProcessData(uint[] src_data, double[] dst_data,
+             uint size, bool calibrMainPset, bool calibrExtraVolts, byte[] OverflowFlags)
         {
             return LTR22_ProcessData(ref module, src_data, dst_data, size, calibrMainPset, calibrExtraVolts,
                 OverflowFlags);
         }
+
+        public virtual _LTRNative.LTRERROR ProcessData(uint[] src_data, double[] dst_data,
+             uint size, bool calibrMainPset, bool calibrExtraVolts)
+        {
+            return LTR22_ProcessData(ref module, src_data, dst_data, size, calibrMainPset, calibrExtraVolts,
+                null);
+        }
+
 
         public virtual _LTRNative.LTRERROR ReadAVREEPROM([In, Out] byte[] Data, uint BeginAddress, uint size)
         {
@@ -267,21 +296,60 @@ namespace ltrModulesNet
         {
             return LTR22_TestHardwareInterface(ref module);
         }
-
-        public virtual _LTRNative.LTRERROR GetADCData([In, Out] double[] Data, uint Size, uint time,
-            bool calibrMainPset, bool calibrExtraVolts)
-        {
-            return LTR22_GetADCData(ref module, Data, Size, time, calibrMainPset, calibrExtraVolts);
-        }
+               
 
         public virtual _LTRNative.LTRERROR ReopenModule()
         {
             return LTR22_ReopenModule(ref module);
         }
 
-        public virtual string GetErrorString(int err)
+        public virtual _LTRNative.LTRERROR FindAdcFreqParams(double adcFreq, out double resultAdcFreq)
         {
-            return _ltr22api.LTR22_GetErrorString(err);
+            byte divider, adc384;
+            int freq_idx;
+
+            _LTRNative.LTRERROR err = LTR22_FindAdcFreqParams(adcFreq, out divider, out adc384, out freq_idx, out resultAdcFreq);
+            if (err == _LTRNative.LTRERROR.OK)
+            {
+                module.Adc384 = adc384 != 0;
+                module.Fdiv = divider;
+            }
+            return err;
         }
+
+        public static string GetErrorString(_LTRNative.LTRERROR err)
+        {
+            IntPtr ptr = LTR22_GetErrorString((int)err);
+            string str = Marshal.PtrToStringAnsi(ptr);
+            Encoding srcEncodingFormat = Encoding.GetEncoding("windows-1251");
+            Encoding dstEncodingFormat = Encoding.UTF8;
+            return dstEncodingFormat.GetString(Encoding.Convert(srcEncodingFormat, dstEncodingFormat, srcEncodingFormat.GetBytes(str)));
+        }
+
+
+        public bool ACDCState { get { return module.ACDCState; } set { module.ACDCState = value; } }
+        public bool MeasureADCZero { get { return module.MeasureADCZero; } set { module.MeasureADCZero = value; } }
+        public bool DataReadingProcessed { get { return module.DataReadingProcessed; } }
+        public AdcRange channelRange(int ch) { return module.channelRange(ch); }
+        public void fillChannelRange(int ch, AdcRange range) { module.fillChannelRange(ch, range); }
+        public bool channelEnabled(int ch) { return module.channelEnabled(ch); }
+        public void fillChannelEnabled(int ch, bool en) { module.fillChannelEnabled(ch, en) ; }
+        public int FreqDiscretizationIndex { get { return module.FreqDiscretizationIndex; } }
+        public bool SyncMaster { get { return module.SyncMaster; } set { module.SyncMaster = value; } }
+        public TINFO_LTR22 ModuleInfo { get { return module.ModuleInfo; } }
+
+        public double AdcFreq
+        {
+            get
+            {
+                return LTR22_CalcAdcFreq(module.Fdiv, module.Adc384);
+            }
+            set
+            {
+                double resFreq;
+                FindAdcFreqParams(value, out resFreq);
+            }
+        }
+
     }	
 }

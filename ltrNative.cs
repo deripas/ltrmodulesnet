@@ -93,10 +93,10 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
             char[] Comment_;
 
-            public string CompanyName { get { return new string(CompanyName_).TrimEnd('\0'); } }
-            public string DeviceName { get { return new string(DeviceName_).TrimEnd('\0'); } }
-            public string SerialNumber { get { return new string(SerialNumber_).TrimEnd('\0'); } }
-            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public string CompanyName { get { return new string(CompanyName_).Split('\0')[0]; } }
+            public string DeviceName { get { return new string(DeviceName_).Split('\0')[0]; } }
+            public string SerialNumber { get { return new string(SerialNumber_).Split('\0')[0]; } }
+            public string Comment { get { return new string(Comment_).Split('\0')[0]; } }
             public byte Revision { get { return Revision_; } }
         };
         // описание процессора и програмного обеспечения
@@ -111,11 +111,23 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
             char[] Comment_;
 
-            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
-            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public string Name { get { return new string(Name_).Split('\0')[0]; } }
+            public string Comment { get { return new string(Comment_).Split('\0')[0]; } }
             public bool Active { get { return Active_!=0; } }
             public double ClockRate { get { return ClockRate_; } }
             public uint FirmwareVersion { get { return FirmwareVersion_; } }
+            public string FirmwareVersionStr 
+            {
+                get 
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append((FirmwareVersion_ >> 24) & 0xFF).Append(".")
+                      .Append((FirmwareVersion_ >> 16) & 0xFF).Append(".")
+                      .Append((FirmwareVersion_ >> 8) & 0xFF).Append(".")
+                      .Append(FirmwareVersion_ & 0xFF);
+                    return sb.ToString();
+                }
+            }
         } ;
         // описание плис
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -129,8 +141,8 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
             char[] Comment_;
 
-            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
-            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public string Name { get { return new string(Name_).Split('\0')[0]; } }
+            public string Comment { get { return new string(Comment_).Split('\0')[0]; } }
             public bool Active { get { return Active_!=0; } }
             public double ClockRate { get { return ClockRate_; } }
             public uint FirmwareVersion { get { return FirmwareVersion_; } }
@@ -144,8 +156,8 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
             char[] Comment_;
 
-            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
-            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public string Name { get { return new string(Name_).Split('\0')[0]; } }
+            public string Comment { get { return new string(Comment_).Split('\0')[0]; } }
             public bool Active { get { return Active_!=0; } }
         };
 
@@ -163,9 +175,9 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = COMMENT_LENGTH)]
             char[] Comment_;
 
-            public string Name { get { return new string(Name_).TrimEnd('\0'); } }
-            public string SerialNumber { get { return new string(SerialNumber_).TrimEnd('\0'); } }
-            public string Comment { get { return new string(Comment_).TrimEnd('\0'); } }
+            public string Name { get { return new string(Name_).Split('\0')[0]; } }
+            public string SerialNumber { get { return new string(SerialNumber_).Split('\0')[0]; } }
+            public string Comment { get { return new string(Comment_).Split('\0')[0]; } }
             public bool Active { get { return Active_!=0; } }
             public byte Revision { get { return Revision_; } }
             public double[] Calibration { get { return Calibration_; } }

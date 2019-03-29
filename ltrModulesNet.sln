@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ltrapi_iprec", "examples\lt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ltr43_read_write", "examples\ltr43_read_write\ltr43_read_write.csproj", "{5FAB4B0C-B952-4EF9-9553-594F742F236B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ltr22_console", "examples\ltr22_console\ltr22_console.csproj", "{7162B0DE-D06B-43A3-822A-37C1A20E2649}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,10 @@ Global
 		{5FAB4B0C-B952-4EF9-9553-594F742F236B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FAB4B0C-B952-4EF9-9553-594F742F236B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FAB4B0C-B952-4EF9-9553-594F742F236B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7162B0DE-D06B-43A3-822A-37C1A20E2649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7162B0DE-D06B-43A3-822A-37C1A20E2649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7162B0DE-D06B-43A3-822A-37C1A20E2649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7162B0DE-D06B-43A3-822A-37C1A20E2649}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
