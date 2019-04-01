@@ -47,6 +47,9 @@ namespace ltrModulesNet
         [DllImport("ltr22api.dll")]
         static extern _LTRNative.LTRERROR LTR22_ProcessData(ref TLTR22 module, uint[] src_data, double[] dst_data,
             uint size, bool calibrMainPset, bool calibrExtraVolts, byte[] OverflowFlags);
+        [DllImport("ltr22api.dll")]
+        static extern _LTRNative.LTRERROR LTR22_ProcessDataEx(ref TLTR22 module, uint[] src_data, double[] dst_data,
+            ref int size, ProcFlags flags, byte[] OverflowFlags, IntPtr reserved);
         [DllImport("ltr22api.dll"),]
         static extern _LTRNative.LTRERROR LTR22_ReadAVREEPROM(ref TLTR22 module, byte[] Data, uint BeginAddress, uint size);
         [DllImport("ltr22api.dll")]
@@ -78,6 +81,15 @@ namespace ltrModulesNet
             Range_0_03  = 3,
             Range_10    = 4,
             Range_3     = 5
+        }
+
+
+        [Flags]
+        public enum ProcFlags : uint
+        {
+            Calibr = 0x00000001,
+            Volt = 0x00000002,
+            PerChOrder = 0x01000000
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -268,10 +280,16 @@ namespace ltrModulesNet
         }
 
         public virtual _LTRNative.LTRERROR ProcessData(uint[] src_data, double[] dst_data,
-             uint size, bool calibrMainPset, bool calibrExtraVolts, byte[] OverflowFlags)
+             uint size, bool calibrMainPset, bool calibrExtraVolts, bool[] OverflowFlags)
         {
-            return LTR22_ProcessData(ref module, src_data, dst_data, size, calibrMainPset, calibrExtraVolts,
-                OverflowFlags);
+            byte[] byteovflags = new byte[LTR22_CHANNEL_CNT];
+            _LTRNative.LTRERROR err = LTR22_ProcessData(ref module, src_data, dst_data, size, calibrMainPset, calibrExtraVolts,
+                                                        byteovflags);
+            for (int i = 0; i < LTR22_CHANNEL_CNT; i++)
+            {
+                OverflowFlags[i] = byteovflags[i] != 0;
+            }
+            return err;
         }
 
         public virtual _LTRNative.LTRERROR ProcessData(uint[] src_data, double[] dst_data,
@@ -279,6 +297,24 @@ namespace ltrModulesNet
         {
             return LTR22_ProcessData(ref module, src_data, dst_data, size, calibrMainPset, calibrExtraVolts,
                 null);
+        }
+
+        public virtual _LTRNative.LTRERROR ProcessDataEx(uint[] src_data, double[] dst_data,
+                         ref int size, ProcFlags flags, bool[] OverflowFlags)
+        {
+            byte[] byteovflags = new byte[LTR22_CHANNEL_CNT];
+            _LTRNative.LTRERROR err = LTR22_ProcessDataEx(ref module, src_data, dst_data, ref size, flags, byteovflags, IntPtr.Zero);
+            for (int i = 0; i < LTR22_CHANNEL_CNT; i++)
+            {
+                OverflowFlags[i] = byteovflags[i] != 0;
+            }
+            return err;
+        }
+
+        public virtual _LTRNative.LTRERROR ProcessDataEx(uint[] src_data, double[] dst_data,
+                         ref int size, ProcFlags flags)
+        {
+            return LTR22_ProcessDataEx(ref module, src_data, dst_data, ref size, flags, null, IntPtr.Zero);
         }
 
 

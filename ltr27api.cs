@@ -49,8 +49,8 @@ namespace ltrModulesNet
 
         [DllImport("ltr27api.dll")]
         public static extern _LTRNative.LTRERROR LTR27_ProcessData(ref TLTR27 module, uint[] src_data, double[] dst_data,
-                                                                    ref uint size, bool calibr,
-                                                                     bool valueMain);
+                                                                   ref uint size, bool calibr,
+                                                                   bool valueMain);
         [DllImport("ltr27api.dll")]
         public static extern _LTRNative.LTRERROR LTR27_SearchFirstFrame(ref TLTR27 module, uint[] src_data, uint size,
                                                                         out uint frame_idx);
