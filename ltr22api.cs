@@ -103,13 +103,13 @@ namespace ltrModulesNet
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct ADC_CHANNEL_CALIBRATION
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR22_RANGE_CNT)]
             public float[] FactoryCalibOffset;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR22_RANGE_CNT)]
             public float[] FactoryCalibScale;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR22_RANGE_CNT)]
             public float[] UserCalibOffset;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR22_RANGE_CNT)]
             public float[] UserCalibScale;
         } ;
 
@@ -130,10 +130,10 @@ namespace ltrModulesNet
             [MarshalAs(UnmanagedType.U1)]
             bool _DataReadingProcessed;		// состояние считывания АЦП true-АЦП считывается false - нет
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR22_CHANNEL_CNT)]
             AdcRange[] _ADCChannelRange;// предел имзерений АЦП по каналам 0 - 1В 1 - 0.3В 2 - 0.1В 3 - 0.03В 4 - 10В 5 - 3В    
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR22_CHANNEL_CNT)]
             byte[] _ChannelEnabled;		// Состояние каналов, включен - true выключен - false
             int _FreqDiscretizationIndex;
 
@@ -145,7 +145,7 @@ namespace ltrModulesNet
             bool _SyncMaster;		// true - модуль генерит сигнал, false - модуль принимает синхросигнал
 
             TINFO_LTR22 _ModuleInfo;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4 * 25)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = LTR22_CHANNEL_CNT * LTR22_ADC_FREQ_CNT)]
             ADC_CHANNEL_CALIBRATION[] _ADCCalibration;
 
 
@@ -162,7 +162,41 @@ namespace ltrModulesNet
             public bool SyncMaster { get { return SyncMaster; } set { _SyncMaster = value; } }
             public TINFO_LTR22 ModuleInfo { get { return _ModuleInfo; } }
 
+            int calib_struct_index(int ch, int freqIndex)
+            {
+                return ch * LTR22_ADC_FREQ_CNT + freqIndex;
+            }
 
+            int calibr_val_index(AdcRange range)
+            {
+                return (int)range;
+            }
+
+            public void fillUserCalibOffset(int ch, int freqIndex, AdcRange range, float value)
+            {
+                _ADCCalibration[calib_struct_index(ch, freqIndex)].UserCalibOffset[calibr_val_index(range)] = value;
+            }
+            public void fillUserCalibScale(int ch, int freqIndex, AdcRange range, float value)
+            {
+                _ADCCalibration[calib_struct_index(ch, freqIndex)].UserCalibScale[calibr_val_index(range)] = value;
+            }
+            public float UserCalibOffset(int ch, int freqIndex, AdcRange range)
+            {
+                return _ADCCalibration[calib_struct_index(ch, freqIndex)].UserCalibOffset[calibr_val_index(range)];
+            }
+            public float UserCalibScale(int ch, int freqIndex, AdcRange range)
+            {
+                return _ADCCalibration[calib_struct_index(ch, freqIndex)].UserCalibScale[calibr_val_index(range)];
+            }
+
+            public float FactoryCalibOffset(int ch, int freqIndex, AdcRange range)
+            {
+                return _ADCCalibration[calib_struct_index(ch, freqIndex)].FactoryCalibOffset[calibr_val_index(range)];
+            }
+            public float FactoryCalibScale(int ch, int freqIndex, AdcRange range)
+            {
+                return _ADCCalibration[calib_struct_index(ch, freqIndex)].FactoryCalibScale[calibr_val_index(range)];
+            }
         }
 
 
@@ -349,6 +383,7 @@ namespace ltrModulesNet
             {
                 module.Adc384 = adc384 != 0;
                 module.Fdiv = divider;
+                module.FreqDiscretizationIndex = freq_idx;
             }
             return err;
         }
@@ -385,6 +420,32 @@ namespace ltrModulesNet
                 double resFreq;
                 FindAdcFreqParams(value, out resFreq);
             }
+        }
+
+        public void fillUserCalibOffset(int ch, int freqIndex, AdcRange range, float value)
+        {
+            module.fillUserCalibOffset(ch, freqIndex, range, value);
+        }
+        public void fillUserCalibScale(int ch, int freqIndex, AdcRange range, float value)
+        {
+            module.fillUserCalibScale(ch, freqIndex, range, value);
+        }
+        public float UserCalibOffset(int ch, int freqIndex, AdcRange range)
+        {
+            return module.UserCalibOffset(ch, freqIndex, range);
+        }
+        public float UserCalibScale(int ch, int freqIndex, AdcRange range)
+        {
+            return module.UserCalibScale(ch, freqIndex, range);
+        }
+
+        public float FactoryCalibOffset(int ch, int freqIndex, AdcRange range)
+        {
+            return module.FactoryCalibOffset(ch, freqIndex, range);
+        }
+        public float FactoryCalibScale(int ch, int freqIndex, AdcRange range)
+        {
+            return module.FactoryCalibScale(ch, freqIndex, range);
         }
 
     }	
